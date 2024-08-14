@@ -1,19 +1,18 @@
 import jwt from "jsonwebtoken";
-import pool from "../config/db.js";
+import { PrismaClient, Prisma } from "@prisma/client";
+const prisma = new PrismaClient();
 
 const protect = async (req, res, next) => {
   try {
     let token;
     token = req.cookies.jwt;
-
     if (token) {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userQuery = await pool.query(
-          "SELECT username,user_type FROM user_db WHERE username = $1 ",
-          [decoded.userId]
-        );
-        req.user = userQuery.rows[0];
+        const userQuery = await prisma.user.findUnique({
+          where: { name: decoded.userId.name }
+        });
+        req.user = userQuery;
         next();
       } catch (error) {
         const err = new Error("Not authorized, INVALID token");

@@ -7,6 +7,7 @@ import errorHandler from "./middleware/errorHandler.js";
 //import routes
 import userRoutes from "./routes/userRoutes.js";
 import folderRoutes from "./routes/folderRoutes.js";
+import fileRoutes from "./routes/fileRoutes.js";
 
 const app = express();
 const corsOptions = {
@@ -28,6 +29,7 @@ app.use(cors(corsOptions));
 // api endpoints
 app.use("/api/users", userRoutes);
 app.use("/api/folders", folderRoutes);
+app.use("/api/files", fileRoutes);
 
 // use error handler
 app.use(errorHandler);

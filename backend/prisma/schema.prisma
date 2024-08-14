@@ -20,12 +20,22 @@ datasource db {
 
 model User {
   id       String    @id @default(uuid())
-  name     String
+  name     String    @unique
   password String
   Folders  Folders[]
+  Files    Files[]
 }
 
 model Folders {
+  id        String   @id @default(uuid())
+  name      String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Files {
   id        String   @id @default(uuid())
   name      String
   author    User     @relation(fields: [authorId], references: [id])
