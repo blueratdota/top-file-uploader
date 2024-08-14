@@ -19,36 +19,27 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  password String
-  Files    Files[]
-  Folders  Folders[]
+  id            String    @id @default(uuid())
+  name          String    @unique
+  password      String
+  Files         Files[]
+  ownedFolders  Folders[] @relation("folderOwner")
+  sharedFolders Folders[] @relation("folderViewers")
 }
 
 model Folders {
-  id           String    @id @default(uuid())
-  name         String
-  author       User      @relation(fields: [authorId], references: [id])
-  authorId     String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  parentFolder String    @default("/")
-  childFolder  Folders[]
-  Folders      Folders?  @relation(fields: [foldersId], references: [id])
-  foldersId    String?
+  id             String    @id @default(uuid())
+  name           String
+  author         User      @relation("folderOwner", fields: [authorId], references: [id])
+  authorId       String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  parentFolderId String?
+  parentFolder   Folders?  @relation("children", fields: [parentFolderId], references: [id])
+  childFolder    Folders[] @relation("children")
+  allowedUsers   User[]    @relation("folderViewers")
+  storedFiles    Files[]
 }
-
-// model SubFolders {
-//   id             String   @id @default(uuid())
-//   name           String
-//   author         User     @relation(fields: [authorId], references: [id])
-//   authorId       String
-//   createdAt      DateTime @default(now())
-//   updatedAt      DateTime @updatedAt
-//   parentFolder   Folders  @relation(fields: [parentFolderId], references: [id])
-//   parentFolderId String
-// }
 
 model Files {
   id            String   @id @default(uuid())
@@ -60,4 +51,6 @@ model Files {
   updatedAt     DateTime @updatedAt
   downloadCount Int      @default(0)
   path          String
+  folders       Folders? @relation(fields: [foldersId], references: [id])
+  foldersId     String?
 }
