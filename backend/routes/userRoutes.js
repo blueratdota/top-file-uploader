@@ -22,20 +22,17 @@ const prisma = new PrismaClient();
 // api/users/signup @POST
 router.post("/signup", async (req, res, next) => {
   const { name, password } = req.body;
-  bcrypt.hash(password, 10, async (err, hashedPassword) => {
-    if (err) {
-      return next(err);
-    }
-    try {
-      const user = await prisma.user.create({
-        data: { name: name, password: hashedPassword }
-      });
-      genToken(res, name);
-      res.status(200).json(user);
-    } catch (error) {
-      next(error);
-    }
-  });
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: { name: name, password: hashedPassword }
+    });
+    genToken(res, name);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // login account
@@ -63,7 +60,7 @@ router.post("/login", async (req, res, next) => {
       return next(error);
     }
     genToken(res, user);
-    console.log(`#####login posted by username: ${user}`);
+    console.log(`#####login posted by username: ${user.id}`);
     res.json(user);
   } catch (error) {
     return next(error);
@@ -85,9 +82,6 @@ router.post("/logout", async (req, res) => {
 router.get("/profile", protect, async (req, res, next) => {
   console.log("run next after protect");
   try {
-    // const user = await pool.query("SELECT * FROM user_db WHERE username=$1 ", [
-    //   req.user.username
-    // ]);
     console.log(req.user);
     const user = await prisma.user.findUnique({
       where: { name: req.user.name },
