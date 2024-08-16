@@ -1,36 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import useSWR from "swr";
+
+// installs
+// npm i react-router-dom @chakra-ui/react @emotion/react @emotion/styled framer-motion swr
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [upFile, setUpFile] = useState();
+  // SWR FETCH STUFF
+  const fetcher = (url) =>
+    fetch(url, { credentials: "include" }).then((res) => res.json());
+  const {
+    data: profile,
+    error: errorProfile,
+    isLoading: isLoadingProfile
+  } = useSWR("http://localhost:3000/api/users/profile", fetcher, {
+    revalidateOnFocus: false
+  });
+  if (isLoadingProfile) {
+    return <div>Loading...</div>;
+  }
 
-  const onSubmitForm = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", upFile);
-    console.log(formData);
-    try {
-      const response = await fetch("http://localhost:3000/api/files/upload", {
-        mode: "cors",
-        method: "POST",
-        body: formData
-      });
-    } catch (error) {}
-  };
+  console.log(profile);
+
   return (
     <>
-      <form method="post" onSubmit={onSubmitForm} encType="multipart/form-data">
-        <label htmlFor="input-file">File:</label>
-        <input
-          type="file"
-          id="input-file"
-          name="input-file"
-          onChange={(e) => {
-            setUpFile(e.target.files[0]);
-          }}
-        />
-        <button type="submit">upload</button>
-      </form>
+      <div>
+        <Outlet context={{ profile: profile }}></Outlet>
+        <div>{profile ? profile.name : null}</div>
+      </div>
     </>
   );
 }

@@ -1,11 +1,11 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // to create folder
-// put in body the {name:folderName, authorId:userId (uuid)}
+// put in body the {name:folderName, author:name(optional), parentFolderId:id(if a subfolder)}
 router.post("/create", protect, async (req, res, next) => {
   const folderData = {
     name: req.body.name,
@@ -13,19 +13,31 @@ router.post("/create", protect, async (req, res, next) => {
     parentFolderId: (() =>
       req.body.parentFolderId ? req.body.parentFolderId : null)()
   };
-
+  const lookUpDuplicate = await prisma.folders.findFirst({
+    where: {
+      name: folderData.name,
+      authorId: folderData.authorId,
+      parentFolderId: folderData.parentFolderId || null
+    }
+  });
+  if (lookUpDuplicate) {
+    const error = new Error("This folder already exist in this directory");
+    error.status = 400;
+    return next(error);
+  }
   const folder = await prisma.folders.create({
     data: { ...folderData }
   });
   res.status(200).json(folder);
 });
 
-// to get folder
-// needs folderId as url parameter
-router.get("/get/:id", async (req, res, next) => {
-  const id = req.params.id;
+// to get folder as owner
+// needs folderId as url parameter, as well as parent folder
+router.get("/get", async (req, res, next) => {
+  // const id = req.params.id;
+  const { id, parentFolderId } = req.body;
   const folder = await prisma.folders.findUnique({
-    where: { id: id },
+    where: { id: id, parentFolderId: parentFolderId },
     include: {
       childFolder: true,
       allowedUsers: true,
@@ -37,9 +49,22 @@ router.get("/get/:id", async (req, res, next) => {
   res.status(200).json(folder);
 });
 
+// to update folder as owner
+router.put("/update", protect, async (req, res, next) => {
+  const { id, newName } = req.body;
+  const folder = await prisma.folders.update({
+    where: { id: id },
+    data: {
+      name: newName
+    }
+  });
+  res.status(200).json(folder);
+});
+
 // delete folder
-router.delete("/delete/:id", protect, async (req, res, next) => {
-  const id = req.params.id;
+// needs folderId as url parameter
+router.delete("/delete", protect, async (req, res, next) => {
+  const { id } = req.body;
   let foldersDeleted = [];
   const deleteFolder = async (folderId) => {
     foldersDeleted.push(folderId);
@@ -58,7 +83,6 @@ router.delete("/delete/:id", protect, async (req, res, next) => {
       });
       return;
     }
-    // deleteFolder(folderData.childFolder.id);
     folderData.childFolder.forEach(async (folder) => {
       await deleteFolder(folder.id);
     });

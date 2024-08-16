@@ -82,11 +82,13 @@ router.post("/logout", async (req, res) => {
 router.get("/profile", protect, async (req, res, next) => {
   console.log("run next after protect");
   try {
-    console.log(req.user);
+    // console.log(req.user);
     const user = await prisma.user.findUnique({
       where: { name: req.user.name },
       include: {
-        Folders: true
+        ownedFolders: true,
+        sharedFolders: true,
+        Files: true
       }
     });
     console.log(user);
