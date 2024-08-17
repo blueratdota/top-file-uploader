@@ -20,3 +20,7 @@
 - create a folder inside a folder
 - set users able to use folder
 - homepage
+
+# specific frontend todo
+
+- display folders and files that are stored on root (only owned files on main section)

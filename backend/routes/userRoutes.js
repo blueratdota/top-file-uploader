@@ -59,7 +59,7 @@ router.post("/login", async (req, res, next) => {
       error.status = 401;
       return next(error);
     }
-    genToken(res, user);
+    genToken(res, user.name);
     console.log(`#####login posted by username: ${user.id}`);
     res.json(user);
   } catch (error) {

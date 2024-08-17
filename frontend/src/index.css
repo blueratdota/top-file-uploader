@@ -11,3 +11,9 @@
 dialog::backdrop {
   backdrop-filter: blur(4px);
 }
+
+/* black to white */
+.svg-filter {
+  filter: invert(95%) sepia(83%) saturate(18%) hue-rotate(217deg)
+    brightness(112%) contrast(87%);
+}

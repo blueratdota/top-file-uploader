@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
 // installs
-// npm i react-router-dom @chakra-ui/react @emotion/react @emotion/styled framer-motion swr
+// npm i react-router-dom @chakra-ui/react @emotion/react @emotion/styled framer-motion swr react-responsive @mdi/react @mdi/js
 
 function App() {
   // SWR FETCH STUFF
@@ -26,7 +26,6 @@ function App() {
     <>
       <div>
         <Outlet context={{ profile: profile }}></Outlet>
-        <div>{profile ? profile.name : null}</div>
       </div>
     </>
   );
