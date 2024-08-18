@@ -17,3 +17,7 @@ dialog::backdrop {
   filter: invert(95%) sepia(83%) saturate(18%) hue-rotate(217deg)
     brightness(112%) contrast(87%);
 }
+
+.aside-links {
+  @apply flex items-center gap-2 py-1 [&>div>svg]:size-7 [&>div]:grow-0;
+}

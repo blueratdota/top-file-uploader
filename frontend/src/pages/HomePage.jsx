@@ -1,21 +1,21 @@
-import { useEffect } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate, useOutletContext } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import NavMobile from "../components/built/NavMobileHead.jsx";
 import SideBar from "../components/built/SideBar.jsx";
 import NavTablet from "../components/built/NavTabletHeader.jsx";
 
 const HomePage = () => {
+  const [currentFolder, setCurrentFolder] = useState(null);
   const navigate = useNavigate();
   const context = useOutletContext();
 
   useEffect(() => {
-    if (!context.profile) {
+    if (context.profile.msg) {
       console.log("no logged in account");
       navigate("/login");
     }
-  });
-  console.log(context.profile);
+  }, []);
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
 
@@ -26,56 +26,10 @@ const HomePage = () => {
         <nav>
           {isTabletOrMobile ? <NavMobile></NavMobile> : <NavTablet></NavTablet>}
         </nav>
-        <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite overflow-auto">
-          <div>sampledata 1</div>
-          <div>sampledata2</div>
-          <div>sampledata3</div>
-          <div>sampledata4</div>
-          <div>sampledata5</div>
-          <div>sampledata6</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
-          <div>sampledata</div>
+        <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
+          <Outlet
+            context={{ profile: context.profile, currentFolder: currentFolder }}
+          />
         </div>
       </main>
     </div>

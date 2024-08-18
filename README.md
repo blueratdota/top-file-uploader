@@ -12,6 +12,7 @@
 - on get all folders - display only owned by the currently logged in user
 - (future) be able to share folder to a specified user, or have an allow all user to see folder setting
 - deleting folders will delete all of files inside including files inside its subfolders
+- moving to folder directory. setting the state on the frontent to currentforlder ID
 
 # frontend todo
 

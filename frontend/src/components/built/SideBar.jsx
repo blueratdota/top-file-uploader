@@ -1,23 +1,96 @@
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
+import Icon from "@mdi/react";
+import {
+  mdiFolderOutline,
+  mdiClockOutline,
+  mdiAccountMultipleOutline,
+  mdiDeleteOutline,
+  mdiContentSavePlusOutline,
+  mdiCog,
+  mdiLogout,
+  mdiHelpCircleOutline
+} from "@mdi/js";
+import SmallIconBtn from "../SmallIconButton";
+
 const SideBar = () => {
   const context = useOutletContext();
+  const navigate = useNavigate();
+  const logoutUser = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" }
+      });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <aside className="w-[220px] bg-extBlack text-extWhite fixed h-full">
-      <div>
-        <div>circle for picture</div>
-        <div>{context.profile.name}</div>
+    <aside className="w-[220px] bg-extBlack text-extWhite uppercase fixed h-full px-2">
+      <div className="flex py-4 gap-4 border-b border-gray-500 border-opacity-80">
+        <div className="size-10 border rounded-[50%] bg-extWhite"></div>
+        <div>
+          <p>{context.profile.name}</p>
+        </div>
       </div>
-      <div>
-        <div>my all files</div>
-        <div>most recent uploads</div>
-        <div>shared with me</div>
-        <div>trash</div>
+      <div className="py-4 border-b">
+        <Link to={"my-files"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiFolderOutline}></SmallIconBtn>
+            <p>My Files</p>
+          </div>
+        </Link>
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiClockOutline}></SmallIconBtn>
+            <p>Recent Uploads</p>
+          </div>
+        </Link>
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiAccountMultipleOutline}></SmallIconBtn>
+            <p>Shared With Me</p>
+          </div>
+        </Link>
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiDeleteOutline}></SmallIconBtn>
+            <p>Trash</p>
+          </div>
+        </Link>
       </div>
-      <div>
-        <div>my all files</div>
-        <div>most recent uploads</div>
-        <div>shared with me</div>
-        <div>trash</div>
+      <div className="py-4">
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiContentSavePlusOutline}></SmallIconBtn>
+            <p>Add storage </p>
+          </div>
+        </Link>
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiCog}></SmallIconBtn>
+            <p>account</p>
+          </div>
+        </Link>
+        <Link
+          onClick={() => {
+            logoutUser();
+          }}
+        >
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiLogout}></SmallIconBtn>
+            <p>logout</p>
+          </div>
+        </Link>
+        <Link to={"my-folders"}>
+          <div className="aside-links">
+            <SmallIconBtn icon={mdiHelpCircleOutline}></SmallIconBtn>
+            <p>help</p>
+          </div>
+        </Link>
       </div>
     </aside>
   );

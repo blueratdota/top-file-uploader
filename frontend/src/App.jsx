@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import useSWR from "swr";
+import LoadingPage from "./components/built/LoadingPage";
 
 // installs
 // npm i react-router-dom @chakra-ui/react @emotion/react @emotion/styled framer-motion swr react-responsive @mdi/react @mdi/js
 
 function App() {
   // SWR FETCH STUFF
+  const navigate = useNavigate();
   const fetcher = (url) =>
     fetch(url, { credentials: "include" }).then((res) => res.json());
   const {
@@ -17,10 +19,8 @@ function App() {
     revalidateOnFocus: false
   });
   if (isLoadingProfile) {
-    return <div>Loading...</div>;
+    return <LoadingPage></LoadingPage>;
   }
-
-  console.log(profile);
 
   return (
     <>

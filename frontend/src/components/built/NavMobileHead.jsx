@@ -7,9 +7,12 @@ import {
   mdiFolderPlus,
   mdiMenu
 } from "@mdi/js";
+import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
+import ModalFileUpload from "./ModalFileUpload";
 
-const NavMobile = () => {
+const NavMobile = ({ currentFolder }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className="bg-extGreen h-[70px] w-full p-3 flex fixed">
       <div className="h-full basis-[30%] flex items-center">
@@ -20,6 +23,7 @@ const NavMobile = () => {
           icon={mdiUpload}
           onClick={() => {
             console.log("open upload");
+            onOpen();
           }}
         ></SmallIconBtn>
         <SmallIconBtn
@@ -47,6 +51,11 @@ const NavMobile = () => {
           }}
         ></SmallIconBtn>
       </div>
+      <ModalFileUpload
+        isOpen={isOpen}
+        onClose={onClose}
+        currentFolder={currentFolder}
+      />
     </div>
   );
 };

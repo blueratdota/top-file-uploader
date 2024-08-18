@@ -53,6 +53,7 @@ model Files {
   path          String
   folders       Folders? @relation(fields: [foldersId], references: [id])
   foldersId     String?
+  fileSize      Int
 
   @@unique([name, foldersId])
 }

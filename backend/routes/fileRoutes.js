@@ -12,7 +12,7 @@ router.post(
   protect,
   upload.single("file"),
   async (req, res, next) => {
-    // console.log(req.file);
+    console.log(req.file);
     // {
     //   fieldname: 'file',
     //   originalname: 'Plain Text.txt',
@@ -27,7 +27,8 @@ router.post(
     const fileData = {
       path: req.file.path,
       name: req.file.originalname,
-      authorId: req.user.id
+      authorId: req.user.id,
+      fileSize: req.file.size
     };
     const file = await prisma.files.create({ data: { ...fileData } });
     console.log(file);
