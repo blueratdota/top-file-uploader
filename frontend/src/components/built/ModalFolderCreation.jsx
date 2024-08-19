@@ -19,7 +19,6 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
   const context = useOutletContext();
   const { mutate } = useSWRConfig();
   const navigate = useNavigate();
-  console.log("id:", id);
   const onSubmitForm = async (e) => {
     e.preventDefault();
     if (folderName) {
@@ -44,7 +43,7 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
           }
         );
 
-        await mutate("http://localhost:3000/api/users/profile");
+        await mutate("http://localhost:3000/api/folders/get-all");
         navigate("/");
       } catch (error) {
         console.log(error);

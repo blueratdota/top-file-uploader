@@ -91,7 +91,7 @@ router.get("/profile", protect, async (req, res, next) => {
         Files: true
       }
     });
-    console.log(user);
+    // console.log(user);
     res.status(200).json(user);
   } catch (error) {}
 });

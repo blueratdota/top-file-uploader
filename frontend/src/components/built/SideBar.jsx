@@ -76,8 +76,9 @@ const SideBar = () => {
           </div>
         </Link>
         <Link
-          onClick={() => {
-            logoutUser();
+          onClick={async () => {
+            await logoutUser();
+            window.location.reload();
           }}
         >
           <div className="aside-links">

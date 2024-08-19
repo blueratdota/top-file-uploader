@@ -24,6 +24,8 @@ function App() {
     return <LoadingPage></LoadingPage>;
   }
 
+  setTimeout(() => {}, 2000);
+
   return (
     <>
       <div>

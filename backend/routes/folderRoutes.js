@@ -49,23 +49,34 @@ router.post("/create", protect, async (req, res, next) => {
 
 // to get folder as owner
 // needs folderId as url parameter, as well as parent folder
-router.get("/get", async (req, res, next) => {
-  // const id = req.params.id;
-  const { id, parentFolderId } = req.body;
-  const folder = await prisma.folders.findUnique({
-    where: { id: id, parentFolderId: parentFolderId },
+router.get("/get/:id", async (req, res, next) => {
+  const id = req.params.id;
+  const folder = await prisma.folders.findMany({
+    where: { parentFolderId: id },
     include: {
       childFolder: true,
       allowedUsers: true,
       storedFiles: true
     }
   });
-  console.log(folder.childFolder.length);
+  // console.log(folder.childFolder.length);
 
   res.status(200).json(folder);
 });
 
 //create a get all folders based on logged in user
+router.get("/get-all", protect, async (req, res, next) => {
+  console.log("##get all folders via user");
+  const folders = await prisma.folders.findMany({
+    where: { authorId: req.user.id },
+    include: {
+      childFolder: true,
+      allowedUsers: true,
+      storedFiles: true
+    }
+  });
+  res.status(200).json(folders);
+});
 
 // to update folder as owner
 router.put("/update", protect, async (req, res, next) => {
