@@ -29,7 +29,7 @@ const SideBar = () => {
   };
 
   return (
-    <aside className="w-[220px] bg-extBlack text-extWhite uppercase fixed h-full px-2">
+    <aside className="w-[220px] bg-extBlack text-extWhite uppercase absolute sm:fixed h-full px-2">
       <div className="flex py-4 gap-4 border-b border-gray-500 border-opacity-80">
         <div className="size-10 border rounded-[50%] bg-extWhite"></div>
         <div>

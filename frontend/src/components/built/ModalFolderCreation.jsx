@@ -66,28 +66,38 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
             <div>
               <form method="post" onSubmit={onSubmitForm}>
                 <InputGroup>
-                  <InputLeftAddon className="bg-extGreen py-1 px-2 text-center">
-                    <p className="w-[130px]">Folder Name</p>
-                  </InputLeftAddon>
                   <Input
+                    required
                     type="text"
-                    placeholder="folder name"
-                    className="pl-3  text-black outline-none"
+                    placeholder="Input folder name"
+                    className="pb-2  text-black outline-none border-b w-full"
                     onChange={(e) => {
                       setFolderName(e.target.value);
                     }}
                   />
                 </InputGroup>
-                <Button
-                  type="submit"
-                  variant="solid"
-                  className="bg-extGreen w-[150px] py-2 mx-auto"
-                >
-                  OK
-                </Button>
+                <div className="mt-8 w-full flex gap-5 justify-center">
+                  <Button
+                    variant="solid"
+                    className="bg-slate-300 w-[120px] py-1  text-extWhite"
+                    onClick={() => {
+                      setFolderName("");
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="solid"
+                    className="bg-extGreen w-[120px] py-1  text-extWhite"
+                  >
+                    Upload
+                  </Button>
+                </div>
               </form>
             </div>
-            <div className=" flex gap-4 justify-center mt-4">
+            {/* <div className=" flex gap-4 justify-center mt-4">
               <Button className="w-20 border py-1" onClick={onClose}>
                 Cancel
               </Button>
@@ -100,7 +110,7 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
               >
                 Yes
               </Button>
-            </div>
+            </div> */}
           </ModalBody>
         </ModalContent>
       </Modal>

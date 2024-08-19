@@ -21,6 +21,7 @@
 - create a folder inside a folder
 - set users able to use folder
 - homepage
+- create loading sequence for file/folder posts. disable exiting
 
 # specific frontend todo
 

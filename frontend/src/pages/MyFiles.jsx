@@ -16,7 +16,7 @@ const MyFiles = () => {
   } = useSWR("http://localhost:3000/api/folders/get-all", fetcher, {
     revalidateOnFocus: false
   });
-  console.log(isLoadingFolders);
+  // console.log(isLoadingFolders);
 
   return (
     <>

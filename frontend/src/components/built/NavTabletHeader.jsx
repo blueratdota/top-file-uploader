@@ -11,6 +11,7 @@ import {
 import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
 import ModalFileUpload from "./ModalFileUpload";
+import ModalFolderCreation from "./ModalFolderCreation";
 import { useOutletContext } from "react-router-dom";
 
 const NavTablet = ({}) => {
@@ -18,6 +19,11 @@ const NavTablet = ({}) => {
     isOpen: isOpenUploadModal,
     onOpen: onOpenUploadModal,
     onClose: onCloseUploadModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFolderCreateModal,
+    onOpen: onOpenFolderCreateModal,
+    onClose: onCloseFolderCreateModal
   } = useDisclosure();
   const context = useOutletContext();
   return (
@@ -27,11 +33,10 @@ const NavTablet = ({}) => {
       </div>
       <div className="h-full basis-[70%] flex gap-1 grow-0 items-center justify-end">
         <div
+          className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] "
           onClick={() => {
-            console.log("open upload");
             onOpenUploadModal();
           }}
-          className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] "
         >
           <SmallIconBtn icon={mdiUpload}></SmallIconBtn>
           <p>UPLOAD</p>
@@ -40,7 +45,7 @@ const NavTablet = ({}) => {
           <SmallIconBtn
             icon={mdiSort}
             onClick={() => {
-              console.log("open upload");
+              console.log("sort");
             }}
           ></SmallIconBtn>
           <p>SORT</p>
@@ -49,7 +54,7 @@ const NavTablet = ({}) => {
           <SmallIconBtn
             icon={mdiFilter}
             onClick={() => {
-              console.log("open upload");
+              console.log("filter");
             }}
           ></SmallIconBtn>
           <p>FILTER</p>
@@ -58,7 +63,7 @@ const NavTablet = ({}) => {
           <SmallIconBtn
             icon={mdiMagnify}
             onClick={() => {
-              console.log("open upload");
+              console.log("search");
             }}
           ></SmallIconBtn>
         </div>
@@ -66,22 +71,27 @@ const NavTablet = ({}) => {
           <SmallIconBtn
             icon={mdiFolderPlus}
             onClick={() => {
-              console.log("open upload");
+              onOpenFolderCreateModal();
             }}
           ></SmallIconBtn>
         </div>
-        <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
+        {/* <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
           <SmallIconBtn
             icon={mdiMenu}
             onClick={() => {
               console.log("open upload");
             }}
           ></SmallIconBtn>
-        </div>
+        </div> */}
       </div>
       <ModalFileUpload
         isOpen={isOpenUploadModal}
         onClose={onCloseUploadModal}
+      />
+      <ModalFolderCreation
+        isOpen={isOpenFolderCreateModal}
+        onClose={onCloseFolderCreateModal}
+        currentFolder={context.currentFolder}
       />
     </div>
   );

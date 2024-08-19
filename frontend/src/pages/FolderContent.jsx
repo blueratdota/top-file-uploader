@@ -33,11 +33,11 @@ const FolderContent = () => {
               return <EntryFolder key={folder.id} folder={folder} />;
             }
           })}
-          {/* {context.profile.Files.map((file) => {
-        if (!file.foldersId) {
-          return <EntryFile key={file.id} file={file} />;
-        }
-      })} */}
+          {context.profile.Files.map((file) => {
+            if (file.foldersId == id) {
+              return <EntryFile key={file.id} file={file} />;
+            }
+          })}
         </div>
       )}
     </>

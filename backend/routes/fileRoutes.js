@@ -12,7 +12,7 @@ router.post(
   protect,
   upload.single("file"),
   async (req, res, next) => {
-    console.log(req.file);
+    // console.log(req);
     // {
     //   fieldname: 'file',
     //   originalname: 'Plain Text.txt',
@@ -28,8 +28,16 @@ router.post(
       path: req.file.path,
       name: req.file.originalname,
       fileSize: req.file.size,
-      authorId: req.user.id
+      authorId: req.user.id,
+      foldersId: (() => {
+        if (req.body.foldersId == null || req.body.foldersId == undefined)
+          return null;
+        else {
+          return req.body.foldersId;
+        }
+      })()
     };
+    // console.log(fileData);
     const file = await prisma.files.create({ data: { ...fileData } });
     console.log(file);
     //   {
