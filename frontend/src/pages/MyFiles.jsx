@@ -4,10 +4,14 @@ import EntryFile from "../components/EntryFile";
 
 const MyFiles = () => {
   const context = useOutletContext();
+  console.log(context.profile);
+
   return (
     <div className="w-full">
       {context.profile.ownedFolders.map((folder) => {
-        return <EntryFolder key={folder.id} folder={folder} />;
+        if (folder.parentFolderId == null) {
+          return <EntryFolder key={folder.id} folder={folder} />;
+        }
       })}
       {context.profile.Files.map((file) => {
         if (!file.foldersId) {

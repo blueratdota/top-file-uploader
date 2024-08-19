@@ -28,6 +28,22 @@ router.post("/create", protect, async (req, res, next) => {
   const folder = await prisma.folders.create({
     data: { ...folderData }
   });
+  // if (folderData.parentFolderId) {
+  //   // const parentFolder = await prisma.folders.findFirst({
+  //   //   where: { id: folderData.parentFolderId }
+  //   // });
+
+  //   const allChildren = await prisma.folders.findMany({
+  //     where: { parentFolderId: folderData.parentFolderId }
+  //   });
+
+  //   const updateParentFolder = await prisma.folders.update({
+  //     where: { id: folderData.parentFolderId },
+  //     data: {
+  //       childFolder: allChildren
+  //     }
+  //   });
+  // }
   res.status(200).json(folder);
 });
 
@@ -48,6 +64,8 @@ router.get("/get", async (req, res, next) => {
 
   res.status(200).json(folder);
 });
+
+//create a get all folders based on logged in user
 
 // to update folder as owner
 router.put("/update", protect, async (req, res, next) => {

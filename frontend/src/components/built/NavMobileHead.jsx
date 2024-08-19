@@ -10,9 +10,21 @@ import {
 import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
 import ModalFileUpload from "./ModalFileUpload";
+import ModalFolderCreation from "./ModalFolderCreation";
+import { useOutletContext } from "react-router-dom";
 
-const NavMobile = ({ currentFolder }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const NavMobile = ({}) => {
+  const context = useOutletContext();
+  const {
+    isOpen: isOpenUploadModal,
+    onOpen: onOpenUploadModal,
+    onClose: onCloseUploadModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFolderCreateModal,
+    onOpen: onOpenFolderCreateModal,
+    onClose: onCloseFolderCreateModal
+  } = useDisclosure();
   return (
     <div className="bg-extGreen h-[70px] w-full p-3 flex fixed">
       <div className="h-full basis-[30%] flex items-center">
@@ -23,7 +35,7 @@ const NavMobile = ({ currentFolder }) => {
           icon={mdiUpload}
           onClick={() => {
             console.log("open upload");
-            onOpen();
+            onOpenUploadModal();
           }}
         ></SmallIconBtn>
         <SmallIconBtn
@@ -42,6 +54,7 @@ const NavMobile = ({ currentFolder }) => {
           icon={mdiFolderPlus}
           onClick={() => {
             console.log("open add folder");
+            onOpenFolderCreateModal();
           }}
         ></SmallIconBtn>
         <SmallIconBtn
@@ -52,9 +65,13 @@ const NavMobile = ({ currentFolder }) => {
         ></SmallIconBtn>
       </div>
       <ModalFileUpload
-        isOpen={isOpen}
-        onClose={onClose}
-        currentFolder={currentFolder}
+        isOpen={isOpenUploadModal}
+        onClose={onCloseUploadModal}
+      />
+      <ModalFolderCreation
+        isOpen={isOpenFolderCreateModal}
+        onClose={onCloseFolderCreateModal}
+        currentFolder={context.currentFolder}
       />
     </div>
   );

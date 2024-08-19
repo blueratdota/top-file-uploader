@@ -27,8 +27,8 @@ router.post(
     const fileData = {
       path: req.file.path,
       name: req.file.originalname,
-      authorId: req.user.id,
-      fileSize: req.file.size
+      fileSize: req.file.size,
+      authorId: req.user.id
     };
     const file = await prisma.files.create({ data: { ...fileData } });
     console.log(file);

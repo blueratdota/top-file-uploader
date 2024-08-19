@@ -6,7 +6,6 @@ import SideBar from "../components/built/SideBar.jsx";
 import NavTablet from "../components/built/NavTabletHeader.jsx";
 
 const HomePage = () => {
-  const [currentFolder, setCurrentFolder] = useState(null);
   const navigate = useNavigate();
   const context = useOutletContext();
 
@@ -28,7 +27,11 @@ const HomePage = () => {
         </nav>
         <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
           <Outlet
-            context={{ profile: context.profile, currentFolder: currentFolder }}
+            context={{
+              profile: context.profile,
+              currentFolder: context.currentFolder,
+              setCurrentFolder: context.setCurrentFolder
+            }}
           />
         </div>
       </main>

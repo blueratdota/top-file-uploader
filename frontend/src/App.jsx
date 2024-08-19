@@ -8,6 +8,7 @@ import LoadingPage from "./components/built/LoadingPage";
 
 function App() {
   // SWR FETCH STUFF
+
   const navigate = useNavigate();
   const fetcher = (url) =>
     fetch(url, { credentials: "include" }).then((res) => res.json());
@@ -18,6 +19,7 @@ function App() {
   } = useSWR("http://localhost:3000/api/users/profile", fetcher, {
     revalidateOnFocus: false
   });
+
   if (isLoadingProfile) {
     return <LoadingPage></LoadingPage>;
   }
@@ -25,7 +27,11 @@ function App() {
   return (
     <>
       <div>
-        <Outlet context={{ profile: profile }}></Outlet>
+        <Outlet
+          context={{
+            profile: profile
+          }}
+        ></Outlet>
       </div>
     </>
   );

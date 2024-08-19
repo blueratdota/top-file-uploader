@@ -1,13 +1,16 @@
 import { mdiFolderOutline, mdiDotsVertical } from "@mdi/js";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import Icon from "@mdi/react";
 const EntryFolder = ({ folder }) => {
+  const { currentFolder, setCurrentFolder } = useOutletContext();
+
   return (
     <div className="flex items-center justify-between h-11 w-full py-8 border-b">
       <Link
         className="flex items-center w-full"
         onClick={() => {
-          console.log(folder);
+          // console.log(folder);
+          setCurrentFolder(folder.id);
         }}
         to={`/home/folder/${folder.id}`}
       >
