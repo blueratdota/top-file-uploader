@@ -105,8 +105,8 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  handleSetSortType("date");
-                  if (sortType != "date") {
+                  handleSetSortType("updatedAt");
+                  if (sortType != "updatedAt") {
                     handleSort(false);
                   } else {
                     handleSort();
@@ -114,7 +114,7 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
                 }}
               >
                 <span className="w-5">
-                  {sortType == "date" ? (
+                  {sortType == "updatedAt" ? (
                     <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
                   ) : null}
                 </span>{" "}
@@ -122,8 +122,8 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  handleSetSortType("size");
-                  if (sortType != "size") {
+                  handleSetSortType("fileSize");
+                  if (sortType != "fileSize") {
                     handleSort(false);
                   } else {
                     handleSort();
@@ -131,7 +131,7 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
                 }}
               >
                 <span className="w-5">
-                  {sortType == "size" ? (
+                  {sortType == "fileSize" ? (
                     <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
                   ) : null}
                 </span>{" "}
@@ -139,8 +139,8 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  handleSetSortType("downloads");
-                  if (sortType != "downloads") {
+                  handleSetSortType("downloadCount");
+                  if (sortType != "downloadCount") {
                     handleSort(false);
                   } else {
                     handleSort();
@@ -148,7 +148,7 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
                 }}
               >
                 <span className="w-5">
-                  {sortType == "downloads" ? (
+                  {sortType == "downloadCount" ? (
                     <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
                   ) : null}
                 </span>{" "}
@@ -177,10 +177,14 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
           ></SmallIconBtn>
         </div>
         <ModalFileUpload
+          sortAsc={sortAsc}
+          sortType={sortType}
           isOpen={isOpenUploadModal}
           onClose={onCloseUploadModal}
         />
         <ModalFolderCreation
+          sortAsc={sortAsc}
+          sortType={sortType}
           isOpen={isOpenFolderCreateModal}
           onClose={onCloseFolderCreateModal}
           currentFolder={context.currentFolder}

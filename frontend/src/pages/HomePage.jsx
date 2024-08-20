@@ -57,8 +57,10 @@ const HomePage = () => {
 
   return (
     <>
-      {context.isLoadingFolders ? (
-        <LoadingPage />
+      {context.isLoadingProfile ? (
+        <LoadingPage>
+          <p>Loading Home Page</p>
+        </LoadingPage>
       ) : (
         <div className="sm:flex">
           {isTabletOrMobile ? null : <SideBar />}
@@ -78,7 +80,9 @@ const HomePage = () => {
             <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
               <Outlet
                 context={{
-                  profile: context.profile
+                  profile: context.profile,
+                  sortAsc,
+                  sortType
                 }}
               />
             </div>

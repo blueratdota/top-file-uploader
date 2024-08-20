@@ -19,6 +19,11 @@ const EntryFile = ({ file }) => {
           </span> */}
         </div>
       </div>
+      <div>
+        <div>{file.fileSize} bytes</div>
+        <div>{file.downloadCount} downloads</div>
+      </div>
+
       <div className="w-10 px-2">
         <Icon path={mdiDotsVertical} className="w-full"></Icon>
       </div>

@@ -19,9 +19,13 @@ function App() {
   } = useSWR("http://localhost:3000/api/users/profile", fetcher, {
     revalidateOnFocus: false
   });
-
+  console.log("profile loading", isLoadingProfile);
   if (isLoadingProfile) {
-    return <LoadingPage></LoadingPage>;
+    return (
+      <LoadingPage>
+        <p>Loading App: Profile</p>
+      </LoadingPage>
+    );
   }
 
   setTimeout(() => {}, 2000);
@@ -31,7 +35,8 @@ function App() {
       <div>
         <Outlet
           context={{
-            profile: profile
+            profile: profile,
+            isLoadingProfile: isLoadingProfile
           }}
         ></Outlet>
       </div>

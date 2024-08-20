@@ -6,6 +6,12 @@ import useSWR from "swr";
 
 const MyFiles = () => {
   const context = useOutletContext();
+  const { sortType, sortAsc } = context;
+
+  const isAsc = (() => {
+    if (sortAsc) return "asc";
+    else return "desc";
+  })();
 
   const fetcher = (url) =>
     fetch(url, { credentials: "include" }).then((res) => res.json());
@@ -13,15 +19,34 @@ const MyFiles = () => {
     data: folders,
     error: errorFolders,
     isLoading: isLoadingFolders
-  } = useSWR("http://localhost:3000/api/folders/get-all", fetcher, {
-    revalidateOnFocus: false
-  });
+  } = useSWR(
+    `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
+  const {
+    data: files,
+    error: errorFiles,
+    isLoading: isLoadingFiles
+  } = useSWR(
+    `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
   // console.log(isLoadingFolders);
 
   return (
     <>
-      {isLoadingFolders ? (
-        <LoadingPage></LoadingPage>
+      {isLoadingFolders || isLoadingFiles ? (
+        <div className="w-full h-full">
+          <LoadingPage>
+            <p>Loading Folders and Files</p>
+          </LoadingPage>
+        </div>
       ) : (
         <div className="w-full">
           {folders.map((folder) => {
@@ -29,7 +54,7 @@ const MyFiles = () => {
               return <EntryFolder key={folder.id} folder={folder} />;
             }
           })}
-          {context.profile.Files.map((file) => {
+          {files.map((file) => {
             if (!file.foldersId) {
               return <EntryFile key={file.id} file={file} />;
             }

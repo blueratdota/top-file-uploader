@@ -65,16 +65,36 @@ router.get("/get/:id", async (req, res, next) => {
 });
 
 //create a get all folders based on logged in user
-router.get("/get-all", protect, async (req, res, next) => {
-  console.log("##get all folders via user");
+router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
+  const sortOrder = (() => {
+    if (
+      req.params.sortType == "downloadCount" ||
+      req.params.sortType == "fileSize"
+    ) {
+      return "asc";
+    } else return req.params.sortOrder;
+  })();
+  const sortType = (() => {
+    if (
+      req.params.sortType == "downloadCount" ||
+      req.params.sortType == "fileSize"
+    ) {
+      return "name";
+    } else return req.params.sortType;
+  })();
+
+  let sortSettings = {};
+  sortSettings[sortType] = sortOrder;
   const folders = await prisma.folders.findMany({
     where: { authorId: req.user.id },
+    orderBy: sortSettings,
     include: {
       childFolder: true,
       allowedUsers: true,
       storedFiles: true
     }
   });
+  // console.log(folders);
   res.status(200).json(folders);
 });
 

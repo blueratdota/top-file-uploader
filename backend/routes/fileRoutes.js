@@ -54,6 +54,22 @@ router.post(
   }
 );
 
+// get all files owned by logged in user
+router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
+  const sortOrder = req.params.sortOrder;
+  const sortType = req.params.sortType;
+
+  let sortSettings = {};
+  sortSettings[sortType] = sortOrder;
+
+  const files = await prisma.files.findMany({
+    where: { authorId: req.user.id },
+    orderBy: sortSettings
+  });
+
+  res.status(200).json(files);
+});
+
 router.get("/download/:id", async (req, res, next) => {
   const id = req.params.id;
   // console.log(id);

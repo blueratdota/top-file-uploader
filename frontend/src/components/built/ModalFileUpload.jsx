@@ -16,11 +16,15 @@ import { useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useSWRConfig } from "swr";
-const ModalFileUpload = ({ isOpen, onClose }) => {
+const ModalFileUpload = ({ isOpen, onClose, sortType, sortAsc }) => {
   const [upFile, setUpFile] = useState();
   const context = useOutletContext();
   const { id } = useParams();
   const { mutate } = useSWRConfig();
+  const isAsc = (() => {
+    if (sortAsc) return "asc";
+    else return "desc";
+  })();
   const onSubmitForm = async (e) => {
     console.log(id);
     e.preventDefault();
@@ -38,8 +42,14 @@ const ModalFileUpload = ({ isOpen, onClose }) => {
       });
       // console.log(response);
       console.log(...formData);
-      await mutate("http://localhost:3000/api/folders/get-all");
+      await mutate(
+        `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`
+      );
+      await mutate(
+        `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`
+      );
       await mutate("http://localhost:3000/api/users/profile");
+
       setUpFile(null);
       onClose();
     } catch (error) {}
