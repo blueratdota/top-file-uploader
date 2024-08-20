@@ -25,4 +25,5 @@
 
 # specific frontend todo
 
-- display folders and files that are stored on root (only owned files on main section)
+- display folders and files that are stored on root (only owned files on main section) ✔
+- continue with sort function

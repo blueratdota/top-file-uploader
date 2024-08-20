@@ -7,15 +7,31 @@ import {
   mdiFolderPlus,
   mdiMenu
 } from "@mdi/js";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+  IconButton
+} from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useDisclosure, Drawer } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
 import ModalFileUpload from "./ModalFileUpload";
 import ModalFolderCreation from "./ModalFolderCreation";
 import { useOutletContext } from "react-router-dom";
 import DrawerMenu from "./DrawerMenu";
+import { useState } from "react";
 
-const NavMobile = ({}) => {
+const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
   const context = useOutletContext();
+  // console.log(!sortAsc);
+  // console.log(setSortAsc);
+
   // for file upload
   const {
     isOpen: isOpenUploadModal,
@@ -48,12 +64,98 @@ const NavMobile = ({}) => {
               onOpenUploadModal();
             }}
           ></SmallIconBtn>
-          <SmallIconBtn
+          {/* <SmallIconBtn
             icon={mdiSort}
             onClick={() => {
               console.log("open sort");
             }}
-          ></SmallIconBtn>
+          ></SmallIconBtn> */}
+          <Menu flip={false}>
+            <MenuButton className="scale-[0.5] w-[46px] text-white">
+              <SmallIconBtn
+                icon={mdiSort}
+                onClick={() => {
+                  console.log("open sort");
+                }}
+              ></SmallIconBtn>
+            </MenuButton>
+            <MenuList className="bg-extGray text-extWhite p-2 border border-gray-200 border-opacity-20 ">
+              <MenuItem
+                onClick={() => {
+                  // setSortType("name");
+                  // if (sortType != "name") {
+                  //   setSortAsc(false);
+                  // } else {
+                  //   setSortAsc(!sortAsc);
+                  // }
+                  handleSetSortType("name");
+                  if (sortType != "name") {
+                    handleSort(false);
+                  } else {
+                    handleSort();
+                  }
+                }}
+              >
+                <span className="w-5">
+                  {sortType == "name" ? (
+                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                  ) : null}
+                </span>{" "}
+                Sort by Name
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleSetSortType("date");
+                  if (sortType != "date") {
+                    handleSort(false);
+                  } else {
+                    handleSort();
+                  }
+                }}
+              >
+                <span className="w-5">
+                  {sortType == "date" ? (
+                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                  ) : null}
+                </span>{" "}
+                Sort by Date
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleSetSortType("size");
+                  if (sortType != "size") {
+                    handleSort(false);
+                  } else {
+                    handleSort();
+                  }
+                }}
+              >
+                <span className="w-5">
+                  {sortType == "size" ? (
+                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                  ) : null}
+                </span>{" "}
+                Sort by Size
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleSetSortType("downloads");
+                  if (sortType != "downloads") {
+                    handleSort(false);
+                  } else {
+                    handleSort();
+                  }
+                }}
+              >
+                <span className="w-5">
+                  {sortType == "downloads" ? (
+                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                  ) : null}
+                </span>{" "}
+                Sort by Downloads
+              </MenuItem>
+            </MenuList>
+          </Menu>
           <SmallIconBtn
             icon={mdiMagnify}
             onClick={() => {

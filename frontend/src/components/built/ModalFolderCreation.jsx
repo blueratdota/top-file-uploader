@@ -92,7 +92,7 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
                     variant="solid"
                     className="bg-extGreen w-[120px] py-1  text-extWhite"
                   >
-                    Upload
+                    Create
                   </Button>
                 </div>
               </form>
