@@ -7,17 +7,7 @@ import {
   mdiFolderPlus,
   mdiMenu
 } from "@mdi/js";
-import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  IconButton
-} from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useDisclosure, Drawer } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
@@ -29,8 +19,6 @@ import { useState } from "react";
 
 const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
   const context = useOutletContext();
-  // console.log(!sortAsc);
-  // console.log(setSortAsc);
 
   // for file upload
   const {
@@ -64,12 +52,6 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
               onOpenUploadModal();
             }}
           ></SmallIconBtn>
-          {/* <SmallIconBtn
-            icon={mdiSort}
-            onClick={() => {
-              console.log("open sort");
-            }}
-          ></SmallIconBtn> */}
           <Menu flip={false}>
             <MenuButton className="scale-[0.5] w-[46px] text-white">
               <SmallIconBtn
@@ -82,12 +64,6 @@ const NavMobile = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
             <MenuList className="bg-extGray text-extWhite p-2 border border-gray-200 border-opacity-20 ">
               <MenuItem
                 onClick={() => {
-                  // setSortType("name");
-                  // if (sortType != "name") {
-                  //   setSortAsc(false);
-                  // } else {
-                  //   setSortAsc(!sortAsc);
-                  // }
                   handleSetSortType("name");
                   if (sortType != "name") {
                     handleSort(false);

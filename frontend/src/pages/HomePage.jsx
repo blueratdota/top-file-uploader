@@ -10,6 +10,7 @@ import NavMobile from "../components/built/NavMobileHead.jsx";
 import SideBar from "../components/built/SideBar.jsx";
 import NavTablet from "../components/built/NavTabletHeader.jsx";
 import LoadingPage from "../components/built/LoadingPage.jsx";
+import useSWR from "swr";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams({
@@ -18,6 +19,34 @@ const HomePage = () => {
   });
   const sortAsc = searchParams.get("sortAsc") === "true";
   const sortType = searchParams.get("sortType");
+  const isAsc = (() => {
+    if (sortAsc) return "asc";
+    else return "desc";
+  })();
+  const fetcher = (url) =>
+    fetch(url, { credentials: "include" }).then((res) => res.json());
+  const {
+    data: folders,
+    error: errorFolders,
+    isLoading: isLoadingFolders
+  } = useSWR(
+    `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
+  const {
+    data: files,
+    error: errorFiles,
+    isLoading: isLoadingFiles
+  } = useSWR(
+    `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
 
   const navigate = useNavigate();
   const context = useOutletContext();
@@ -74,7 +103,12 @@ const HomePage = () => {
                   handleSetSortType={handleSetSortType}
                 ></NavMobile>
               ) : (
-                <NavTablet sortType={sortType} sortAsc={sortAsc}></NavTablet>
+                <NavTablet
+                  sortType={sortType}
+                  sortAsc={sortAsc}
+                  handleSort={handleSort}
+                  handleSetSortType={handleSetSortType}
+                ></NavTablet>
               )}
             </nav>
             <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
@@ -82,7 +116,11 @@ const HomePage = () => {
                 context={{
                   profile: context.profile,
                   sortAsc,
-                  sortType
+                  sortType,
+                  folders: folders,
+                  files: files,
+                  isLoadingFiles: isLoadingFiles,
+                  isLoadingFolders: isLoadingFolders
                 }}
               />
             </div>

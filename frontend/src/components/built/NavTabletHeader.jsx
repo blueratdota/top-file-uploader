@@ -8,13 +8,15 @@ import {
   mdiMenu,
   mdiFilter
 } from "@mdi/js";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "../SmallIconButton";
 import ModalFileUpload from "./ModalFileUpload";
 import ModalFolderCreation from "./ModalFolderCreation";
 import { useOutletContext } from "react-router-dom";
 
-const NavTablet = ({}) => {
+const NavTablet = ({ sortType, sortAsc, handleSort, handleSetSortType }) => {
   const {
     isOpen: isOpenUploadModal,
     onOpen: onOpenUploadModal,
@@ -41,15 +43,90 @@ const NavTablet = ({}) => {
           <SmallIconBtn icon={mdiUpload}></SmallIconBtn>
           <p>UPLOAD</p>
         </div>
-        <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
-          <SmallIconBtn
-            icon={mdiSort}
-            onClick={() => {
-              console.log("sort");
-            }}
-          ></SmallIconBtn>
-          <p>SORT</p>
-        </div>
+
+        <Menu flip={false}>
+          <MenuButton>
+            <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
+              <SmallIconBtn
+                icon={mdiSort}
+                onClick={() => {
+                  console.log("sort");
+                }}
+              ></SmallIconBtn>
+              <p>SORT</p>
+            </div>
+          </MenuButton>
+          <MenuList className="bg-extGray text-extWhite p-2 border border-gray-200 border-opacity-20 ">
+            <MenuItem
+              onClick={() => {
+                handleSetSortType("name");
+                if (sortType != "name") {
+                  handleSort(false);
+                } else {
+                  handleSort();
+                }
+              }}
+            >
+              <span className="w-5">
+                {sortType == "name" ? (
+                  <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                ) : null}
+              </span>{" "}
+              Sort by Name
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleSetSortType("updatedAt");
+                if (sortType != "updatedAt") {
+                  handleSort(false);
+                } else {
+                  handleSort();
+                }
+              }}
+            >
+              <span className="w-5">
+                {sortType == "updatedAt" ? (
+                  <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                ) : null}
+              </span>{" "}
+              Sort by Date
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleSetSortType("fileSize");
+                if (sortType != "fileSize") {
+                  handleSort(false);
+                } else {
+                  handleSort();
+                }
+              }}
+            >
+              <span className="w-5">
+                {sortType == "fileSize" ? (
+                  <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                ) : null}
+              </span>{" "}
+              Sort by Size
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleSetSortType("downloadCount");
+                if (sortType != "downloadCount") {
+                  handleSort(false);
+                } else {
+                  handleSort();
+                }
+              }}
+            >
+              <span className="w-5">
+                {sortType == "downloadCount" ? (
+                  <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                ) : null}
+              </span>{" "}
+              Sort by Downloads
+            </MenuItem>
+          </MenuList>
+        </Menu>
         <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
           <SmallIconBtn
             icon={mdiFilter}
@@ -75,14 +152,6 @@ const NavTablet = ({}) => {
             }}
           ></SmallIconBtn>
         </div>
-        {/* <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
-          <SmallIconBtn
-            icon={mdiMenu}
-            onClick={() => {
-              console.log("open upload");
-            }}
-          ></SmallIconBtn>
-        </div> */}
       </div>
       <ModalFileUpload
         isOpen={isOpenUploadModal}
