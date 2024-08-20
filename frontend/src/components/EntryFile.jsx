@@ -13,6 +13,7 @@ const EntryFile = ({ file }) => {
             {file.downloadCount == undefined ? 0 : file.downloadCount}{" "}
             downloads,
           </span>{" "}
+          <span>{file.fileSize} bytes</span>
           {/* <span>
             {folder.storedFiles == undefined ? 0 : folder.storedFiles.length}{" "}
             files

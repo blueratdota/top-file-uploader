@@ -43,8 +43,10 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
           }
         );
 
-        await mutate("http://localhost:3000/api/folders/get-all");
-        navigate("/");
+        // await mutate("http://localhost:3000/api/folders/get-all");
+        // navigate("/");
+        setFolderName("");
+        onClose();
       } catch (error) {
         console.log(error);
       }

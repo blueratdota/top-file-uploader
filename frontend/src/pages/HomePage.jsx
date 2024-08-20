@@ -33,7 +33,8 @@ const HomePage = () => {
     `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
-      revalidateOnFocus: false
+      revalidateOnFocus: false,
+      refreshInterval: 5000
     }
   );
   const {
@@ -44,7 +45,8 @@ const HomePage = () => {
     `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
-      revalidateOnFocus: false
+      revalidateOnFocus: false,
+      refreshInterval: 5000
     }
   );
 

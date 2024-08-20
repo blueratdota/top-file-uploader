@@ -23,41 +23,49 @@ router.post(
     //   path: 'uploads/447c4fc5ac11f262508fe41cc8a62a75',
     //   size: 321
     // }
+    try {
+      const fileData = {
+        path: req.file.path,
+        name: req.file.originalname,
+        fileSize: req.file.size,
+        authorId: req.user.id,
+        foldersId: (() => {
+          if (req.body.foldersId == null || req.body.foldersId == undefined)
+            return null;
+          else {
+            return req.body.foldersId;
+          }
+        })()
+      };
 
-    const fileData = {
-      path: req.file.path,
-      name: req.file.originalname,
-      fileSize: req.file.size,
-      authorId: req.user.id,
-      foldersId: (() => {
-        if (req.body.foldersId == null || req.body.foldersId == undefined)
-          return null;
-        else {
-          return req.body.foldersId;
-        }
-      })()
-    };
-    // console.log(fileData);
-    const file = await prisma.files.create({ data: { ...fileData } });
-    console.log(file);
-    //   {
-    //     "id": "da412ec4-5b5a-4aab-a91f-82aabdc73a35",
-    //     "name": "Plain Text.txt",
-    //     "updatedName": null,
-    //     "authorId": "1b525bd4-da0f-43f1-828f-1deaae8c5b12",
-    //     "createdAt": "2024-08-14T05:32:25.875Z",
-    //     "updatedAt": "2024-08-14T05:32:25.875Z",
-    //     "downloadCount": 0,
-    //     "path": "uploads/439ac24825a433e4b2780486cfd1ebaa"
-    // }
-    res.status(200).json(file);
+      const file = await prisma.files.create({ data: { ...fileData } });
+      console.log(file);
+      //   {
+      //     "id": "da412ec4-5b5a-4aab-a91f-82aabdc73a35",
+      //     "name": "Plain Text.txt",
+      //     "updatedName": null,
+      //     "authorId": "1b525bd4-da0f-43f1-828f-1deaae8c5b12",
+      //     "createdAt": "2024-08-14T05:32:25.875Z",
+      //     "updatedAt": "2024-08-14T05:32:25.875Z",
+      //     "downloadCount": 0,
+      //     "path": "uploads/439ac24825a433e4b2780486cfd1ebaa"
+      // }
+
+      res.status(200).json(file);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
 // get all files owned by logged in user
 router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   const sortOrder = req.params.sortOrder;
-  const sortType = req.params.sortType;
+  const sortType = (() => {
+    if (req.params.sortType == null) {
+      return "name";
+    } else return req.params.sortType;
+  })();
 
   let sortSettings = {};
   sortSettings[sortType] = sortOrder;
