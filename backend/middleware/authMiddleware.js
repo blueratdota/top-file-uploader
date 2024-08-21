@@ -8,13 +8,16 @@ const protect = async (req, res, next) => {
     token = req.cookies.jwt;
     if (token) {
       try {
+        console.log("TOKEN VERIFIED");
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userQuery = await prisma.user.findUnique({
           where: { name: decoded.userId }
         });
-        req.user = userQuery;
+        req.user = await userQuery;
+        console.log("success req.user = query");
         next();
       } catch (error) {
+        console.log(req.user);
         const err = new Error("Not authorized, INVALID token");
         err.status = 401;
         return next(err);

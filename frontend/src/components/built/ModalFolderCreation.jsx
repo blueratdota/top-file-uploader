@@ -13,7 +13,12 @@ import {
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
+const ModalFolderCreation = ({
+  isOpen,
+  onClose,
+  mutateFiles,
+  mutateFolders
+}) => {
   const [folderName, setFolderName] = useState();
   const { id } = useParams();
   const context = useOutletContext();
@@ -43,8 +48,8 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
           }
         );
 
-        // await mutate("http://localhost:3000/api/folders/get-all");
-        // navigate("/");
+        await mutateFiles();
+        await mutateFolders();
         setFolderName("");
         onClose();
       } catch (error) {
@@ -102,20 +107,6 @@ const ModalFolderCreation = ({ isOpen, onClose, currentFolder }) => {
                 </div>
               </form>
             </div>
-            {/* <div className=" flex gap-4 justify-center mt-4">
-              <Button className="w-20 border py-1" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                className="w-20 border py-1 "
-                onClick={() => {
-                  // function to run on yes
-                  onClose();
-                }}
-              >
-                Yes
-              </Button>
-            </div> */}
           </ModalBody>
         </ModalContent>
       </Modal>

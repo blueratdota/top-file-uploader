@@ -1,4 +1,9 @@
-import { useOutletContext, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useOutletContext,
+  useParams,
+  useSearchParams
+} from "react-router-dom";
 import EntryFolder from "../components/EntryFolder";
 import EntryFile from "../components/EntryFile";
 import useSWR from "swr";
@@ -7,21 +12,16 @@ import LoadingPage from "../components/built/LoadingPage";
 const FolderContent = () => {
   const context = useOutletContext();
   const { id } = useParams();
-
-  // const fetcher = (url) =>
-  //   fetch(url, {
-  //     credentials: "include"
-  //   }).then((res) => res.json());
-  // const {
-  //   data: folderContent,
-  //   error: errorFolderContent,
-  //   isLoading: isLoadingFolderContent
-  // } = useSWR(`http://localhost:3000/api/folders/get/${id}`, fetcher, {
-  //   revalidateOnFocus: false
+  // const folderArray = context.folders;
+  // console.log(folderArray);
+  // if (folderArray != undefined) {
+  //   const findRes = folderArray.find((item) => item.id == id);
+  //   console.log(findRes);
+  // }
+  // const findRes = folderArray.find((x) => {
+  //   return x.id == id;
   // });
-
-  // console.log("swr", folderContent);
-
+  // console.log(findRes);
   return (
     <>
       {context.isLoadingFolders || context.isLoadingFiles ? (

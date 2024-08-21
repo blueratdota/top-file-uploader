@@ -3,41 +3,13 @@ import EntryFolder from "../components/EntryFolder";
 import EntryFile from "../components/EntryFile";
 import LoadingPage from "../components/built/LoadingPage";
 import useSWR from "swr";
+import { useEffect } from "react";
 
 const MyFiles = () => {
   const context = useOutletContext();
-  // const { sortType, sortAsc } = context;
-
-  // const isAsc = (() => {
-  //   if (sortAsc) return "asc";
-  //   else return "desc";
-  // })();
-
-  // const fetcher = (url) =>
-  //   fetch(url, { credentials: "include" }).then((res) => res.json());
-  // const {
-  //   data: folders,
-  //   error: errorFolders,
-  //   isLoading: isLoadingFolders
-  // } = useSWR(
-  //   `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
-  //   fetcher,
-  //   {
-  //     revalidateOnFocus: false
-  //   }
-  // );
-  // const {
-  //   data: files,
-  //   error: errorFiles,
-  //   isLoading: isLoadingFiles
-  // } = useSWR(
-  //   `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
-  //   fetcher,
-  //   {
-  //     revalidateOnFocus: false
-  //   }
-  // );
-  // console.log(isLoadingFolders);
+  useEffect(() => {
+    context.setCurrentPage("My Files");
+  }, []);
 
   return (
     <>

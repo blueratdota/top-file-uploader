@@ -1,4 +1,11 @@
+import { useOutletContext } from "react-router-dom";
+import { useEffect } from "react";
+
 const SharedWithUser = () => {
+  const context = useOutletContext();
+  useEffect(() => {
+    context.setCurrentPage("Shared");
+  }, []);
   return (
     <div>
       <p>files/folders shared with user</p>

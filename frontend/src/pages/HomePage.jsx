@@ -11,12 +11,15 @@ import SideBar from "../components/built/SideBar.jsx";
 import NavTablet from "../components/built/NavTabletHeader.jsx";
 import LoadingPage from "../components/built/LoadingPage.jsx";
 import useSWR from "swr";
+import BreadCrumbs from "../components/BreadCrumbs.jsx";
 
 const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams({
     sortAsc: false,
     sortType: "name"
   });
+  const [currentPage, setCurrentPage] = useState(["no page"]);
+  const [breadcrumbs, setBreadcrums] = useState([]);
   const sortAsc = searchParams.get("sortAsc") === "true";
   const sortType = searchParams.get("sortType");
   const isAsc = (() => {
@@ -28,25 +31,25 @@ const HomePage = () => {
   const {
     data: folders,
     error: errorFolders,
-    isLoading: isLoadingFolders
+    isLoading: isLoadingFolders,
+    mutate: mutateFolders
   } = useSWR(
     `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
-      revalidateOnFocus: false,
-      refreshInterval: 5000
+      revalidateOnFocus: false
     }
   );
   const {
     data: files,
     error: errorFiles,
-    isLoading: isLoadingFiles
+    isLoading: isLoadingFiles,
+    mutate: mutateFiles
   } = useSWR(
     `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
-      revalidateOnFocus: false,
-      refreshInterval: 5000
+      revalidateOnFocus: false
     }
   );
 
@@ -57,6 +60,7 @@ const HomePage = () => {
     if (context.profile.msg) {
       console.log("no logged in account");
       navigate("/login");
+      return;
     }
   }, []);
 
@@ -94,7 +98,12 @@ const HomePage = () => {
         </LoadingPage>
       ) : (
         <div className="sm:flex">
-          {isTabletOrMobile ? null : <SideBar />}
+          {isTabletOrMobile ? null : (
+            <SideBar
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
           <main className="w-full">
             <nav>
               {isTabletOrMobile ? (
@@ -103,6 +112,8 @@ const HomePage = () => {
                   sortAsc={sortAsc}
                   handleSort={handleSort}
                   handleSetSortType={handleSetSortType}
+                  mutateFiles={mutateFiles}
+                  mutateFolders={mutateFolders}
                 ></NavMobile>
               ) : (
                 <NavTablet
@@ -110,10 +121,15 @@ const HomePage = () => {
                   sortAsc={sortAsc}
                   handleSort={handleSort}
                   handleSetSortType={handleSetSortType}
+                  mutateFiles={mutateFiles}
+                  mutateFolders={mutateFolders}
                 ></NavTablet>
               )}
             </nav>
-            <div className="pt-[70px] sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
+            <div className="mt-[70px] sm:pl-[220px] h-[40px] w-full bg-gray-400 border-t flex">
+              <BreadCrumbs folders={folders}></BreadCrumbs>
+            </div>
+            <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
               <Outlet
                 context={{
                   profile: context.profile,
@@ -122,7 +138,10 @@ const HomePage = () => {
                   folders: folders,
                   files: files,
                   isLoadingFiles: isLoadingFiles,
-                  isLoadingFolders: isLoadingFolders
+                  isLoadingFolders: isLoadingFolders,
+                  breadcrumbs: breadcrumbs,
+                  setBreadcrums: setBreadcrums,
+                  setCurrentPage: setCurrentPage
                 }}
               />
             </div>

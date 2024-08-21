@@ -76,6 +76,7 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   })();
   const sortType = (() => {
     if (
+      req.params.sortType == null ||
       req.params.sortType == "downloadCount" ||
       req.params.sortType == "fileSize"
     ) {
@@ -84,7 +85,13 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   })();
 
   let sortSettings = {};
-  sortSettings[sortType] = sortOrder;
+  if (!sortType || sortType == "null") {
+    sortSettings["name"] = sortOrder;
+  } else {
+    sortSettings[sortType] = sortOrder;
+  }
+
+  console.log("#####folderroutes", sortSettings);
   const folders = await prisma.folders.findMany({
     where: { authorId: req.user.id },
     orderBy: sortSettings,

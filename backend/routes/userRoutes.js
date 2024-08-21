@@ -80,7 +80,7 @@ router.post("/logout", async (req, res) => {
 // get account details
 // api/users/profile @GET
 router.get("/profile", protect, async (req, res, next) => {
-  console.log("run next after protect", req.user);
+  console.log("run next after protect");
   try {
     // console.log(req.user);
     const user = await prisma.user.findUnique({
@@ -91,9 +91,11 @@ router.get("/profile", protect, async (req, res, next) => {
         Files: true
       }
     });
-    // console.log(user);
+    console.log("user successful GET");
     res.status(200).json(user);
-  } catch (error) {}
+  } catch (error) {
+    return next(error);
+  }
 });
 
 export default router;

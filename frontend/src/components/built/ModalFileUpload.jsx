@@ -16,16 +16,13 @@ import { useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import { useOutletContext, useParams, useNavigate } from "react-router-dom";
 import { useSWRConfig } from "swr";
-const ModalFileUpload = ({ isOpen, onClose, sortType, sortAsc }) => {
+const ModalFileUpload = ({ isOpen, onClose, mutateFiles, mutateFolders }) => {
   const [upFile, setUpFile] = useState();
   const context = useOutletContext();
   const { id } = useParams();
   const { mutate } = useSWRConfig();
   const navigate = useNavigate();
-  const isAsc = (() => {
-    if (sortAsc) return "asc";
-    else return "desc";
-  })();
+
   // do some error handling here. show in modal message do not close the modal
   const onSubmitForm = async (e) => {
     console.log(id);
@@ -44,24 +41,11 @@ const ModalFileUpload = ({ isOpen, onClose, sortType, sortAsc }) => {
       });
       console.log("response", response);
       console.log(...formData);
-      // await mutate(
-      //   `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`
-      // );
-      // await mutate(
-      //   `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`
-      // );
-      // await mutate(`http://localhost:3000/api/folders/get-all/`);
-      // await mutate(`http://localhost:3000/api/files/get-all/`);
-      // if (window.location.pathname == "/home/my-files") {
-      //   navigate("/");
-      // } else {
-      //   navigate(window.location.pathname);
-      // }
+      await mutateFiles();
+      await mutateFolders();
 
       setUpFile(null);
       onClose();
-
-      // window.location.reload();
     } catch (error) {}
   };
   return (

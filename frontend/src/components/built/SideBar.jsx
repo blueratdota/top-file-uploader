@@ -12,7 +12,7 @@ import {
 } from "@mdi/js";
 import SmallIconBtn from "../SmallIconButton";
 
-const SideBar = () => {
+const SideBar = ({ setCurrentPage }) => {
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async () => {
@@ -43,13 +43,13 @@ const SideBar = () => {
             <p>My Files</p>
           </div>
         </Link>
-        <Link to={"my-folders"}>
+        <Link to={"recent-uploads"}>
           <div className="aside-links">
             <SmallIconBtn icon={mdiClockOutline}></SmallIconBtn>
             <p>Recent Uploads</p>
           </div>
         </Link>
-        <Link to={"my-folders"}>
+        <Link to={"shared"}>
           <div className="aside-links">
             <SmallIconBtn icon={mdiAccountMultipleOutline}></SmallIconBtn>
             <p>Shared With Me</p>

@@ -12,6 +12,8 @@ import HomePage from "./pages/HomePage.jsx";
 import MyFiles from "./pages/MyFiles.jsx";
 import LoadingPage from "./components/built/LoadingPage.jsx";
 import FolderContent from "./pages/FolderContent.jsx";
+import RecentUploads from "./pages/RecentUploads.jsx";
+import SharedWithUser from "./pages/SharedWithUser.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,9 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="/home/my-files" replace /> },
           { path: "/home/my-files", element: <MyFiles /> },
+          { path: "/home/my-files/folder/:id", element: <FolderContent /> },
+          { path: "/home/recent-uploads", element: <RecentUploads /> },
+          { path: "/home/shared", element: <SharedWithUser /> },
           { path: "/home/folder/:id", element: <FolderContent /> },
           { path: "/home/loading", element: <LoadingPage /> }
         ]

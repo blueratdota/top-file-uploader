@@ -14,16 +14,12 @@ const EntryFile = ({ file }) => {
             downloads,
           </span>{" "}
           <span>{file.fileSize} bytes</span>
-          {/* <span>
-            {folder.storedFiles == undefined ? 0 : folder.storedFiles.length}{" "}
-            files
-          </span> */}
         </div>
       </div>
-      <div>
+      {/* <div>
         <div>{file.fileSize} bytes</div>
         <div>{file.downloadCount} downloads</div>
-      </div>
+      </div> */}
 
       <div className="w-10 px-2">
         <Icon path={mdiDotsVertical} className="w-full"></Icon>
