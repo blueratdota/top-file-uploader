@@ -46,9 +46,9 @@ const NavMobile = ({
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-extGreen h-[70px] w-full p-3 flex fixed border-b">
+      <div className="bg-extGreen h-[70px] w-full p-3 flex fixed border-b z-50">
         <div
-          className="h-full basis-[30%] flex items-center"
+          className="h-full basis-[30%] flex items-center cursor-pointer"
           onClick={() => {
             navigate("/");
           }}

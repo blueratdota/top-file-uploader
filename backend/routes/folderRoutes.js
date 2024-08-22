@@ -28,22 +28,6 @@ router.post("/create", protect, async (req, res, next) => {
   const folder = await prisma.folders.create({
     data: { ...folderData }
   });
-  // if (folderData.parentFolderId) {
-  //   // const parentFolder = await prisma.folders.findFirst({
-  //   //   where: { id: folderData.parentFolderId }
-  //   // });
-
-  //   const allChildren = await prisma.folders.findMany({
-  //     where: { parentFolderId: folderData.parentFolderId }
-  //   });
-
-  //   const updateParentFolder = await prisma.folders.update({
-  //     where: { id: folderData.parentFolderId },
-  //     data: {
-  //       childFolder: allChildren
-  //     }
-  //   });
-  // }
   res.status(200).json(folder);
 });
 
@@ -112,6 +96,17 @@ router.put("/update", protect, async (req, res, next) => {
     where: { id: id },
     data: {
       name: newName
+    }
+  });
+  res.status(200).json(folder);
+});
+// to update folder to trash
+router.put("/to-trash/:id/:movement", protect, async (req, res, next) => {
+  const { id, movement } = req.params;
+  const folder = await prisma.folders.update({
+    where: { id: id },
+    data: {
+      inTrash: movement == "true"
     }
   });
   res.status(200).json(folder);

@@ -104,7 +104,7 @@ const HomePage = () => {
               setCurrentPage={setCurrentPage}
             />
           )}
-          <main className="w-full">
+          <main className="w-full overflow-hidden">
             <nav>
               {isTabletOrMobile ? (
                 <NavMobile
@@ -126,7 +126,7 @@ const HomePage = () => {
                 ></NavTablet>
               )}
             </nav>
-            <div className="pt-[70px] sm:pl-[220px] w-full flex bg-gray-400 border-y">
+            <div className="pt-[70px] sm:pl-[220px] max-w-full flex bg-gray-400 border-y">
               <BreadCrumbs folders={folders}></BreadCrumbs>
             </div>
             <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-[calc(100%-110px)] min-h-screen items-stretch ">
@@ -141,7 +141,9 @@ const HomePage = () => {
                   isLoadingFolders: isLoadingFolders,
                   breadcrumbs: breadcrumbs,
                   setBreadcrums: setBreadcrums,
-                  setCurrentPage: setCurrentPage
+                  setCurrentPage: setCurrentPage,
+                  mutateFiles: mutateFiles,
+                  mutateFolders: mutateFolders
                 }}
               />
             </div>

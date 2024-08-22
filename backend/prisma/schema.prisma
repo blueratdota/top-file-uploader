@@ -39,6 +39,7 @@ model Folders {
   childFolder    Folders[] @relation("children")
   allowedUsers   User[]    @relation("folderViewers")
   storedFiles    Files[]
+  inTrash        Boolean   @default(false)
 }
 
 model Files {
@@ -54,6 +55,7 @@ model Files {
   folders       Folders? @relation(fields: [foldersId], references: [id])
   foldersId     String?
   fileSize      Int
+  inTrash       Boolean  @default(false)
 
   @@unique([name, foldersId])
 }

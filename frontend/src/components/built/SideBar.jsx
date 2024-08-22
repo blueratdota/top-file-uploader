@@ -12,7 +12,7 @@ import {
 } from "@mdi/js";
 import SmallIconBtn from "../SmallIconButton";
 
-const SideBar = ({ setCurrentPage }) => {
+const SideBar = ({}) => {
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async () => {

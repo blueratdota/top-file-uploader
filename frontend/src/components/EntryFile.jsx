@@ -26,7 +26,7 @@ const EntryFile = ({ file }) => {
       </div>
       <div className="w-11">
         <Menu>
-          <MenuButton className="scale-[0.5] w-[46px] text-white">
+          <MenuButton className="scale-[0.5] w-[46px] text-white z-0">
             <SmallIconBtn
               icon={mdiDotsVertical}
               onClick={() => {
@@ -34,7 +34,11 @@ const EntryFile = ({ file }) => {
               }}
             ></SmallIconBtn>
           </MenuButton>
-          <MenuList className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 ">
+          <MenuList
+            gap={10}
+            zIndex={9999}
+            className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
+          >
             <MenuItem>
               <span className="w-5">o</span> Share
             </MenuItem>

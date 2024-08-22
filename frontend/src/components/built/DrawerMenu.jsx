@@ -23,7 +23,6 @@ const DrawerMenu = ({ isOpen, onClose }) => {
       <DrawerContent className=" max-w-[220px]">
         <DrawerBody>
           <SideBar />
-          yeet
         </DrawerBody>
       </DrawerContent>
     </>

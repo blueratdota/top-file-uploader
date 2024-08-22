@@ -36,9 +36,9 @@ const NavTablet = ({
   } = useDisclosure();
   const navigate = useNavigate();
   return (
-    <div className="bg-extGreen h-[70px] right-0 w-[calc(100%-220px)] p-3 flex fixed border-b">
+    <div className="bg-extGreen h-[70px] right-0 w-[calc(100%-220px)] p-3 flex fixed border-b z-50">
       <div
-        className="h-full basis-[30%] flex items-center"
+        className="h-full basis-[30%] flex items-center cursor-pointer"
         onClick={() => {
           navigate("/");
         }}
@@ -48,7 +48,7 @@ const NavTablet = ({
 
       <div className="h-full basis-[70%] flex gap-1 grow-0 items-center justify-end">
         <div
-          className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] "
+          className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] cursor-pointer"
           onClick={() => {
             onOpenUploadModal();
           }}
@@ -59,7 +59,7 @@ const NavTablet = ({
 
         <Menu flip={false}>
           <MenuButton>
-            <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
+            <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5]  ">
               <SmallIconBtn
                 icon={mdiSort}
                 onClick={() => {
@@ -157,7 +157,7 @@ const NavTablet = ({
             }}
           ></SmallIconBtn>
         </div>
-        <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] ">
+        <div className="flex items-center [&>*]:text-extWhite [&>div]:w-[46px] [&>div>svg]:scale-[0.5] cursor-pointer">
           <SmallIconBtn
             icon={mdiFolderPlus}
             onClick={() => {

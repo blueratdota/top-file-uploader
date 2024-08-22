@@ -61,7 +61,11 @@ const BreadCrumbs = ({ folders }) => {
       className="my-auto ml-3 text-extWhite py-2 "
     >
       <BreadcrumbItem>
-        <BreadcrumbLink as={Link} to={currentMainPage.link}>
+        <BreadcrumbLink
+          as={Link}
+          to={currentMainPage.link}
+          className="underline"
+        >
           {currentMainPage.name}
         </BreadcrumbLink>
       </BreadcrumbItem>
@@ -71,6 +75,7 @@ const BreadCrumbs = ({ folders }) => {
             <BreadcrumbLink
               as={Link}
               to={`/home/${currentMainPage.origin}/folder/${path.id}`}
+              className="underline"
             >
               {path.name}
             </BreadcrumbLink>

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 const MyFiles = () => {
   const context = useOutletContext();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   try {
     return (
       <>
@@ -20,12 +20,12 @@ const MyFiles = () => {
         ) : (
           <div className="w-full">
             {context.folders.map((folder) => {
-              if (folder.parentFolderId == null) {
+              if (folder.parentFolderId == null && !folder.inTrash) {
                 return <EntryFolder key={folder.id} folder={folder} />;
               }
             })}
             {context.files.map((file) => {
-              if (!file.foldersId) {
+              if (!file.foldersId && !file.inTrash) {
                 return <EntryFile key={file.id} file={file} />;
               }
             })}
