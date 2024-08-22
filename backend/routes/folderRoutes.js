@@ -91,7 +91,7 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
     sortSettings[sortType] = sortOrder;
   }
 
-  console.log("#####folderroutes", sortSettings);
+  // console.log("#####folderroutes", sortSettings);
   const folders = await prisma.folders.findMany({
     where: { authorId: req.user.id },
     orderBy: sortSettings,

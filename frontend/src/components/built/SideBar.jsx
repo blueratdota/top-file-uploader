@@ -55,7 +55,7 @@ const SideBar = ({ setCurrentPage }) => {
             <p>Shared With Me</p>
           </div>
         </Link>
-        <Link to={"my-folders"}>
+        <Link to={"trash"}>
           <div className="aside-links">
             <SmallIconBtn icon={mdiDeleteOutline}></SmallIconBtn>
             <p>Trash</p>

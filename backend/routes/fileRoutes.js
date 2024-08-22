@@ -73,7 +73,7 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   } else {
     sortSettings[sortType] = sortOrder;
   }
-  console.log("#####fileroutes", sortSettings);
+  // console.log("#####fileroutes", sortSettings);
   const files = await prisma.files.findMany({
     where: { authorId: req.user.id },
     orderBy: sortSettings
@@ -81,7 +81,7 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
 
   res.status(200).json(files);
 });
-
+// download file
 router.get("/download/:id", async (req, res, next) => {
   const id = req.params.id;
   // console.log(id);
@@ -94,5 +94,7 @@ router.get("/download/:id", async (req, res, next) => {
   // res.status(200).json(file);
   res.download(file.path, file.name);
 });
+
+router.post("/move-to-trash", async (req, res, next) => {});
 
 export default router;

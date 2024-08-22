@@ -126,10 +126,10 @@ const HomePage = () => {
                 ></NavTablet>
               )}
             </nav>
-            <div className="mt-[70px] sm:pl-[220px] h-[40px] w-full bg-gray-400 border-t flex">
+            <div className="pt-[70px] sm:pl-[220px] w-full flex bg-gray-400 border-y">
               <BreadCrumbs folders={folders}></BreadCrumbs>
             </div>
-            <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-screen items-stretch ">
+            <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-[calc(100%-110px)] min-h-screen items-stretch ">
               <Outlet
                 context={{
                   profile: context.profile,

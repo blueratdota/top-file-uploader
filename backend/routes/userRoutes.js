@@ -80,7 +80,7 @@ router.post("/logout", async (req, res) => {
 // get account details
 // api/users/profile @GET
 router.get("/profile", protect, async (req, res, next) => {
-  console.log("run next after protect");
+  console.log("PROTECT IS SATISFIED FOR USER:", req.user.name);
   try {
     // console.log(req.user);
     const user = await prisma.user.findUnique({

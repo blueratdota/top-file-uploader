@@ -1,4 +1,4 @@
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 
 import {
   Breadcrumb,
@@ -10,18 +10,24 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 
 const BreadCrumbs = ({ folders }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const arrPath = [];
   if (folders != undefined) {
     const parentFolder = (folderID) => {
       const findFolder = folders.find((folder) => {
         return folder.id == folderID;
       });
-      if (!findFolder.parentFolderId) {
-        arrPath.unshift(findFolder);
-        return;
-      } else {
-        arrPath.unshift(findFolder);
-        parentFolder(findFolder.parentFolderId);
+      try {
+        if (!findFolder.parentFolderId) {
+          arrPath.unshift(findFolder);
+          return;
+        } else {
+          arrPath.unshift(findFolder);
+          parentFolder(findFolder.parentFolderId);
+        }
+      } catch (error) {
+        console.log(error);
+        navigate("/");
       }
     };
     if (id) {
@@ -46,23 +52,14 @@ const BreadCrumbs = ({ folders }) => {
   const { pathname } = useLocation();
   const currentMainPage =
     mainPages[pathname.split("/")[2]] || mainPages["my-files"];
-  console.log(currentMainPage);
+  // console.log(currentMainPage);
 
   return (
-    // <div className="flex">
-    //   <div>
-    //     {mainPages[pathname.split("/")[2]]} {arrPath.length >= 1 ? ">" : ""}
-    //   </div>
-    //   {arrPath.map((path, index) => {
-    //     return (
-    //       <div key={path.id}>
-    //         {path.name} {arrPath.length - 1 == index ? "" : ">"}
-    //       </div>
-    //     );
-    //   })}
-    // </div>
-
-    <Breadcrumb spacing="8px" separator={<ChevronRightIcon color="gray.500" />}>
+    <Breadcrumb
+      spacing="8px"
+      separator={<ChevronRightIcon color="gray.500" />}
+      className="my-auto ml-3 text-extWhite py-2 "
+    >
       <BreadcrumbItem>
         <BreadcrumbLink as={Link} to={currentMainPage.link}>
           {currentMainPage.name}
@@ -70,9 +67,6 @@ const BreadCrumbs = ({ folders }) => {
       </BreadcrumbItem>
       {arrPath.map((path, index) => {
         return (
-          //   <div key={path.id}>
-          //     {path.name}
-          //   </div>
           <BreadcrumbItem key={path.id}>
             <BreadcrumbLink
               as={Link}
