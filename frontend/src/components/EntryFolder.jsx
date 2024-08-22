@@ -36,7 +36,7 @@ import MenuFolderRestore from "./menu-items/MenuFolderRestore";
 const EntryFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
-    return <div>Empty Body</div>;
+    return "Empty Header";
   });
   const [modalBody, setModalBody] = useState(() => {
     return (
@@ -46,6 +46,7 @@ const EntryFolder = ({ folder }) => {
     );
   });
   const context = useOutletContext();
+  const { setNav } = context;
   // for file/folder details modal
   const {
     isOpen: isOpenModal,
@@ -142,9 +143,24 @@ const EntryFolder = ({ folder }) => {
             Details
           </MenuItem>
           {folder.inTrash ? (
-            <MenuFolderRestore folder={folder} />
+            <MenuFolderRestore
+              onClick={onOpenModal}
+              folder={folder}
+              setModalHeader={setModalHeader}
+              setModalBody={setModalBody}
+              setNav={setNav}
+              onOpenModal={onOpenModal}
+              onCloseModal={onCloseModal}
+            />
           ) : (
-            <MenuFolderDelete folder={folder} />
+            <MenuFolderDelete
+              folder={folder}
+              setModalHeader={setModalHeader}
+              setModalBody={setModalBody}
+              setNav={setNav}
+              onOpenModal={onOpenModal}
+              onCloseModal={onCloseModal}
+            />
           )}
         </MenuList>
       </Menu>
