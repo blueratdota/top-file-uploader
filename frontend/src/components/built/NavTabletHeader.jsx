@@ -22,7 +22,8 @@ const NavTablet = ({
   handleSort,
   handleSetSortType,
   mutateFiles,
-  mutateFolders
+  mutateFolders,
+  nav
 }) => {
   const {
     isOpen: isOpenUploadModal,
@@ -36,7 +37,11 @@ const NavTablet = ({
   } = useDisclosure();
   const navigate = useNavigate();
   return (
-    <div className="bg-extGreen h-[70px] right-0 w-[calc(100%-220px)] p-3 flex fixed border-b z-50">
+    <div
+      className={`bg-extGreen h-[70px] right-0 w-[calc(100%-220px)] p-3 flex fixed border-b ${
+        isOpenFolderCreateModal || isOpenUploadModal || nav ? "z-[0]" : "z-[1]"
+      }`}
+    >
       <div
         className="h-full basis-[30%] flex items-center cursor-pointer"
         onClick={() => {

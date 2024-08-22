@@ -14,18 +14,41 @@ import useSWR from "swr";
 import BreadCrumbs from "../components/BreadCrumbs.jsx";
 
 const HomePage = () => {
+  // SEARCH PARAMS FUNCTIONS
   const [searchParams, setSearchParams] = useSearchParams({
     sortAsc: false,
     sortType: "name"
   });
-  const [currentPage, setCurrentPage] = useState(["no page"]);
-  const [breadcrumbs, setBreadcrums] = useState([]);
   const sortAsc = searchParams.get("sortAsc") === "true";
   const sortType = searchParams.get("sortType");
   const isAsc = (() => {
     if (sortAsc) return "asc";
     else return "desc";
   })();
+  const handleSort = (boolean) => {
+    const value = (() => {
+      if (boolean == false) return false;
+      else return !sortAsc;
+    })();
+    setSearchParams(
+      (prev) => {
+        prev.set("sortAsc", value);
+        return prev;
+      },
+      { replace: true }
+    );
+  };
+  const handleSetSortType = (type) => {
+    setSearchParams(
+      (prev) => {
+        prev.set("sortType", type);
+        return prev;
+      },
+      { replace: true }
+    );
+  };
+
+  // FETCHER FUNCTIONS
   const fetcher = (url) =>
     fetch(url, { credentials: "include" }).then((res) => res.json());
   const {
@@ -52,10 +75,8 @@ const HomePage = () => {
       revalidateOnFocus: false
     }
   );
-
   const navigate = useNavigate();
   const context = useOutletContext();
-
   useEffect(() => {
     if (context.profile.msg) {
       console.log("no logged in account");
@@ -63,33 +84,10 @@ const HomePage = () => {
       return;
     }
   }, []);
-
-  const handleSort = (boolean) => {
-    const value = (() => {
-      if (boolean == false) return false;
-      else return !sortAsc;
-    })();
-    setSearchParams(
-      (prev) => {
-        prev.set("sortAsc", value);
-        return prev;
-      },
-      { replace: true }
-    );
-  };
-
-  const handleSetSortType = (type) => {
-    setSearchParams(
-      (prev) => {
-        prev.set("sortType", type);
-        return prev;
-      },
-      { replace: true }
-    );
-  };
-
+  // FOR RESPONSIVE DESIGN
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
-
+  // FOR FIXING NAVBAR Z-INDEX ISSUE
+  const [nav, setNav] = useState(false);
   return (
     <>
       {context.isLoadingProfile ? (
@@ -97,13 +95,8 @@ const HomePage = () => {
           <p>Loading Home Page</p>
         </LoadingPage>
       ) : (
-        <div className="sm:flex">
-          {isTabletOrMobile ? null : (
-            <SideBar
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          )}
+        <div className="sm:flex ">
+          {isTabletOrMobile ? null : <SideBar />}
           <main className="w-full overflow-hidden">
             <nav>
               {isTabletOrMobile ? (
@@ -114,6 +107,7 @@ const HomePage = () => {
                   handleSetSortType={handleSetSortType}
                   mutateFiles={mutateFiles}
                   mutateFolders={mutateFolders}
+                  nav={nav}
                 ></NavMobile>
               ) : (
                 <NavTablet
@@ -123,6 +117,7 @@ const HomePage = () => {
                   handleSetSortType={handleSetSortType}
                   mutateFiles={mutateFiles}
                   mutateFolders={mutateFolders}
+                  nav={nav}
                 ></NavTablet>
               )}
             </nav>
@@ -132,18 +127,23 @@ const HomePage = () => {
             <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-[calc(100%-110px)] min-h-screen items-stretch ">
               <Outlet
                 context={{
+                  // FROM APP >> PASSING DOWN THE DATA
                   profile: context.profile,
+                  // SEARCH PARAMS
                   sortAsc,
                   sortType,
+                  // DATA VARIABLES FROM SWR GET REQUESTS
                   folders: folders,
                   files: files,
+                  // LOADING VARIABLES FROM SWR GET REQUESTS
                   isLoadingFiles: isLoadingFiles,
                   isLoadingFolders: isLoadingFolders,
-                  breadcrumbs: breadcrumbs,
-                  setBreadcrums: setBreadcrums,
-                  setCurrentPage: setCurrentPage,
+                  // FOR UPDATING FILES & FOLDERS EVERY ACTION
                   mutateFiles: mutateFiles,
-                  mutateFolders: mutateFolders
+                  mutateFolders: mutateFolders,
+                  // FIXING NAV BAR ISSUE
+                  nav: nav,
+                  setNav: setNav
                 }}
               />
             </div>

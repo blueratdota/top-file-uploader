@@ -100,13 +100,13 @@ router.put("/update", protect, async (req, res, next) => {
   });
   res.status(200).json(folder);
 });
-// to update folder to trash
-router.put("/to-trash/:id/:movement", protect, async (req, res, next) => {
-  const { id, movement } = req.params;
+// to update folder inTrash = true/false
+router.put("/to-trash/:id/:inTrash", protect, async (req, res, next) => {
+  const { id, inTrash } = req.params;
   const folder = await prisma.folders.update({
     where: { id: id },
     data: {
-      inTrash: movement == "true"
+      inTrash: inTrash == "true"
     }
   });
   res.status(200).json(folder);

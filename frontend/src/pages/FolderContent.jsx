@@ -27,7 +27,7 @@ const FolderContent = () => {
       {context.isLoadingFolders || context.isLoadingFiles ? (
         <LoadingPage>Loading Folder</LoadingPage>
       ) : (
-        <div className="w-full">
+        <div className="w-full ">
           {context.folders.map((folder) => {
             if (folder.parentFolderId == id) {
               return <EntryFolder key={folder.id} folder={folder} />;

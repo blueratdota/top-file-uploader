@@ -44,9 +44,16 @@ const NavMobile = ({
     onClose: onCloseMenu
   } = useDisclosure();
   const navigate = useNavigate();
+
   return (
     <>
-      <div className="bg-extGreen h-[70px] w-full p-3 flex fixed border-b z-50">
+      <div
+        className={`bg-extGreen h-[70px] w-full p-3 flex fixed border-b ${
+          isOpenMenu || isOpenFolderCreateModal || isOpenUploadModal
+            ? "z-[0]"
+            : "z-[1]"
+        } `}
+      >
         <div
           className="h-full basis-[30%] flex items-center cursor-pointer"
           onClick={() => {
