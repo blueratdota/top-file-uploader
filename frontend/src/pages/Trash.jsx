@@ -27,11 +27,7 @@ const Trash = () => {
       ) : (
         <div className="w-full">
           {context.folders.map((folder) => {
-            if (
-              folder.parentFolderId == null &&
-              folder.inTrash &&
-              !folder.isDeleted
-            ) {
+            if (folder.inTrash && !folder.isDeleted) {
               return <TrashFolder key={folder.id} folder={folder} />;
             }
           })}

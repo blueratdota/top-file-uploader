@@ -1,4 +1,10 @@
-import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useParams,
+  Link,
+  useNavigate,
+  useOutletContext
+} from "react-router-dom";
 
 import {
   Breadcrumb,
@@ -8,32 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 
-const BreadCrumbs = ({ folders }) => {
+const BreadCrumbs = ({ folders, sharedFolders }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const context = useOutletContext();
   const arrPath = [];
-  if (folders != undefined) {
-    const parentFolder = (folderID) => {
-      const findFolder = folders.find((folder) => {
-        return folder.id == folderID;
-      });
-      try {
-        if (!findFolder.parentFolderId) {
-          arrPath.unshift(findFolder);
-          return;
-        } else {
-          arrPath.unshift(findFolder);
-          parentFolder(findFolder.parentFolderId);
-        }
-      } catch (error) {
-        console.log(error);
-        navigate("/");
-      }
-    };
-    if (id) {
-      parentFolder(id);
-    }
-  }
+
   const mainPages = {
     "my-files": {
       name: "My Files",
@@ -53,6 +39,51 @@ const BreadCrumbs = ({ folders }) => {
   const currentMainPage =
     mainPages[pathname.split("/")[2]] || mainPages["my-files"];
   // console.log(currentMainPage);
+  if (currentMainPage.name != "Shared With Me") {
+    if (folders != undefined) {
+      const parentFolder = (folderID) => {
+        const findFolder = folders.find((folder) => {
+          return folder.id == folderID;
+        });
+        try {
+          if (!findFolder.parentFolderId) {
+            arrPath.unshift(findFolder);
+            return;
+          } else {
+            arrPath.unshift(findFolder);
+            parentFolder(findFolder.parentFolderId);
+          }
+        } catch (error) {
+          console.log(error);
+          navigate("/");
+        }
+      };
+      if (id) {
+        parentFolder(id);
+      }
+    }
+  } else {
+    const parentFolder = (folderID) => {
+      const findFolder = sharedFolders.find((folder) => {
+        return folder.id == folderID;
+      });
+      try {
+        if (!findFolder.parentFolderId) {
+          arrPath.unshift(findFolder);
+          return;
+        } else {
+          arrPath.unshift(findFolder);
+          parentFolder(findFolder.parentFolderId);
+        }
+      } catch (error) {
+        console.log(error);
+        navigate("/");
+      }
+    };
+    if (id) {
+      parentFolder(id);
+    }
+  }
 
   return (
     <Breadcrumb

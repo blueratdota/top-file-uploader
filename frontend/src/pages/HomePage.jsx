@@ -77,6 +77,7 @@ const HomePage = () => {
   );
   const navigate = useNavigate();
   const context = useOutletContext();
+  console.log(context.profile);
   useEffect(() => {
     if (context.profile.msg) {
       console.log("no logged in account");
@@ -122,7 +123,10 @@ const HomePage = () => {
               )}
             </nav>
             <div className="pt-[70px] sm:pl-[220px] max-w-full flex bg-gray-400 border-y">
-              <BreadCrumbs folders={folders}></BreadCrumbs>
+              <BreadCrumbs
+                folders={folders}
+                sharedFolders={context.profile.sharedFolders}
+              ></BreadCrumbs>
             </div>
             <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-[calc(100%-110px)] min-h-screen items-stretch ">
               <Outlet

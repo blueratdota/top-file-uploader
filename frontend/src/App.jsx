@@ -19,7 +19,7 @@ function App() {
   } = useSWR("http://localhost:3000/api/users/profile", fetcher, {
     revalidateOnFocus: false
   });
-  console.log("profile loading", isLoadingProfile);
+  console.log("PL", isLoadingProfile, "PE", errorProfile);
   if (isLoadingProfile) {
     return (
       <LoadingPage>

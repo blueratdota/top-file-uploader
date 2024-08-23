@@ -15,6 +15,7 @@ import FolderContent from "./pages/FolderContent.jsx";
 import RecentUploads from "./pages/RecentUploads.jsx";
 import SharedWithUser from "./pages/SharedWithUser.jsx";
 import Trash from "./pages/Trash.jsx";
+import SharedFolderContent from "./pages/SharedFolderContent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
           { path: "/home/my-files/folder/:id", element: <FolderContent /> },
           { path: "/home/recent-uploads", element: <RecentUploads /> },
           { path: "/home/shared", element: <SharedWithUser /> },
-          { path: "/home/shared/folder/:id", element: <FolderContent /> },
+          { path: "/home/shared/folder/:id", element: <SharedFolderContent /> },
           { path: "/home/trash", element: <Trash /> },
           { path: "/home/trash/folder/:id", element: <FolderContent /> },
           { path: "/home/loading", element: <LoadingPage /> }

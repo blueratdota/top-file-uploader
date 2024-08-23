@@ -40,7 +40,7 @@ import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 
-const EntryFolder = ({ folder }) => {
+const SharedFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
@@ -88,8 +88,10 @@ const EntryFolder = ({ folder }) => {
     <div className="flex items-center justify-between h-11 w-full py-8 border-b">
       <Link
         className="flex items-center w-full"
-        onClick={() => {}}
-        to={`/home/my-files/folder/${folder.id}`}
+        onClick={() => {
+          console.log(folder);
+        }}
+        to={`/home/shared/folder/${folder.id}`}
       >
         <div className="w-14 px-2">
           <Icon path={mdiFolderOutline} className="w-full"></Icon>
@@ -124,11 +126,11 @@ const EntryFolder = ({ folder }) => {
             Copy Link
           </MenuItem>
           {/* <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiDownloadOutline} />
-            </span>{" "}
-            Download
-          </MenuItem> */}
+              <span className="w-5 mr-2">
+                <Icon path={mdiDownloadOutline} />
+              </span>{" "}
+              Download
+            </MenuItem> */}
           <MenuItem>
             <span className="w-5 mr-2">
               <Icon path={mdiFolderMoveOutline} />
@@ -183,4 +185,4 @@ const EntryFolder = ({ folder }) => {
   );
 };
 
-export default EntryFolder;
+export default SharedFolder;

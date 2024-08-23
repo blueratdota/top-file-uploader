@@ -90,8 +90,63 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   res.status(200).json(folders);
 });
 
+//create a get all folders based on logged in user
+router.get(
+  "/get-all-shared/:sortType/:sortOrder",
+  protect,
+  async (req, res, next) => {
+    const sortOrder = (() => {
+      if (
+        req.params.sortType == "downloadCount" ||
+        req.params.sortType == "fileSize"
+      ) {
+        return "asc";
+      } else return req.params.sortOrder;
+    })();
+    const sortType = (() => {
+      if (
+        req.params.sortType == null ||
+        req.params.sortType == "downloadCount" ||
+        req.params.sortType == "fileSize"
+      ) {
+        return "name";
+      } else return req.params.sortType;
+    })();
+
+    let sortSettings = {};
+    if (!sortType || sortType == "null") {
+      sortSettings["name"] = sortOrder;
+    } else {
+      sortSettings[sortType] = sortOrder;
+    }
+
+    // console.log("#####folderroutes", sortSettings);
+    const sharedToUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        sharedFolders: {
+          include: { childFolder: true }
+        }
+      }
+    });
+
+    // const folders = await prisma.folders.findMany({
+    //   where: { authorId: req.user.id },
+    //   orderBy: sortSettings,
+    //   include: {
+    //     childFolder: true,
+    //     allowedUsers: true,
+    //     storedFiles: true,
+    //     author: true
+    //   }
+    // });
+    // console.log(folders);
+    res.status(200).json(sharedToUser.sharedFolders);
+  }
+);
+
 // to update folder as owner
-router.put("/update", protect, async (req, res, next) => {
+router.put("/rename", protect, async (req, res, next) => {
   const { id, newName } = req.body;
   const folder = await prisma.folders.update({
     where: { id: id },
