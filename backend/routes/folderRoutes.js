@@ -82,7 +82,8 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
     include: {
       childFolder: true,
       allowedUsers: true,
-      storedFiles: true
+      storedFiles: true,
+      author: true
     }
   });
   // console.log(folders);
@@ -107,6 +108,17 @@ router.put("/to-trash/:id/:inTrash", protect, async (req, res, next) => {
     where: { id: id },
     data: {
       inTrash: inTrash == "true"
+    }
+  });
+  res.status(200).json(folder);
+});
+// to update folder isDeleted = true/false
+router.put("/to-deleted/:id/:isDeleted", protect, async (req, res, next) => {
+  const { id, isDeleted } = req.params;
+  const folder = await prisma.folders.update({
+    where: { id: id },
+    data: {
+      isDeleted: isDeleted == "true"
     }
   });
   res.status(200).json(folder);
@@ -145,5 +157,12 @@ router.delete("/delete", protect, async (req, res, next) => {
   await deleteFolder(id);
   res.status(200).json({ msg: `deleted folder ${id}` });
 });
+
+// deletion implementation
+// WHEN DELETING A FOLDER > update to isTrash=true
+// but subfolders will not have isTrash=true > they cant be accessed since their folder will not be displayed if they have isTrash=true
+// @<Trash/> all with isTrash=true will be displayed
+// @<Trash/> change the displayed components to be unable to be clicked and limit menu options
+//
 
 export default router;

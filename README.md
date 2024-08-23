@@ -6,6 +6,9 @@
 - delete folders and all its subfolders @ backend only, no frontend
 - login page
 - on get all folders - display only owned by the currently logged in user - try better refreshing page method
+- create loading sequence for file/folder posts. disable exiting
+- sorting works
+- display folders and files that are stored on root (only owned files on main section)
 
 # backend todo
 
@@ -21,9 +24,6 @@
 - create a folder inside a folder
 - set users able to use folder
 - homepage
-- create loading sequence for file/folder posts. disable exiting
+- file/folder menu options modals (continue @rename)
 
 # specific frontend todo
-
-- display folders and files that are stored on root (only owned files on main section) ✔
-- continue with sort function

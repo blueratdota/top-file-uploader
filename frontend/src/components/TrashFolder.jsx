@@ -30,11 +30,10 @@ import { useState } from "react";
 import SmallIconBtn from "./SmallIconButton";
 import { Link, useOutletContext } from "react-router-dom";
 import Icon from "@mdi/react";
-import MenuFolderToTrash from "./menu-items/MenuFolderToTrash";
+import MenuFolderDelete from "./menu-items/MenuFolderDelete";
 import MenuFolderRestore from "./menu-items/MenuFolderRestore";
-import MenuDetails from "./menu-items/MenuDetails";
 
-const EntryFolder = ({ folder }) => {
+const TrashFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
@@ -57,28 +56,22 @@ const EntryFolder = ({ folder }) => {
 
   return (
     <div className="flex items-center justify-between h-11 w-full py-8 border-b">
-      <Link
-        className="flex items-center w-full"
-        onClick={() => {}}
-        to={`/home/my-files/folder/${folder.id}`}
-      >
-        <div className="w-14 px-2">
-          <Icon path={mdiFolderOutline} className="w-full"></Icon>
+      <div className="w-14 px-2">
+        <Icon path={mdiFolderOutline} className="w-full"></Icon>
+      </div>
+      <div className="flex-1">
+        <div>{folder.name}</div>
+        <div className="text-sm text-opacity-50">
+          <span>
+            {folder.childFolder == undefined ? 0 : folder.childFolder.length}{" "}
+            folders,
+          </span>{" "}
+          <span>
+            {folder.storedFiles == undefined ? 0 : folder.storedFiles.length}{" "}
+            files
+          </span>
         </div>
-        <div className="flex-1">
-          <div>{folder.name}</div>
-          <div className="text-sm text-opacity-50">
-            <span>
-              {folder.childFolder == undefined ? 0 : folder.childFolder.length}{" "}
-              folders,
-            </span>{" "}
-            <span>
-              {folder.storedFiles == undefined ? 0 : folder.storedFiles.length}{" "}
-              files
-            </span>
-          </div>
-        </div>
-      </Link>
+      </div>
 
       <Menu zIndex={"dropdown"}>
         <MenuButton className="scale-[0.5] w-[46px] text-white">
@@ -88,62 +81,8 @@ const EntryFolder = ({ folder }) => {
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiShareOutline} />
-            </span>{" "}
-            Share
-          </MenuItem>
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiLink} />
-            </span>{" "}
-            Copy Link
-          </MenuItem>
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiDownloadOutline} />
-            </span>{" "}
-            Download
-          </MenuItem>
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiFolderMoveOutline} />
-            </span>{" "}
-            Move to...
-          </MenuItem>
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiContentCopy} />
-            </span>{" "}
-            Copy to...
-          </MenuItem>
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiRenameOutline} />
-            </span>{" "}
-            Rename
-          </MenuItem>
-          {/* <MenuItem
-            onClick={() => {
-              setModalHeader("Folder Details");
-              setModalBody(
-                <>
-                  <div>details</div>
-                  <div>another details</div>
-                </>
-              );
-
-              onOpenModal();
-              context.setNav(true);
-            }}
-          >
-            <span className="w-5 mr-2">
-              <Icon path={mdiCardTextOutline} />
-            </span>{" "}
-            Details
-          </MenuItem> */}
-          <MenuDetails
+          <MenuFolderRestore
+            onClick={onOpenModal}
             folder={folder}
             setModalHeader={setModalHeader}
             setModalBody={setModalBody}
@@ -151,7 +90,8 @@ const EntryFolder = ({ folder }) => {
             onOpenModal={onOpenModal}
             onCloseModal={onCloseModal}
           />
-          <MenuFolderToTrash
+          <MenuFolderDelete
+            onClick={onOpenModal}
             folder={folder}
             setModalHeader={setModalHeader}
             setModalBody={setModalBody}
@@ -189,4 +129,4 @@ const EntryFolder = ({ folder }) => {
   );
 };
 
-export default EntryFolder;
+export default TrashFolder;

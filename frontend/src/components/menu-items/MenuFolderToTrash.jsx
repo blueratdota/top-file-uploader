@@ -3,7 +3,7 @@ import Icon from "@mdi/react";
 import { mdiDeleteOutline } from "@mdi/js";
 import { useOutletContext } from "react-router-dom";
 
-const MenuFolderToTrash = ({
+const MenuFolderDelete = ({
   folder,
   setModalHeader,
   setModalBody,
@@ -12,10 +12,10 @@ const MenuFolderToTrash = ({
   onCloseModal
 }) => {
   const context = useOutletContext();
-  const deletePermanently = async (isDeleted) => {
+  const toTrash = async (inTrash) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/folders/to-deleted/${folder.id}/${isDeleted}`,
+        `http://localhost:3000/api/folders/to-trash/${folder.id}/${inTrash}`,
         {
           method: "PUT",
           credentials: "include",
@@ -35,15 +35,15 @@ const MenuFolderToTrash = ({
       onClick={() => {
         console.log(folder);
         setNav(true);
-        setModalHeader("Permanently Delete Folder");
+        setModalHeader("Move To Trash");
         setModalBody(
           <>
             <p className="text-base text-justify">
-              {`Are you sure you want to delete this folder permanently? Folders and files deleted permanently cannot be recovered`}{" "}
+              {`Are you sure you want to move this folder into the Trash? Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
             </p>
             {/* <p className="text-sm">
-            {`Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
-          </p> */}
+              {`Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
+            </p> */}
             <div className="mt-8 w-full flex gap-5 justify-center">
               <Button
                 variant="solid"
@@ -59,23 +59,23 @@ const MenuFolderToTrash = ({
                 variant="solid"
                 className="bg-red-500 w-[120px] py-1  text-extWhite"
                 onClick={() => {
-                  deletePermanently(true);
+                  toTrash(true);
                 }}
               >
-                Delete
+                To Trash
               </Button>
             </div>
           </>
         );
         onOpenModal();
+        // toTrash(true);
       }}
     >
       <span className="w-5 mr-2">
-        <Icon className="text-red-600" path={mdiDeleteOutline} />
+        <Icon path={mdiDeleteOutline} />
       </span>{" "}
-      <p className="text-red-600">Delete Permanently</p>
+      Move to Trash
     </MenuItem>
   );
 };
-
-export default MenuFolderToTrash;
+export default MenuFolderDelete;

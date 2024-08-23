@@ -4,7 +4,7 @@ import useSWR from "swr";
 import LoadingPage from "./components/built/LoadingPage";
 
 // installs
-// npm i react-router-dom @chakra-ui/react @chakra-ui/icons @emotion/react @emotion/styled framer-motion swr react-responsive @mdi/react @mdi/js
+// npm i react-router-dom @chakra-ui/react @chakra-ui/icons @emotion/react @emotion/styled framer-motion swr react-responsive @mdi/react @mdi/js npm install date-fns --save
 
 function App() {
   // SWR FETCH STUFF
