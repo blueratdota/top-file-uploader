@@ -28,7 +28,15 @@ const router = createBrowserRouter([
         path: "/home",
         element: <HomePage />,
         children: [
-          { index: true, element: <Navigate to="/home/my-files" replace /> },
+          {
+            index: true,
+            element: (
+              <Navigate
+                to="/home/my-files?sortAsc=true&sortType=name"
+                replace
+              />
+            )
+          },
           { path: "/home/my-files", element: <MyFiles /> },
           { path: "/home/my-files/folder/:id", element: <FolderContent /> },
           { path: "/home/recent-uploads", element: <RecentUploads /> },

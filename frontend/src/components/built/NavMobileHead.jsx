@@ -92,7 +92,7 @@ const NavMobile = ({
               >
                 <span className="w-5">
                   {sortType == "name" ? (
-                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                    <>{sortAsc ? <ChevronDownIcon /> : <ChevronUpIcon />}</>
                   ) : null}
                 </span>{" "}
                 Sort by Name
@@ -109,7 +109,7 @@ const NavMobile = ({
               >
                 <span className="w-5">
                   {sortType == "updatedAt" ? (
-                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                    <>{sortAsc ? <ChevronDownIcon /> : <ChevronUpIcon />}</>
                   ) : null}
                 </span>{" "}
                 Sort by Date
@@ -126,7 +126,7 @@ const NavMobile = ({
               >
                 <span className="w-5">
                   {sortType == "fileSize" ? (
-                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                    <>{sortAsc ? <ChevronDownIcon /> : <ChevronUpIcon />}</>
                   ) : null}
                 </span>{" "}
                 Sort by Size
@@ -143,7 +143,7 @@ const NavMobile = ({
               >
                 <span className="w-5">
                   {sortType == "downloadCount" ? (
-                    <>{sortAsc ? <ChevronUpIcon /> : <ChevronDownIcon />}</>
+                    <>{sortAsc ? <ChevronDownIcon /> : <ChevronUpIcon />}</>
                   ) : null}
                 </span>{" "}
                 Sort by Downloads

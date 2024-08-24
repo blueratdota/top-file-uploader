@@ -120,28 +120,39 @@ router.get(
       sortSettings[sortType] = sortOrder;
     }
 
-    // console.log("#####folderroutes", sortSettings);
+    let viewableFolders = [];
+
     const sharedToUser = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: {
-        sharedFolders: {
-          include: { childFolder: true }
-        }
+        sharedFolders: { include: { childFolder: true, storedFiles: true } }
       }
     });
 
-    // const folders = await prisma.folders.findMany({
-    //   where: { authorId: req.user.id },
-    //   orderBy: sortSettings,
-    //   include: {
-    //     childFolder: true,
-    //     allowedUsers: true,
-    //     storedFiles: true,
-    //     author: true
-    //   }
-    // });
-    // console.log(folders);
-    res.status(200).json(sharedToUser.sharedFolders);
+    const recursiveFunc = async (array) => {
+      const results = [];
+
+      for (const folder of array) {
+        if (folder.childFolder.length < 1) {
+          results.push(await folder);
+        } else {
+          results.push(await folder);
+          for (const subfolder of folder.childFolder) {
+            const childFolder = await prisma.folders.findFirst({
+              where: { id: subfolder.id },
+              include: {
+                childFolder: true,
+                storedFiles: true
+              }
+            });
+            results.push(...(await recursiveFunc([childFolder])));
+          }
+        }
+      }
+      return results;
+    };
+
+    res.status(200).json(await recursiveFunc(sharedToUser.sharedFolders));
   }
 );
 

@@ -113,11 +113,7 @@ router.put("/share-to-user", async (req, res, next) => {
     });
     const folder = await prisma.folders.findFirst({
       where: { id: folderIdToShare }
-      // include: {
-      //   childFolder: true,
-      //   allowedUsers: true,
-      //   storedFiles: true
-      // }
+      // include: { childFolder: true }
     });
 
     const updateSharedFolders = await prisma.user.update({
@@ -128,6 +124,30 @@ router.put("/share-to-user", async (req, res, next) => {
         }
       }
     });
+
+    // recursively add to sharedFolders the childfolders of shared folder
+    // const addToSharedFolders = async (folder) => {
+    //   // console.log("folder.childFolder", [folder.childFolder].length);
+
+    //   if ([folder.childFolder].length == 0 || !folder.childFolder) {
+    //     let newFolder = folder;
+    //     delete folder.childFolder;
+    //     await prisma.user.update({
+    //       where: { id: user.id },
+    //       data: {
+    //         sharedFolders: {
+    //           connect: newFolder
+    //         }
+    //       }
+    //     });
+    //   } else {
+    //     folder.childFolder.forEach(async (f) => {
+    //       await addToSharedFolders(f);
+    //     });
+    //   }
+    // };
+    // await addToSharedFolders(folder);
+
     res.status(200).json(folder);
   } catch (error) {
     console.log(error);

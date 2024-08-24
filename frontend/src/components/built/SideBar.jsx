@@ -37,7 +37,7 @@ const SideBar = ({}) => {
         </div>
       </div>
       <div className="py-4 border-b">
-        <Link to={"my-files"}>
+        <Link to={"my-files/?sortAsc=true&sortType=name"}>
           <div className="aside-links">
             <SmallIconBtn icon={mdiFolderOutline}></SmallIconBtn>
             <p>My Files</p>

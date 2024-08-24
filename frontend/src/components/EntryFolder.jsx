@@ -89,7 +89,7 @@ const EntryFolder = ({ folder }) => {
       <Link
         className="flex items-center w-full"
         onClick={() => {}}
-        to={`/home/my-files/folder/${folder.id}`}
+        to={`/home/my-files/folder/${folder.id}?sortAsc=true&sortType=name`}
       >
         <div className="w-14 px-2">
           <Icon path={mdiFolderOutline} className="w-full"></Icon>
