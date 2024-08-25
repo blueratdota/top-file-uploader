@@ -39,6 +39,7 @@ import MenuDetails from "./menu-items/MenuDetails";
 import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
+import ModalShareFolder from "./menu-items/ModalShareFolder";
 
 const EntryFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,16 +52,23 @@ const EntryFolder = ({ folder }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // for file/folder details modal
+  // FOLDER DETAILS MODAL
   const {
     isOpen: isOpenModal,
     onOpen: onOpenModal,
     onClose: onCloseModal
   } = useDisclosure();
+  // RENAME MODAL
   const {
     isOpen: isOpenRenameModal,
     onOpen: onOpenRenameModal,
     onClose: onCloseRenameModal
+  } = useDisclosure();
+  // FOLDER SHARE MODAL
+  const {
+    isOpen: isOpenShareModal,
+    onOpen: onOpenShareModal,
+    onClose: onCloseShareModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -111,7 +119,7 @@ const EntryFolder = ({ folder }) => {
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuItem>
+          <MenuItem onClick={onOpenShareModal}>
             <span className="w-5 mr-2">
               <Icon path={mdiShareOutline} />
             </span>{" "}
@@ -123,12 +131,6 @@ const EntryFolder = ({ folder }) => {
             </span>{" "}
             Copy Link
           </MenuItem>
-          {/* <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiDownloadOutline} />
-            </span>{" "}
-            Download
-          </MenuItem> */}
           <MenuItem>
             <span className="w-5 mr-2">
               <Icon path={mdiFolderMoveOutline} />
@@ -177,6 +179,11 @@ const EntryFolder = ({ folder }) => {
       <ModalRenameFolder
         isOpen={isOpenRenameModal}
         onClose={onCloseRenameModal}
+        folder={folder}
+      />
+      <ModalShareFolder
+        isOpen={isOpenShareModal}
+        onClose={onCloseShareModal}
         folder={folder}
       />
     </div>

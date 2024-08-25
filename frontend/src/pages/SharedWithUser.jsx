@@ -1,27 +1,30 @@
 import { useOutletContext } from "react-router-dom";
 import { useEffect } from "react";
 import SharedFolder from "../components/SharedFolder";
+import LoadingPage from "../components/built/LoadingPage";
 
 const SharedWithUser = () => {
   const context = useOutletContext();
-  const { profile } = context;
-  // console.log(profile);
+  const { sharedFolders, isLoadingSharedFolders, profile } = context;
+  let viewableFolders = [];
+  profile.sharedFolders.forEach((folder) => {
+    viewableFolders.push(folder.id);
+  });
+  console.log(viewableFolders);
   return (
-    <div>
-      <p>files/folders shared with user</p>
-      <p>map - if userid is in folders.allowedusers - display</p>
-      <p>rethink later how to include files shared in a folder</p>
-      <p>shared folder == share all files within the folder</p>
-      <p>
-        option to share stored at the ... button, with modal to display which
-        users to allow
-      </p>
-      {profile.sharedFolders.map((folder) => {
-        if (!folder.inTrash) {
-          return <SharedFolder key={folder.id} folder={folder} />;
-        }
-      })}
-    </div>
+    <>
+      {isLoadingSharedFolders ? (
+        <LoadingPage>Loading Shared Folders</LoadingPage>
+      ) : (
+        <div className="w-full h-full">
+          {sharedFolders.map((folder) => {
+            if (viewableFolders.includes(folder.id)) {
+              return <SharedFolder key={folder.id} folder={folder} />;
+            }
+          })}
+        </div>
+      )}
+    </>
   );
 };
 export default SharedWithUser;

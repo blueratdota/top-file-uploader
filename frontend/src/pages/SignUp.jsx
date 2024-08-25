@@ -1,6 +1,5 @@
 import {
   Input,
-  Stack,
   InputGroup,
   InputLeftAddon,
   Button,
@@ -11,7 +10,7 @@ import siteLogo from "../images/site-logo-white.png";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useSWRConfig } from "swr";
 import LoadingPage from "../components/built/LoadingPage";
-const LoginPage = () => {
+const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +32,7 @@ const LoginPage = () => {
     if (username && password) {
       try {
         const body = { name: username, password: password };
-        const response = await fetch("http://localhost:3000/api/users/login", {
+        const response = await fetch("http://localhost:3000/api/users/signup", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -111,11 +110,13 @@ const LoginPage = () => {
                   variant="solid"
                   className="bg-extGreen w-[150px] py-2 mx-auto"
                 >
-                  Login
+                  Create account
                 </Button>
-                <div>
-                  <Link to={"/sign-up"}>
-                    <p className="text-center mt-5">Create account here</p>
+                <div className="w-full">
+                  <Link to={"/login"}>
+                    <p className="text-center mt-5">
+                      Already have an account? Login here
+                    </p>
                   </Link>
                 </div>
               </form>
@@ -126,4 +127,4 @@ const LoginPage = () => {
     </>
   );
 };
-export default LoginPage;
+export default SignUp;

@@ -16,6 +16,7 @@ import RecentUploads from "./pages/RecentUploads.jsx";
 import SharedWithUser from "./pages/SharedWithUser.jsx";
 import Trash from "./pages/Trash.jsx";
 import SharedFolderContent from "./pages/SharedFolderContent.jsx";
+import SignUp from "./pages/SignUp.jsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/home" replace /> },
       { path: "/login", element: <LoginPage /> },
+      { path: "/sign-up", element: <SignUp /> },
       {
         path: "/home",
         element: <HomePage />,

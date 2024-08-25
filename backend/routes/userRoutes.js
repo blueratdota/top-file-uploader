@@ -7,19 +7,6 @@ import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// get data via id
-// api/users/;id @GET
-// router.get("/:id", async (req, res, next) => {
-//   const userId = req.params.id;
-//   const userData = await prisma.user.findMany({
-//     where: { id: userId },
-//     include: { Folders: true }
-//   });
-//   res.status(200).json(userData);
-// });
-
-// create account
-// api/users/signup @POST
 router.post("/signup", async (req, res, next) => {
   const { name, password } = req.body;
 
@@ -31,7 +18,11 @@ router.post("/signup", async (req, res, next) => {
     genToken(res, name);
     res.status(200).json(user);
   } catch (error) {
-    next(error);
+    const err = new Error(
+      `the name"${name}" is already used by a different user`
+    );
+    err.status = 409;
+    next(err);
   }
 });
 

@@ -75,9 +75,22 @@ const HomePage = () => {
       revalidateOnFocus: false
     }
   );
+  const {
+    data: sharedFolders,
+    error: errorSharedFolders,
+    isLoading: isLoadingSharedFolders,
+    mutate: mutateSharedFolders
+  } = useSWR(
+    `http://localhost:3000/api/folders/get-all-shared/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
+
   const navigate = useNavigate();
   const context = useOutletContext();
-  console.log(context.profile);
+  // console.log(context.profile);
   useEffect(() => {
     if (context.profile.msg) {
       console.log("no logged in account");
@@ -125,7 +138,7 @@ const HomePage = () => {
             <div className="pt-[70px] sm:pl-[220px] max-w-full flex bg-gray-400 border-y">
               <BreadCrumbs
                 folders={folders}
-                sharedFolders={context.profile.sharedFolders}
+                sharedFolders={sharedFolders}
               ></BreadCrumbs>
             </div>
             <div className="sm:pl-[220px] bg-extGray text-extWhite flex h-[calc(100%-110px)] min-h-screen items-stretch ">
@@ -139,9 +152,11 @@ const HomePage = () => {
                   // DATA VARIABLES FROM SWR GET REQUESTS
                   folders: folders,
                   files: files,
+                  sharedFolders: sharedFolders,
                   // LOADING VARIABLES FROM SWR GET REQUESTS
                   isLoadingFiles: isLoadingFiles,
                   isLoadingFolders: isLoadingFolders,
+                  isLoadingSharedFolders: isLoadingSharedFolders,
                   // FOR UPDATING FILES & FOLDERS EVERY ACTION
                   mutateFiles: mutateFiles,
                   mutateFolders: mutateFolders,

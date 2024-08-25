@@ -74,6 +74,20 @@ const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
             {" "}
             <div>
               <form method="post" onSubmit={onSubmitForm}>
+                <div>
+                  <InputGroup>
+                    <Input
+                      required
+                      type="text"
+                      placeholder="Input folder name"
+                      className="pb-2  text-black outline-none border-b w-full"
+                      value={folderName}
+                      onChange={(e) => {
+                        setFolderName(e.target.value);
+                      }}
+                    />
+                  </InputGroup>
+                </div>
                 <InputGroup>
                   <Input
                     required

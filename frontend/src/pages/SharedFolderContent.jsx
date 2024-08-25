@@ -12,9 +12,9 @@ import SharedFolder from "../components/SharedFolder";
 
 const SharedFolderContent = () => {
   const context = useOutletContext();
-  const { profile } = context;
+  const { profile, sharedFolders } = context;
   const { id } = useParams();
-  console.log(profile.sharedFolders);
+  // console.log(profile.sharedFolders);
   // const folderArray = context.folders;
   // console.log(folderArray);
   // if (folderArray != undefined) {
@@ -27,23 +27,20 @@ const SharedFolderContent = () => {
   // console.log(findRes);
   return (
     <>
-      {context.isLoadingFolders || context.isLoadingFiles ? (
-        <LoadingPage>Loading Folder</LoadingPage>
+      {context.isLoadingSharedFolders ? (
+        <LoadingPage>Loading Shared Folders</LoadingPage>
       ) : (
         <div className="w-full ">
-          {profile.sharedFolders.map((folder) => {
+          {sharedFolders.map((folder) => {
             if (folder.parentFolderId == id && !folder.inTrash) {
               return <SharedFolder key={folder.id} folder={folder} />;
             }
           })}
-          {profile.sharedFolders.map((file) => {
+          {/* {profile.sharedFolders.map((file) => {
             if (file.foldersId == id && !file.inTrash) {
               return <EntryFile key={file.id} file={file} />;
             }
-          })}
-          <div>
-            this is the shared folder content -- show further children via id
-          </div>
+          })} */}
         </div>
       )}
     </>
