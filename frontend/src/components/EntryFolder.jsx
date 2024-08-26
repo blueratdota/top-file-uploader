@@ -119,7 +119,12 @@ const EntryFolder = ({ folder }) => {
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuItem onClick={onOpenShareModal}>
+          <MenuItem
+            onClick={() => {
+              onOpenShareModal();
+              setNav(true);
+            }}
+          >
             <span className="w-5 mr-2">
               <Icon path={mdiShareOutline} />
             </span>{" "}
@@ -185,6 +190,7 @@ const EntryFolder = ({ folder }) => {
         isOpen={isOpenShareModal}
         onClose={onCloseShareModal}
         folder={folder}
+        setNav={setNav}
       />
     </div>
   );

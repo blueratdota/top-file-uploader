@@ -89,7 +89,7 @@ const SharedFolder = ({ folder }) => {
       <Link
         className="flex items-center w-full"
         onClick={() => {
-          console.log(folder);
+          // console.log(folder);
         }}
         to={`/home/shared/folder/${folder.id}`}
       >

@@ -1,29 +1,23 @@
 # top-file-uploader
 
-# already done
+# done
 
-- configure authentication
-- delete folders and all its subfolders @ backend only, no frontend
-- login page
-- on get all folders - display only owned by the currently logged in user - try better refreshing page method
-- create loading sequence for file/folder posts. disable exiting
-- sorting works
-- display folders and files that are stored on root (only owned files on main section)
+- create account
+- login
+- logout
+- create/share/delete/rename folder
+- permanently delete folder
+- sorting of files/folders
 
-# backend todo
+# todo
 
-- (future) be able to share folder to a specified user, or have an allow all user to see folder setting
-- deleting folders will delete all of files inside including files inside its subfolders
-- moving to folder directory. setting the state on the frontent to currentforlder ID
-- handling duplicate file uploads by same user
+- unshare folder
+- download file
+- copy file to same/different directory
+- move file to different directory
+- recent shared folders
+- account settings
 
-# frontend todo
+# to-fix
 
-- signup page
-- dashboard (mobile), view all folders, create a folder, uplaod a file
-- create a folder inside a folder
-- set users able to use folder
-- homepage
-- file/folder menu options modals (continue @rename)
-
-# specific frontend todo
+- stay logged-in on the website (use local storage)

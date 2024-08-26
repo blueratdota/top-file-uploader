@@ -21,7 +21,8 @@ const NavMobile = ({
   handleSort,
   handleSetSortType,
   mutateFiles,
-  mutateFolders
+  mutateFolders,
+  nav
 }) => {
   const context = useOutletContext();
 
@@ -49,7 +50,7 @@ const NavMobile = ({
     <>
       <div
         className={`bg-extGreen h-[70px] w-full p-3 flex fixed border-b ${
-          isOpenMenu || isOpenFolderCreateModal || isOpenUploadModal
+          isOpenMenu || isOpenFolderCreateModal || isOpenUploadModal || nav
             ? "z-[0]"
             : "z-[1]"
         } `}

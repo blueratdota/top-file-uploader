@@ -15,7 +15,6 @@ const DrawerMenu = ({ isOpen, onClose }) => {
     <>
       <DrawerOverlay
         onClick={() => {
-          console.log("overlay clicked");
           onClose();
         }}
         className="backdrop-blur"

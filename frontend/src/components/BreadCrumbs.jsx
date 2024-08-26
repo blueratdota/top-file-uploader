@@ -5,7 +5,6 @@ import {
   useNavigate,
   useOutletContext
 } from "react-router-dom";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,11 +12,13 @@ import {
   BreadcrumbSeparator
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
+import { useMediaQuery } from "react-responsive";
 
 const BreadCrumbs = ({ folders, sharedFolders }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const context = useOutletContext();
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
   const arrPath = [];
 
   const mainPages = {
@@ -67,13 +68,21 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       const findFolder = sharedFolders.find((folder) => {
         return folder.id == folderID;
       });
+      // console.log("findFolder", findFolder);
+
       try {
         if (!findFolder.parentFolderId) {
           arrPath.unshift(findFolder);
           return;
         } else {
-          arrPath.unshift(findFolder);
-          parentFolder(findFolder.parentFolderId);
+          let viewableFolders = [];
+          sharedFolders.forEach((folder) => {
+            viewableFolders.push(folder.id);
+            if (viewableFolders.includes(findFolder.parentFolderId)) {
+              parentFolder(findFolder.parentFolderId);
+            }
+            arrPath.unshift(findFolder);
+          });
         }
       } catch (error) {
         console.log(error);
@@ -84,12 +93,13 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       parentFolder(id);
     }
   }
+  // console.log(sharedFolders);
 
   return (
     <Breadcrumb
       spacing="8px"
       separator={<ChevronRightIcon color="gray.500" />}
-      className="my-auto ml-3 text-extWhite py-2 "
+      className="my-auto ml-3 text-extWhite py-2 sm:text-sm"
     >
       <BreadcrumbItem>
         <BreadcrumbLink
@@ -101,17 +111,21 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
         </BreadcrumbLink>
       </BreadcrumbItem>
       {arrPath.map((path, index) => {
-        return (
-          <BreadcrumbItem key={path.id}>
-            <BreadcrumbLink
-              as={Link}
-              to={`/home/${currentMainPage.origin}/folder/${path.id}`}
-              className="underline"
-            >
-              {path.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        );
+        let L = arrPath.length;
+        let maxL = isTabletOrMobile ? L - 2 : L - 3;
+        if (index >= maxL) {
+          return (
+            <BreadcrumbItem key={path.id}>
+              <BreadcrumbLink
+                as={Link}
+                to={`/home/${currentMainPage.origin}/folder/${path.id}`}
+                className="underline"
+              >
+                {path.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          );
+        }
       })}
     </Breadcrumb>
   );
