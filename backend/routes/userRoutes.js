@@ -141,4 +141,37 @@ router.put("/share-to-user", async (req, res, next) => {
   }
 });
 
+// update user list of shared folders
+router.put("/unshare-to-user", async (req, res, next) => {
+  // verify if the req.user.id == author of the folder being shared
+  const { name, folderIdToShare } = req.body;
+  console.log(`shared folder to ${name}`);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { name: name },
+      include: {
+        ownedFolders: true,
+        sharedFolders: true,
+        Files: true
+      }
+    });
+    const folder = await prisma.folders.findFirst({
+      where: { id: folderIdToShare }
+    });
+
+    const updateSharedFolders = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        sharedFolders: {
+          disconnect: folder
+        }
+      }
+    });
+
+    res.status(200).json(folder);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 export default router;

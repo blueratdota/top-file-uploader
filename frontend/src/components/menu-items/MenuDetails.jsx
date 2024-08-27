@@ -35,24 +35,17 @@ const MenuDetails = ({
               </p>
             </div>
 
-            <div className="mt-8 w-full flex gap-5 justify-center">
-              <Button
-                variant="solid"
-                className="bg-slate-300 w-[120px] py-1  text-extWhite"
-                onClick={() => {
-                  onCloseModal();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="solid"
-                className="bg-red-500 w-[120px] py-1  text-extWhite"
-                onClick={() => {}}
-              >
-                Delete
-              </Button>
+            <div className="">
+              <h2>Accessible by</h2>
+              <div className="flex text-sm gap-1 truncate">
+                {folder.allowedUsers.map((user, index) => {
+                  return (
+                    <p key={user.name}>
+                      {`${user.name}${index + 1 == folder.allowedUsers.length ? " " : ", "} `}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           </>
         );

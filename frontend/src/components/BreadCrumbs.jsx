@@ -39,7 +39,7 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
   const { pathname } = useLocation();
   const currentMainPage =
     mainPages[pathname.split("/")[2]] || mainPages["my-files"];
-  // console.log(currentMainPage);
+
   if (currentMainPage.name != "Shared With Me") {
     if (folders != undefined) {
       const parentFolder = (folderID) => {
@@ -64,17 +64,19 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       }
     }
   } else {
-    //function to find parent folder among accessible folders
-    const parentFolder = (folderID) => {
-      let viewableFolders = [];
+    let viewableFolders = [];
+    if (sharedFolders) {
       sharedFolders.forEach((folder) => {
         viewableFolders.push(folder.id);
       });
-
+    }
+    // function to find parent folder among accessible folders
+    // sharedFolder == folders looped from /api/folder/get-all-shared
+    // sharedFolder >> all folders you can access but not all directly shared, only the parent folders
+    const parentFolder = (folderID) => {
       const findFolder = sharedFolders.find((folder) => {
         return folder.id == folderID;
       });
-      // console.log("findFolder", findFolder);
 
       try {
         if (!findFolder.parentFolderId) {
@@ -82,10 +84,11 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
           return;
         } else {
           if (viewableFolders.includes(findFolder.parentFolderId)) {
+            arrPath.unshift(findFolder);
             parentFolder(findFolder.parentFolderId);
+            return;
           }
           arrPath.unshift(findFolder);
-          return;
         }
       } catch (error) {
         console.log(error);
@@ -96,13 +99,12 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       parentFolder(id);
     }
   }
-  // console.log(arrPath);
 
   return (
     <Breadcrumb
       spacing="8px"
       separator={<ChevronRightIcon color="gray.500" />}
-      className="my-auto ml-3 text-extWhite py-2 sm:text-sm flex-row-reverse"
+      className="my-auto ml-3 text-extWhite py-2 sm:text-sm"
     >
       <BreadcrumbItem>
         <BreadcrumbLink

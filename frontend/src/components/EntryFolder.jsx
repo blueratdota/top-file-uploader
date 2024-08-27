@@ -93,7 +93,12 @@ const EntryFolder = ({ folder }) => {
   })();
 
   return (
-    <div className="flex items-center justify-between h-11 w-full py-8 border-b">
+    <div
+      className="flex items-center justify-between h-11 w-full py-8 border-b"
+      onClick={() => {
+        console.log(folder);
+      }}
+    >
       <Link
         className="flex items-center w-full"
         onClick={() => {}}

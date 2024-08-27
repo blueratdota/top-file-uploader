@@ -10,7 +10,7 @@ const SharedWithUser = () => {
   profile.sharedFolders.forEach((folder) => {
     viewableFolders.push(folder.id);
   });
-  console.log(sharedFolders);
+  // console.log(sharedFolders);
   return (
     <>
       {isLoadingSharedFolders ? (

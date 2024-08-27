@@ -81,7 +81,7 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
     orderBy: sortSettings,
     include: {
       childFolder: true,
-      allowedUsers: true,
+      allowedUsers: { select: { name: true } },
       storedFiles: true,
       author: true
     }
@@ -130,7 +130,7 @@ router.get(
             childFolder: true,
             storedFiles: true,
             author: { select: { name: true } },
-            allowedUsers: true
+            allowedUsers: { select: { name: true } }
           }
         }
       }
@@ -151,7 +151,7 @@ router.get(
                 childFolder: true,
                 storedFiles: true,
                 author: { select: { name: true } },
-                allowedUsers: true
+                allowedUsers: { select: { name: true } }
               }
             });
             results.push(...(await recursiveFunc([childFolder])));

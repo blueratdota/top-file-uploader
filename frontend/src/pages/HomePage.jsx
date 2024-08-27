@@ -102,6 +102,8 @@ const HomePage = () => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
   // FOR FIXING NAVBAR Z-INDEX ISSUE
   const [nav, setNav] = useState(false);
+  // console.log(sharedFolders);
+
   return (
     <>
       {context.isLoadingProfile ? (

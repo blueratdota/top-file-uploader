@@ -15,9 +15,14 @@
 - download file
 - copy file to same/different directory
 - move file to different directory
-- recent shared folders
+- recent uploads
 - account settings
+- FINALLY DEPLOY
 
-# to-fix
+# tofix
 
 - stay logged-in on the website (use local storage)
+
+# tocontinue
+
+- unshare api created - do frontend

@@ -16,7 +16,7 @@ import { useOutletContext } from "react-router-dom";
 // import useSWR from "swr";
 import LoadingPage from "../built/LoadingPage.jsx";
 
-const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
+const ModalShareFolder = ({ isOpen, onClose, folder, setNav }) => {
   const [userName, setUsername] = useState("");
   const [queryMessage, setQueryMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -190,4 +190,4 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
     </>
   );
 };
-export default ModalUnshareFolder;
+export default ModalShareFolder;
