@@ -64,7 +64,13 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       }
     }
   } else {
+    //function to find parent folder among accessible folders
     const parentFolder = (folderID) => {
+      let viewableFolders = [];
+      sharedFolders.forEach((folder) => {
+        viewableFolders.push(folder.id);
+      });
+
       const findFolder = sharedFolders.find((folder) => {
         return folder.id == folderID;
       });
@@ -75,14 +81,11 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
           arrPath.unshift(findFolder);
           return;
         } else {
-          let viewableFolders = [];
-          sharedFolders.forEach((folder) => {
-            viewableFolders.push(folder.id);
-            if (viewableFolders.includes(findFolder.parentFolderId)) {
-              parentFolder(findFolder.parentFolderId);
-            }
-            arrPath.unshift(findFolder);
-          });
+          if (viewableFolders.includes(findFolder.parentFolderId)) {
+            parentFolder(findFolder.parentFolderId);
+          }
+          arrPath.unshift(findFolder);
+          return;
         }
       } catch (error) {
         console.log(error);
@@ -93,13 +96,13 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       parentFolder(id);
     }
   }
-  // console.log(sharedFolders);
+  // console.log(arrPath);
 
   return (
     <Breadcrumb
       spacing="8px"
       separator={<ChevronRightIcon color="gray.500" />}
-      className="my-auto ml-3 text-extWhite py-2 sm:text-sm"
+      className="my-auto ml-3 text-extWhite py-2 sm:text-sm flex-row-reverse"
     >
       <BreadcrumbItem>
         <BreadcrumbLink

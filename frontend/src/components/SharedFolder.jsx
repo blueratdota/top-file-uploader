@@ -39,6 +39,7 @@ import MenuDetails from "./menu-items/MenuDetails";
 import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
+import ModalShareFolder from "./menu-items/ModalShareFolder";
 
 const SharedFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,16 +52,17 @@ const SharedFolder = ({ folder }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // for file/folder details modal
+  // FOLDER DETAILS MODAL
   const {
     isOpen: isOpenModal,
     onOpen: onOpenModal,
     onClose: onCloseModal
   } = useDisclosure();
+  // FOLDER SHARE MODAL
   const {
-    isOpen: isOpenRenameModal,
-    onOpen: onOpenRenameModal,
-    onClose: onCloseRenameModal
+    isOpen: isOpenShareModal,
+    onOpen: onOpenShareModal,
+    onClose: onCloseShareModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -106,14 +108,24 @@ const SharedFolder = ({ folder }) => {
       </Link>
 
       <Menu zIndex={"dropdown"}>
-        <MenuButton className="scale-[0.5] w-[46px] text-white">
+        <MenuButton
+          className="scale-[0.5] w-[46px] text-white"
+          onClick={() => {
+            console.log(folder);
+          }}
+        >
           <SmallIconBtn icon={mdiDotsVertical}></SmallIconBtn>
         </MenuButton>
         <MenuList
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuItem>
+          <MenuItem
+            onClick={() => {
+              onOpenShareModal();
+              setNav(true);
+            }}
+          >
             <span className="w-5 mr-2">
               <Icon path={mdiShareOutline} />
             </span>{" "}
@@ -125,39 +137,15 @@ const SharedFolder = ({ folder }) => {
             </span>{" "}
             Copy Link
           </MenuItem>
-          {/* <MenuItem>
-              <span className="w-5 mr-2">
-                <Icon path={mdiDownloadOutline} />
-              </span>{" "}
-              Download
-            </MenuItem> */}
-          <MenuItem>
-            <span className="w-5 mr-2">
-              <Icon path={mdiFolderMoveOutline} />
-            </span>{" "}
-            Move to...
-          </MenuItem>
+
           <MenuItem>
             <span className="w-5 mr-2">
               <Icon path={mdiContentCopy} />
             </span>{" "}
             Copy to...
           </MenuItem>
-          <MenuRename
-            folder={folder}
-            onOpenRenameModal={onOpenRenameModal}
-            onCloseRenameModal={onCloseRenameModal}
-            setNav={setNav}
-          />
+
           <MenuDetails
-            folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
-            setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
-          />
-          <MenuFolderToTrash
             folder={folder}
             setModalHeader={setModalHeader}
             setModalBody={setModalBody}
@@ -175,11 +163,12 @@ const SharedFolder = ({ folder }) => {
         modalHeader={modalHeader}
         modalBody={modalBody}
       />
-      {/* RENAME MODAL */}
-      <ModalRenameFolder
-        isOpen={isOpenRenameModal}
-        onClose={onCloseRenameModal}
+      {/* SHARE MODAL */}
+      <ModalShareFolder
+        isOpen={isOpenShareModal}
+        onClose={onCloseShareModal}
         folder={folder}
+        setNav={setNav}
       />
     </div>
   );

@@ -186,6 +186,7 @@ const EntryFolder = ({ folder }) => {
         onClose={onCloseRenameModal}
         folder={folder}
       />
+      {/* SHARE MODAL */}
       <ModalShareFolder
         isOpen={isOpenShareModal}
         onClose={onCloseShareModal}

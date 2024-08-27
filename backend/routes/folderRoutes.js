@@ -125,7 +125,14 @@ router.get(
     const sharedToUser = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: {
-        sharedFolders: { include: { childFolder: true, storedFiles: true } }
+        sharedFolders: {
+          include: {
+            childFolder: true,
+            storedFiles: true,
+            author: { select: { name: true } },
+            allowedUsers: true
+          }
+        }
       }
     });
 
@@ -142,7 +149,9 @@ router.get(
               where: { id: subfolder.id },
               include: {
                 childFolder: true,
-                storedFiles: true
+                storedFiles: true,
+                author: { select: { name: true } },
+                allowedUsers: true
               }
             });
             results.push(...(await recursiveFunc([childFolder])));
