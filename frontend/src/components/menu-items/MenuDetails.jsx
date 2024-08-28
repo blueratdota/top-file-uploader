@@ -38,6 +38,10 @@ const MenuDetails = ({
             <div className="">
               <h2>Accessible by</h2>
               <div className="flex text-sm gap-1 truncate">
+                {folder.allowedUsers.length > 1
+                  ? null
+                  : "No user is authorized to acces this folder"}
+
                 {folder.allowedUsers.map((user, index) => {
                   return (
                     <p key={user.name}>

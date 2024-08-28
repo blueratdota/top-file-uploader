@@ -5,16 +5,17 @@
 - create account
 - login
 - logout
-- create/share/delete/rename folder
+- create/share/unshare/delete/rename folder
 - permanently delete folder
 - sorting of files/folders
 
 # todo
 
-- unshare folder
-- download file
+- renaming folder fails if name already exists in the same directory
+- download file (must have a separate page,accessible by anyone with the link, only for download)
 - copy file to same/different directory
 - move file to different directory
+- create the same modal for copy/move, just set modeMove? mini aversion of MyFiles with breadcrumbs all in one modal
 - recent uploads
 - account settings
 - FINALLY DEPLOY
@@ -25,4 +26,4 @@
 
 # tocontinue
 
-- unshare api created - do frontend
+- renaming folder checking

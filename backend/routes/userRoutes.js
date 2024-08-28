@@ -145,7 +145,7 @@ router.put("/share-to-user", async (req, res, next) => {
 router.put("/unshare-to-user", async (req, res, next) => {
   // verify if the req.user.id == author of the folder being shared
   const { name, folderIdToShare } = req.body;
-  console.log(`shared folder to ${name}`);
+  console.log(`unshared folder to ${name}`);
   try {
     const user = await prisma.user.findUnique({
       where: { name: name },

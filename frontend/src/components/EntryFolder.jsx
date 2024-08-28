@@ -9,7 +9,8 @@ import {
   mdiFolderMoveOutline,
   mdiDownloadOutline,
   mdiLink,
-  mdiShareOutline
+  mdiShareOutline,
+  mdiShareOffOutline
 } from "@mdi/js";
 import {
   Menu,
@@ -40,6 +41,7 @@ import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalShareFolder from "./menu-items/ModalShareFolder";
+import ModalUnshareFolder from "./menu-items/ModalUnshareFolder";
 
 const EntryFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,12 @@ const EntryFolder = ({ folder }) => {
     isOpen: isOpenShareModal,
     onOpen: onOpenShareModal,
     onClose: onCloseShareModal
+  } = useDisclosure();
+  // FOLDER SHARE MODAL
+  const {
+    isOpen: isOpenUnshareModal,
+    onOpen: onOpenUnshareModal,
+    onClose: onCloseUnshareModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -167,6 +175,17 @@ const EntryFolder = ({ folder }) => {
             onOpenModal={onOpenModal}
             onCloseModal={onCloseModal}
           />
+          <MenuItem
+            onClick={() => {
+              onOpenUnshareModal();
+              setNav(true);
+            }}
+          >
+            <span className="w-5 mr-2">
+              <Icon path={mdiShareOffOutline} className="text-red-600" />
+            </span>{" "}
+            Unshare
+          </MenuItem>
           <MenuFolderToTrash
             folder={folder}
             setModalHeader={setModalHeader}
@@ -195,6 +214,12 @@ const EntryFolder = ({ folder }) => {
       <ModalShareFolder
         isOpen={isOpenShareModal}
         onClose={onCloseShareModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      <ModalUnshareFolder
+        isOpen={isOpenUnshareModal}
+        onClose={onCloseUnshareModal}
         folder={folder}
         setNav={setNav}
       />

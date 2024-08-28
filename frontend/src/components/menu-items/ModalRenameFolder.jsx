@@ -18,6 +18,8 @@ const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
   const context = useOutletContext();
   const { mutateFiles, mutateFolders } = context;
   const onSubmitForm = async (e) => {
+    // run a function to check if a folder with the same name with same parentfolderId exists on context.folders
+    // maybe forEach, then if true, dont run
     e.preventDefault();
     if (folderName != folder.name && folderName) {
       setIsLoading(true);
@@ -88,18 +90,6 @@ const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
                     />
                   </InputGroup>
                 </div>
-                <InputGroup>
-                  <Input
-                    required
-                    type="text"
-                    placeholder="Input folder name"
-                    className="pb-2  text-black outline-none border-b w-full"
-                    value={folderName}
-                    onChange={(e) => {
-                      setFolderName(e.target.value);
-                    }}
-                  />
-                </InputGroup>
                 <div className="mt-8 w-full flex gap-5 justify-center">
                   <Button
                     variant="solid"
