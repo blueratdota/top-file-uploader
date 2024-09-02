@@ -42,6 +42,7 @@ import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalShareFolder from "./menu-items/ModalShareFolder";
 import ModalUnshareFolder from "./menu-items/ModalUnshareFolder";
+import ModalMoveFolder from "./menu-items/ModalMoveFolder";
 
 const EntryFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -72,11 +73,17 @@ const EntryFolder = ({ folder }) => {
     onOpen: onOpenShareModal,
     onClose: onCloseShareModal
   } = useDisclosure();
-  // FOLDER SHARE MODAL
+  // FOLDER UNSHARE MODAL
   const {
     isOpen: isOpenUnshareModal,
     onOpen: onOpenUnshareModal,
     onClose: onCloseUnshareModal
+  } = useDisclosure();
+  // MOVE/COPY FOLDER MODAL
+  const {
+    isOpen: isOpenMoveModal,
+    onOpen: onOpenMoveModal,
+    onClose: onCloseMoveModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -103,9 +110,9 @@ const EntryFolder = ({ folder }) => {
   return (
     <div
       className="flex items-center justify-between h-11 w-full py-8 border-b"
-      onClick={() => {
-        console.log(folder);
-      }}
+      // onClick={() => {
+      //   console.log(folder);
+      // }}
     >
       <Link
         className="flex items-center w-full"
@@ -149,7 +156,12 @@ const EntryFolder = ({ folder }) => {
             </span>{" "}
             Copy Link
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            onClick={() => {
+              onOpenMoveModal();
+              setNav(true);
+            }}
+          >
             <span className="w-5 mr-2">
               <Icon path={mdiFolderMoveOutline} />
             </span>{" "}
@@ -217,9 +229,17 @@ const EntryFolder = ({ folder }) => {
         folder={folder}
         setNav={setNav}
       />
+      {/* UNSHARE MODAL */}
       <ModalUnshareFolder
         isOpen={isOpenUnshareModal}
         onClose={onCloseUnshareModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* MOVE FOLDER MODAL */}
+      <ModalMoveFolder
+        isOpen={isOpenMoveModal}
+        onClose={onCloseMoveModal}
         folder={folder}
         setNav={setNav}
       />

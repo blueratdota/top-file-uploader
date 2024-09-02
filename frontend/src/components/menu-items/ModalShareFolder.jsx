@@ -84,7 +84,7 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
     setQueryMessage("");
     onClose();
   };
-  console.log(folder);
+  // console.log(folder);
 
   return (
     <>
@@ -135,7 +135,11 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
                     />
                   </InputGroup>
                   <div
-                    className={`pl-3 pt-2 text-sm ${queryMessage == "User exists" ? "text-green-500" : "text-red-500"}`}
+                    className={`pl-3 pt-2 text-sm ${
+                      queryMessage == "User exists"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
                   >
                     {queryMessage}
                   </div>
