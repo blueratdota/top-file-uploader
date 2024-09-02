@@ -8,6 +8,7 @@ import { useEffect } from "react";
 const MyFiles = () => {
   const context = useOutletContext();
   const navigate = useNavigate();
+  console.log(context.folders);
   try {
     return (
       <>

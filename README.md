@@ -26,4 +26,5 @@
 
 # tocontinue
 
-- renaming folder checking
+- renaming folder checking (can't have folders with same name and same parentFolderId)
+- moving files checking (can't have folders with same name and same parentFolderId)

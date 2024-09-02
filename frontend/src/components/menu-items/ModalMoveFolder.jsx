@@ -27,6 +27,7 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
 
   let paths = [];
+  let displayableFolders = 0;
   const genPath = (folderId) => {
     if (folderId == null) {
       return;
@@ -44,6 +45,38 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
     }
   };
   genPath(currFolder);
+  const displayArr = folders.map((f) => {
+    if (f.parentFolderId == currFolder) {
+      if (f.id == folder.id) {
+        displayableFolders++;
+        return (
+          <div key={f.id} className="flex items-center mb-2">
+            <div className="w-8 px-1">
+              <Icon path={mdiFolderOutline} className="w-full" />
+            </div>
+            <div className="text-sm text-gray-500">{f.name}</div>
+          </div>
+        );
+      } else {
+        displayableFolders++;
+        return (
+          <div
+            key={f.id}
+            onClick={() => {
+              setCurrFolder(f.id);
+            }}
+            className="flex items-center mb-2"
+          >
+            <div className="w-8 px-1">
+              <Icon path={mdiFolderOutline} className="w-full" />
+            </div>
+            <div className="text-sm">{f.name}</div>
+          </div>
+        );
+      }
+    }
+  });
+  console.log(displayableFolders);
 
   return (
     <>
@@ -74,24 +107,11 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
             </div>
 
             <div className="border py-2 my-2 min-h-24">
-              {folders.map((f) => {
-                if (f.parentFolderId == currFolder) {
-                  return (
-                    <div
-                      key={f.id}
-                      onClick={() => {
-                        setCurrFolder(f.id);
-                      }}
-                      className="flex items-center mb-2"
-                    >
-                      <div className="w-8 px-1">
-                        <Icon path={mdiFolderOutline} className="w-full" />
-                      </div>
-                      <div className="text-sm">{f.name}</div>
-                    </div>
-                  );
-                }
-              })}
+              {displayableFolders > 0 ? (
+                displayArr
+              ) : (
+                <p className="text-sm text-center">This folder is empty</p>
+              )}
             </div>
             <Breadcrumb
               spacing="8px"
@@ -107,16 +127,21 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
                   Root
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              {paths.map((path) => {
-                return (
-                  <BreadcrumbItem
-                    onClick={() => {
-                      setCurrFolder(path.id);
-                    }}
-                  >
-                    <BreadcrumbLink>{path.name}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                );
+              {paths.map((path, index) => {
+                let L = paths.length;
+                let maxL = isTabletOrMobile ? L - 2 : L - 3;
+                if (index >= maxL) {
+                  return (
+                    <BreadcrumbItem
+                      key={path.id}
+                      onClick={() => {
+                        setCurrFolder(path.id);
+                      }}
+                    >
+                      <BreadcrumbLink>{path.name}</BreadcrumbLink>
+                    </BreadcrumbItem>
+                  );
+                }
               })}
             </Breadcrumb>
             <div className="mt-3 w-full flex gap-5 justify-center">
@@ -137,7 +162,7 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
                   console.log(currFolder);
                 }}
               >
-                Rename
+                Move
               </Button>
             </div>
           </ModalBody>
