@@ -8,13 +8,14 @@
 - create/share/unshare/delete/rename folder
 - permanently delete folder
 - sorting of files/folders
+- moving folders with duplicate checks on destination folder
 
 # todo
 
 - renaming folder fails if name already exists in the same directory
 - download file (must have a separate page,accessible by anyone with the link, only for download)
-- copy file to same/different directory
-- move file to different directory
+- copy file/folder to same/different directory
+- copying a folder must also copy all contents inside the folder
 - create the same modal for copy/move, just set modeMove? mini aversion of MyFiles with breadcrumbs all in one modal
 - recent uploads
 - account settings
@@ -27,4 +28,3 @@
 # tocontinue
 
 - renaming folder checking (can't have folders with same name and same parentFolderId)
-- moving files checking (can't have folders with same name and same parentFolderId)

@@ -22,6 +22,7 @@ import { mdiFolderAlertOutline, mdiFolderOutline } from "@mdi/js";
 const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
   const [currFolder, setCurrFolder] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [queryMessage, setQueryMessage] = useState("");
   const context = useOutletContext();
   const { mutateFiles, mutateFolders, folders } = context;
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 640px)" });
@@ -76,7 +77,36 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
       }
     }
   });
-  console.log(displayableFolders);
+  const onMoveFolder = async (e) => {
+    setIsLoading(true);
+    try {
+      const body = {
+        id: folder.id,
+        name: folder.name,
+        newParentFolderId: currFolder
+      };
+      const response = await fetch("http://localhost:3000/api/folders/move", {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+      if (result.isSuccess) {
+        setQueryMessage(result.msg);
+        await mutateFiles();
+        await mutateFolders();
+        setCurrFolder(null);
+        onClose();
+      } else {
+        setQueryMessage(result.msg);
+      }
+    } catch (error) {
+      console.log("this would execute");
+      console.log(error);
+    }
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -85,6 +115,7 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
           className="bg-gray-400 bg-opacity-40 backdrop-blur"
           onClick={() => {
             context.setNav(false);
+            setCurrFolder(null);
             onCloseModal();
           }}
         />
@@ -97,6 +128,7 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
             <ModalCloseButton
               onClick={() => {
                 context.setNav(false);
+                setCurrFolder(null);
               }}
             />
           </ModalHeader>
@@ -106,12 +138,21 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
               <div className="ml-2">{folder.name}</div>
             </div>
 
-            <div className="border py-2 my-2 min-h-24">
+            <div className="border-y py-2 my-2 min-h-24">
               {displayableFolders > 0 ? (
                 displayArr
               ) : (
                 <p className="text-sm text-center">This folder is empty</p>
               )}
+            </div>
+            <div
+              className={`pl-3 pt-2 text-sm ${
+                queryMessage == "Folder move successful"
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {queryMessage}
             </div>
             <Breadcrumb
               spacing="8px"
@@ -145,25 +186,29 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
               })}
             </Breadcrumb>
             <div className="mt-3 w-full flex gap-5 justify-center">
-              <Button
-                variant="solid"
-                className="bg-slate-300 w-[120px] py-1  text-extWhite"
-                onClick={() => {
-                  onClose();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="solid"
-                className="bg-extGreen w-[120px] py-1  text-extWhite"
-                onClick={() => {
-                  console.log(currFolder);
-                }}
-              >
-                Move
-              </Button>
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : (
+                <>
+                  <Button
+                    variant="solid"
+                    className="bg-slate-300 w-[120px] py-1  text-extWhite"
+                    onClick={() => {
+                      onClose();
+                      setCurrFolder(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="solid"
+                    className="bg-extGreen w-[120px] py-1  text-extWhite"
+                    onClick={onMoveFolder}
+                  >
+                    Move
+                  </Button>
+                </>
+              )}
             </div>
           </ModalBody>
         </ModalContent>

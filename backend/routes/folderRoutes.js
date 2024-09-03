@@ -164,8 +164,8 @@ router.get(
     res.status(200).json(await recursiveFunc(sharedToUser.sharedFolders));
   }
 );
-
-// to update folder as owner
+// ### ALL UPDATE/PUT ROUTES FOR FOLDERS
+// to update folder name as owner
 router.put("/rename", protect, async (req, res, next) => {
   const { id, newName } = req.body;
   const folder = await prisma.folders.update({
@@ -175,6 +175,34 @@ router.put("/rename", protect, async (req, res, next) => {
     }
   });
   res.status(200).json(folder);
+});
+router.put("/move", protect, async (req, res, next) => {
+  const data = {
+    name: req.body.name,
+    newParentFolderId: req.body.newParentFolderId,
+    id: req.body.id
+  };
+  console.log(data);
+
+  const ownedFolders = await prisma.folders.findFirst({
+    where: {
+      authorId: req.user.id,
+      parentFolderId: data.newParentFolderId,
+      name: data.name
+    }
+  });
+
+  if (!ownedFolders) {
+    await prisma.folders.update({
+      where: { id: data.id },
+      data: { parentFolderId: data.newParentFolderId }
+    });
+    const result = { isSuccess: true, msg: "Folder move successful" };
+    res.status(200).json(result);
+  } else {
+    const result = { isSuccess: false, msg: "Folder move unsuccessful" };
+    res.status(409).json(result);
+  }
 });
 // to update folder inTrash = true/false
 router.put("/to-trash/:id/:inTrash", protect, async (req, res, next) => {
@@ -198,6 +226,7 @@ router.put("/to-deleted/:id/:isDeleted", protect, async (req, res, next) => {
   });
   res.status(200).json(folder);
 });
+// ### END OF UPDATE/PUT ROUTES FOR FOLDERS
 
 // delete folder
 // needs folderId as url parameter
