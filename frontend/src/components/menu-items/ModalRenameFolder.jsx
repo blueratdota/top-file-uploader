@@ -15,18 +15,20 @@ import { useOutletContext } from "react-router-dom";
 const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
   const [folderName, setFolderName] = useState(folder.name);
   const [isLoading, setIsLoading] = useState(false);
+  const [queryMessage, setQueryMessage] = useState("");
   const context = useOutletContext();
   const { mutateFiles, mutateFolders } = context;
   const onSubmitForm = async (e) => {
-    // run a function to check if a folder with the same name with same parentfolderId exists on context.folders
-    // maybe forEach, then if true, dont run
+    //put an error message
     e.preventDefault();
     if (folderName != folder.name && folderName) {
       setIsLoading(true);
       try {
         const body = {
           id: folder.id,
-          newName: folderName
+          oldName: folder.name,
+          newName: folderName,
+          parentFolderId: folder.parentFolderId
         };
         const response = await fetch(
           "http://localhost:3000/api/folders/rename",
@@ -37,18 +39,23 @@ const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
             body: JSON.stringify(body)
           }
         );
-
-        await mutateFiles();
-        await mutateFolders();
-        setFolderName("");
-        setIsLoading(false);
-        onClose();
+        const result = await response.json();
+        if (result.isSuccess) {
+          setQueryMessage("Folder rename successful");
+          await mutateFiles();
+          await mutateFolders();
+          setFolderName("");
+          onClose();
+        } else {
+          setQueryMessage("Folder rename unsuccessful");
+        }
       } catch (error) {
         console.log(error);
       }
     } else {
       alert("Please input folder name");
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -90,24 +97,39 @@ const ModalRenameFolder = ({ isOpen, onClose, folder }) => {
                     />
                   </InputGroup>
                 </div>
+                <div
+                  className={`pl-3 pt-2 text-sm ${
+                    queryMessage == "Folder rename successful"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {queryMessage}
+                </div>
                 <div className="mt-8 w-full flex gap-5 justify-center">
-                  <Button
-                    variant="solid"
-                    className="bg-slate-300 w-[120px] py-1  text-extWhite"
-                    onClick={() => {
-                      setFolderName("");
-                      onClose();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="solid"
-                    className="bg-extGreen w-[120px] py-1  text-extWhite"
-                  >
-                    Rename
-                  </Button>
+                  {isLoading ? (
+                    <div>Loading...</div>
+                  ) : (
+                    <>
+                      <Button
+                        variant="solid"
+                        className="bg-slate-300 w-[120px] py-1  text-extWhite"
+                        onClick={() => {
+                          setFolderName("");
+                          onClose();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="solid"
+                        className="bg-extGreen w-[120px] py-1  text-extWhite"
+                      >
+                        Rename
+                      </Button>
+                    </>
+                  )}
                 </div>
               </form>
             </div>

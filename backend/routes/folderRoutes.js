@@ -31,6 +31,82 @@ router.post("/create", protect, async (req, res, next) => {
   res.status(200).json(folder);
 });
 
+router.post("/copy", protect, async (req, res, next) => {
+  const copyFolder = {
+    id: req.body.id,
+    destinationFolderId: (() =>
+      req.body.destinationFolderId ? req.body.destinationFolderId : null)(),
+    parentFolderId: req.body.parentFolderId,
+    name: req.body.name
+  };
+  const recursiveFunc = async (folderObj) => {
+    const folder = await prisma.folders.findFirst({
+      where: { id: folderObj.id },
+      include: { childFolder: true, storedFiles: true }
+    });
+    const lookUpDuplicate = await prisma.folders.findFirst({
+      where: {
+        name: folderObj.name,
+        authorId: req.user.id,
+        parentFolderId: folderObj.destinationFolderId
+      }
+    });
+    let generatedName = "";
+    if (lookUpDuplicate) {
+      const getName = async (name) => {
+        return await prisma.folders.findFirst({
+          where: {
+            name: name,
+            authorId: req.user.id,
+            parentFolderId: folderObj.destinationFolderId
+          }
+        });
+      };
+      let n = 1;
+      let newName = `${folderObj.name} (${n})`;
+      while (await getName(newName)) {
+        n++;
+        newName = `${folderObj.name} (${n})`;
+      }
+      generatedName = newName;
+    }
+
+    console.log(folderObj.destinationFolderId);
+    const newFolder = await prisma.folders.create({
+      data: {
+        name: (() => {
+          if (lookUpDuplicate) {
+            return generatedName;
+          } else {
+            return folderObj.name;
+          }
+        })(),
+        authorId: req.user.id,
+        parentFolderId: folderObj.destinationFolderId
+      }
+    });
+    if (folder.childFolder.length > 0) {
+      for (const f of folder.childFolder) {
+        await recursiveFunc({ ...f, destinationFolderId: newFolder.id });
+      }
+    }
+    if (folder.storedFiles.length > 0) {
+      for (const f of folder.storedFiles) {
+        const fileData = {
+          path: f.path,
+          name: f.name,
+          fileSize: f.fileSize,
+          authorId: req.user.id,
+          foldersId: newFolder.id
+        };
+        const file = await prisma.files.create({ data: { ...fileData } });
+      }
+    }
+  };
+  await recursiveFunc(copyFolder);
+  res.status(200).json(copyFolder);
+});
+
 // to get folder as owner
 // needs folderId as url parameter, as well as parent folder
 router.get("/get/:id", async (req, res, next) => {
@@ -167,22 +243,35 @@ router.get(
 // ### ALL UPDATE/PUT ROUTES FOR FOLDERS
 // to update folder name as owner
 router.put("/rename", protect, async (req, res, next) => {
-  const { id, newName } = req.body;
-  const folder = await prisma.folders.update({
-    where: { id: id },
-    data: {
+  const { id, oldName, newName, parentFolderId } = req.body;
+  const checkDuplicate = await prisma.folders.findFirst({
+    where: {
+      authorId: req.user.id,
+      parentFolderId: parentFolderId,
       name: newName
     }
   });
-  res.status(200).json(folder);
+  if (!checkDuplicate) {
+    const folder = await prisma.folders.update({
+      where: { id: id },
+      data: {
+        name: newName
+      }
+    });
+    const result = { isSuccess: true, msg: "Folder rename successful" };
+    res.status(200).json(result);
+  } else {
+    const result = { isSuccess: false, msg: "Folder rename unsuccessful" };
+    res.status(409).json(result);
+  }
 });
+// to update folder parentId (moving folder location)
 router.put("/move", protect, async (req, res, next) => {
   const data = {
     name: req.body.name,
     newParentFolderId: req.body.newParentFolderId,
     id: req.body.id
   };
-  console.log(data);
 
   const ownedFolders = await prisma.folders.findFirst({
     where: {
@@ -204,6 +293,7 @@ router.put("/move", protect, async (req, res, next) => {
     res.status(409).json(result);
   }
 });
+
 // to update folder inTrash = true/false
 router.put("/to-trash/:id/:inTrash", protect, async (req, res, next) => {
   const { id, inTrash } = req.params;

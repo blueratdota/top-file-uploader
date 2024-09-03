@@ -19,7 +19,7 @@ import { useOutletContext } from "react-router-dom";
 import Icon from "@mdi/react";
 import { mdiFolderOutline } from "@mdi/js";
 
-const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
+const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
   const [currFolder, setCurrFolder] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [queryMessage, setQueryMessage] = useState("");
@@ -216,4 +216,4 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
     </>
   );
 };
-export default ModalMoveFolder;
+export default ModalCopyFolder;
