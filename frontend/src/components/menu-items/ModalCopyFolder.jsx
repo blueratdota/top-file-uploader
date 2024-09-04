@@ -48,45 +48,34 @@ const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
   genPath(currFolder);
   const displayArr = folders.map((f) => {
     if (f.parentFolderId == currFolder) {
-      if (f.id == folder.id) {
-        displayableFolders++;
-        return (
-          <div key={f.id} className="flex items-center mb-2">
-            <div className="w-8 px-1">
-              <Icon path={mdiFolderOutline} className="w-full" />
-            </div>
-            <div className="text-sm text-gray-500">{f.name}</div>
+      displayableFolders++;
+      return (
+        <div
+          key={f.id}
+          onClick={() => {
+            setCurrFolder(f.id);
+          }}
+          className="flex items-center mb-2"
+        >
+          <div className="w-8 px-1">
+            <Icon path={mdiFolderOutline} className="w-full" />
           </div>
-        );
-      } else {
-        displayableFolders++;
-        return (
-          <div
-            key={f.id}
-            onClick={() => {
-              setCurrFolder(f.id);
-            }}
-            className="flex items-center mb-2"
-          >
-            <div className="w-8 px-1">
-              <Icon path={mdiFolderOutline} className="w-full" />
-            </div>
-            <div className="text-sm">{f.name}</div>
-          </div>
-        );
-      }
+          <div className="text-sm">{f.name}</div>
+        </div>
+      );
     }
   });
-  const onMoveFolder = async (e) => {
+  const onCopyFolder = async (e) => {
     setIsLoading(true);
     try {
       const body = {
         id: folder.id,
         name: folder.name,
-        newParentFolderId: currFolder
+        destinationFolderId: currFolder,
+        parentFolderId: folder.parentFolderId
       };
-      const response = await fetch("http://localhost:3000/api/folders/move", {
-        method: "PUT",
+      const response = await fetch("http://localhost:3000/api/folders/copy", {
+        method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
@@ -102,7 +91,6 @@ const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
         setQueryMessage(result.msg);
       }
     } catch (error) {
-      console.log("this would execute");
       console.log(error);
     }
     setIsLoading(false);
@@ -147,7 +135,7 @@ const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
             </div>
             <div
               className={`pl-3 pt-2 text-sm ${
-                queryMessage == "Folder move successful"
+                queryMessage == "Folder copy successful"
                   ? "text-green-500"
                   : "text-red-500"
               }`}
@@ -203,9 +191,9 @@ const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
                   <Button
                     variant="solid"
                     className="bg-extGreen w-[120px] py-1  text-extWhite"
-                    onClick={onMoveFolder}
+                    onClick={onCopyFolder}
                   >
-                    Move
+                    Copy
                   </Button>
                 </>
               )}

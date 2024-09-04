@@ -43,6 +43,7 @@ import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalShareFolder from "./menu-items/ModalShareFolder";
 import ModalUnshareFolder from "./menu-items/ModalUnshareFolder";
 import ModalMoveFolder from "./menu-items/ModalMoveFolder";
+import ModalCopyFolder from "./menu-items/ModalCopyFolder";
 
 const EntryFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -79,11 +80,17 @@ const EntryFolder = ({ folder }) => {
     onOpen: onOpenUnshareModal,
     onClose: onCloseUnshareModal
   } = useDisclosure();
-  // MOVE/COPY FOLDER MODAL
+  // MOVE FOLDER MODAL
   const {
     isOpen: isOpenMoveModal,
     onOpen: onOpenMoveModal,
     onClose: onCloseMoveModal
+  } = useDisclosure();
+  // COPY FOLDER MODAL
+  const {
+    isOpen: isOpenCopyModal,
+    onOpen: onOpenCopyModal,
+    onClose: onCloseCopyModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -167,7 +174,12 @@ const EntryFolder = ({ folder }) => {
             </span>{" "}
             Move to...
           </MenuItem>
-          <MenuItem>
+          <MenuItem
+            onClick={() => {
+              onOpenCopyModal();
+              setNav(true);
+            }}
+          >
             <span className="w-5 mr-2">
               <Icon path={mdiContentCopy} />
             </span>{" "}
@@ -240,6 +252,13 @@ const EntryFolder = ({ folder }) => {
       <ModalMoveFolder
         isOpen={isOpenMoveModal}
         onClose={onCloseMoveModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* COPY FOLDER MODAL */}
+      <ModalCopyFolder
+        isOpen={isOpenCopyModal}
+        onClose={onCloseCopyModal}
         folder={folder}
         setNav={setNav}
       />

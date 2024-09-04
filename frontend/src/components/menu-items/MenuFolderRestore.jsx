@@ -5,19 +5,32 @@ import { useOutletContext } from "react-router-dom";
 
 const MenuFolderRestore = ({ folder }) => {
   const context = useOutletContext();
+  const { mutateFiles, mutateFolders, folders } = context;
   const toTrash = async (inTrash) => {
     try {
+      const body = {
+        id: folder.id,
+        name: folder.name,
+        destinationFolderId: folder.parentFolderId,
+        parentFolderId: folder.parentFolderId,
+        inTrash: folder.inTrash
+      };
       const response = await fetch(
-        `http://localhost:3000/api/folders/to-trash/${folder.id}/${inTrash}`,
+        "http://localhost:3000/api/folders/restore",
         {
-          method: "PUT",
+          method: "POST",
           credentials: "include",
-          headers: { "Content-Type": "application/json" }
-          // body: JSON.stringify(body)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
         }
       );
-      await context.mutateFiles();
-      await context.mutateFolders();
+      const result = await response.json();
+      if (result.isSuccess) {
+        await mutateFiles();
+        await mutateFolders();
+        onClose();
+      } else {
+      }
     } catch (error) {
       console.log(error);
     }

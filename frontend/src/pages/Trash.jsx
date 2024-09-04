@@ -7,16 +7,6 @@ import TrashFile from "../components/TrashFile";
 const Trash = () => {
   const context = useOutletContext();
   return (
-    // <div>
-    //   <p>
-    //     all files deleted, stored here, create additional column for DB
-    //     isDeleted:true/false
-    //   </p>
-    //   <p>
-    //     create column timestamp since date deleted, date deleted - current date
-    //     if over 30 days delete the file
-    //   </p>
-    // </div>
     <>
       {context.isLoadingFolders || context.isLoadingFiles ? (
         <div className="w-full h-full">

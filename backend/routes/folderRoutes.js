@@ -17,7 +17,8 @@ router.post("/create", protect, async (req, res, next) => {
     where: {
       name: folderData.name,
       authorId: folderData.authorId,
-      parentFolderId: folderData.parentFolderId || null
+      parentFolderId: folderData.parentFolderId || null,
+      inTrash: false
     }
   });
   if (lookUpDuplicate) {
@@ -31,80 +32,224 @@ router.post("/create", protect, async (req, res, next) => {
   res.status(200).json(folder);
 });
 
-router.post("/copy", protect, async (req, res, next) => {
-  const copyFolder = {
-    id: req.body.id,
-    destinationFolderId: (() =>
-      req.body.destinationFolderId ? req.body.destinationFolderId : null)(),
-    parentFolderId: req.body.parentFolderId,
-    name: req.body.name
-  };
-  const recursiveFunc = async (folderObj) => {
-    const folder = await prisma.folders.findFirst({
-      where: { id: folderObj.id },
-      include: { childFolder: true, storedFiles: true }
-    });
-    const lookUpDuplicate = await prisma.folders.findFirst({
-      where: {
-        name: folderObj.name,
-        authorId: req.user.id,
-        parentFolderId: folderObj.destinationFolderId
-      }
-    });
-    let generatedName = "";
-    if (lookUpDuplicate) {
-      const getName = async (name) => {
-        return await prisma.folders.findFirst({
+router.post("/restore", protect, async (req, res, next) => {
+  const { id, name, destinationFolderId, parentFolderId } = req.body;
+  const destinationDupe = await prisma.folders.findFirst({
+    where: {
+      name: name,
+      parentFolderId: destinationFolderId,
+      inTrash: false
+    }
+  });
+  if (destinationDupe) {
+    try {
+      const copyFolder = {
+        id: req.body.id,
+        destinationFolderId: req.body.parentFolderId,
+        name: req.body.name
+      };
+      let processedIds = [];
+      const recursiveFunc = async (folderObj) => {
+        if (processedIds.includes(folderObj.id)) return;
+        const folder = await prisma.folders.findFirst({
+          where: { id: folderObj.id },
+          include: { childFolder: true, storedFiles: true }
+        });
+        const lookUpDuplicate = await prisma.folders.findFirst({
           where: {
-            name: name,
+            name: folderObj.name,
             authorId: req.user.id,
             parentFolderId: folderObj.destinationFolderId
           }
         });
-      };
-      let n = 1;
-      let newName = `${folderObj.name} (${n})`;
-      while (await getName(newName)) {
-        n++;
-        newName = `${folderObj.name} (${n})`;
-      }
-      generatedName = newName;
-    }
-
-    console.log(folderObj.destinationFolderId);
-    const newFolder = await prisma.folders.create({
-      data: {
-        name: (() => {
-          if (lookUpDuplicate) {
-            return generatedName;
-          } else {
-            return folderObj.name;
+        let generatedName = "";
+        if (lookUpDuplicate) {
+          const getName = async (name) => {
+            return await prisma.folders.findFirst({
+              where: {
+                name: name,
+                authorId: req.user.id,
+                parentFolderId: folderObj.destinationFolderId
+              }
+            });
+          };
+          let n = 1;
+          let newName = `${folderObj.name} (${n})`;
+          while (await getName(newName)) {
+            n++;
+            newName = `${folderObj.name} (${n})`;
           }
-        })(),
-        authorId: req.user.id,
-        parentFolderId: folderObj.destinationFolderId
+          generatedName = newName;
+        }
+
+        console.log(folderObj.destinationFolderId);
+        const newFolder = await prisma.folders.create({
+          data: {
+            name: (() => {
+              if (lookUpDuplicate) {
+                return generatedName;
+              } else {
+                return folderObj.name;
+              }
+            })(),
+            authorId: req.user.id,
+            parentFolderId: folderObj.destinationFolderId
+          }
+        });
+        processedIds.push(newFolder.id);
+        if (folder.childFolder.length > 0) {
+          const cfl = folder.childFolder.length;
+          for (const f of folder.childFolder) {
+            await recursiveFunc({ ...f, destinationFolderId: newFolder.id });
+          }
+        }
+        if (folder.storedFiles.length > 0) {
+          for (const f of folder.storedFiles) {
+            const fileData = {
+              path: f.path,
+              name: f.name,
+              fileSize: f.fileSize,
+              authorId: req.user.id,
+              foldersId: newFolder.id
+            };
+            const file = await prisma.files.create({ data: { ...fileData } });
+          }
+        }
+      };
+      await recursiveFunc(copyFolder);
+      // THE DELETE THE ORIGINAL FOLDER FUNCTION == REFINE THIS TO A BETTER RECURSIVE ASYNC
+      // INCLUDE FILES ON THE DELETE SEQUENCE
+      // PROBABLY JUST COPY THE ABOVE CODE
+      const deleteFolder = async (folderId) => {
+        const folderData = await prisma.folders.findUnique({
+          where: { id: folderId },
+          include: {
+            childFolder: true,
+            allowedUsers: true,
+            storedFiles: true
+          }
+        });
+        if (folderData.childFolder.length == 0) {
+          console.log(`deleted ${folderData.name}`);
+          const folder = await prisma.folders.delete({
+            where: { id: folderId }
+          });
+          return;
+        }
+        folderData.childFolder.forEach(async (folder) => {
+          await deleteFolder(folder.id);
+        });
+        console.log(`deleted ${folderData.name}`);
+        const folder = await prisma.folders.delete({
+          where: { id: folderId }
+        });
+      };
+      await deleteFolder(copyFolder.id);
+      const result = { isSuccess: true, msg: "Folder copy successful" };
+      res.status(200).json(result);
+    } catch (error) {
+      const result = { isSuccess: false, msg: "Folder copy unccessful" };
+      res.status(200).json(result);
+    }
+  } else {
+    const { id, inTrash } = req.body;
+    console.log("NO DUPLICATE KIND OF RESTORE", id, inTrash);
+    const folder = await prisma.folders.update({
+      where: { id: id },
+      data: {
+        inTrash: false
       }
     });
-    if (folder.childFolder.length > 0) {
-      for (const f of folder.childFolder) {
-        await recursiveFunc({ ...f, destinationFolderId: newFolder.id });
-      }
-    }
-    if (folder.storedFiles.length > 0) {
-      for (const f of folder.storedFiles) {
-        const fileData = {
-          path: f.path,
-          name: f.name,
-          fileSize: f.fileSize,
+    console.log(folder);
+
+    res.status(200).json(folder);
+  }
+});
+
+router.post("/copy", protect, async (req, res, next) => {
+  try {
+    const copyFolder = {
+      id: req.body.id,
+      destinationFolderId: (() =>
+        req.body.destinationFolderId ? req.body.destinationFolderId : null)(),
+      parentFolderId: req.body.parentFolderId,
+      name: req.body.name
+    };
+    let processedIds = [];
+    const recursiveFunc = async (folderObj) => {
+      if (processedIds.includes(folderObj.id)) return;
+      const folder = await prisma.folders.findFirst({
+        where: { id: folderObj.id },
+        include: { childFolder: true, storedFiles: true }
+      });
+      const lookUpDuplicate = await prisma.folders.findFirst({
+        where: {
+          name: folderObj.name,
           authorId: req.user.id,
-          foldersId: newFolder.id
+          parentFolderId: folderObj.destinationFolderId
+        }
+      });
+      let generatedName = "";
+      if (lookUpDuplicate) {
+        const getName = async (name) => {
+          return await prisma.folders.findFirst({
+            where: {
+              name: name,
+              authorId: req.user.id,
+              parentFolderId: folderObj.destinationFolderId
+            }
+          });
         };
-        const file = await prisma.files.create({ data: { ...fileData } });
+        let n = 1;
+        let newName = `${folderObj.name} (${n})`;
+        while (await getName(newName)) {
+          n++;
+          newName = `${folderObj.name} (${n})`;
+        }
+        generatedName = newName;
       }
-    }
-  };
-  await recursiveFunc(copyFolder);
-  res.status(200).json(copyFolder);
+
+      console.log(folderObj.destinationFolderId);
+      const newFolder = await prisma.folders.create({
+        data: {
+          name: (() => {
+            if (lookUpDuplicate) {
+              return generatedName;
+            } else {
+              return folderObj.name;
+            }
+          })(),
+          authorId: req.user.id,
+          parentFolderId: folderObj.destinationFolderId
+        }
+      });
+      processedIds.push(newFolder.id);
+      if (folder.childFolder.length > 0) {
+        const cfl = folder.childFolder.length;
+        for (const f of folder.childFolder) {
+          await recursiveFunc({ ...f, destinationFolderId: newFolder.id });
+        }
+      }
+      if (folder.storedFiles.length > 0) {
+        for (const f of folder.storedFiles) {
+          const fileData = {
+            path: f.path,
+            name: f.name,
+            fileSize: f.fileSize,
+            authorId: req.user.id,
+            foldersId: newFolder.id
+          };
+          const file = await prisma.files.create({ data: { ...fileData } });
+        }
+      }
+    };
+    await recursiveFunc(copyFolder);
+    const result = { isSuccess: true, msg: "Folder copy successful" };
+    res.status(200).json(result);
+  } catch (error) {
+    const result = { isSuccess: false, msg: "Folder copy unccessful" };
+    res.status(200).json(result);
+  }
 });
 
 // to get folder as owner
@@ -248,7 +393,8 @@ router.put("/rename", protect, async (req, res, next) => {
     where: {
       authorId: req.user.id,
       parentFolderId: parentFolderId,
-      name: newName
+      name: newName,
+      inTrash: false
     }
   });
   if (!checkDuplicate) {

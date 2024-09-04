@@ -74,7 +74,12 @@ const TrashFolder = ({ folder }) => {
       </div>
 
       <Menu zIndex={"dropdown"}>
-        <MenuButton className="scale-[0.5] w-[46px] text-white">
+        <MenuButton
+          className="scale-[0.5] w-[46px] text-white"
+          onClick={() => {
+            console.log(folder);
+          }}
+        >
           <SmallIconBtn icon={mdiDotsVertical}></SmallIconBtn>
         </MenuButton>
         <MenuList
