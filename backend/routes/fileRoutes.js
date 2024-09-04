@@ -57,6 +57,48 @@ router.post(
     }
   }
 );
+router.put("/to-trash", async (req, res, next) => {
+  const { id, inTrash } = req.body;
+  const file = await prisma.files.update({
+    where: { id: id },
+    data: {
+      inTrash: true
+    }
+  });
+  res.status(200).json(file);
+});
+router.put("/restore", async (req, res, next) => {
+  // if destination has no same file name, simple inTrash=false update ***DONE
+  // if destination doesnt exist, set destination to null, inTrash=false ***DONE
+  // if destination exist, inTrash=false
+  // if destination has same file name, update name to fileName (n)
+  const { id, name, foldersId, inTrash } = req.body;
+  let destinationExists = foldersId;
+  if (destinationExists != null) {
+    destinationExists = await prisma.folders.findUnique({
+      where: { id: foldersId, inTrash: false }
+    });
+  }
+  const destinationDupe = await prisma.files.findFirst({
+    where: {
+      name: name,
+      foldersId: destinationExists ? foldersId : null,
+      inTrash: false
+    }
+  });
+
+  if (destinationDupe) {
+  } else {
+    await prisma.files.update({
+      where: { id: id },
+      data: {
+        folders: destinationExists ? foldersId : null
+      }
+    });
+  }
+  const result = { isSuccess: true, msg: "File restore successful" };
+  res.status(200).json(result);
+});
 
 // get all files owned by logged in user
 router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {

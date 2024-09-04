@@ -34,160 +34,99 @@ router.post("/create", protect, async (req, res, next) => {
 
 router.post("/restore", protect, async (req, res, next) => {
   const { id, name, destinationFolderId, parentFolderId } = req.body;
-
+  let parentDestinationExists = destinationFolderId;
+  if (destinationFolderId != null) {
+    parentDestinationExists = await prisma.folders.findUnique({
+      where: { id: destinationFolderId, inTrash: false }
+    });
+  }
   const destinationDupe = await prisma.folders.findFirst({
     where: {
       name: name,
-      parentFolderId: destinationFolderId,
+      parentFolderId: parentDestinationExists ? destinationFolderId : null,
       inTrash: false
     }
   });
+  // check if parent folder exists
+  // if doesnt exist, set to null
+
   if (destinationDupe) {
-    try {
-      // check if parent folder exists
-      // if doesnt exist, set to null
-      let parentDestinationExists = destinationFolderId;
-      if (destinationFolderId != null) {
-        parentDestinationExists = await prisma.folders.findUnique({
-          where: { id: destinationFolderId }
-        });
-      }
-
-      console.log("parentdestination", parentDestinationExists);
-      const copyFolder = {
-        id: req.body.id,
-        destinationFolderId: parentDestinationExists
-          ? parentDestinationExists.id
-          : null,
-        name: req.body.name
-      };
-      console.log(copyFolder);
-      let processedIds = [];
-      const recursiveFunc = async (folderObj) => {
-        if (processedIds.includes(folderObj.id)) return;
-        const folder = await prisma.folders.findFirst({
-          where: { id: folderObj.id },
-          include: { childFolder: true, storedFiles: true }
-        });
-        const lookUpDuplicate = await prisma.folders.findFirst({
-          where: {
-            name: folderObj.name,
-            authorId: req.user.id,
-            parentFolderId: folderObj.destinationFolderId
-          }
-        });
-        let generatedName = "";
-        if (lookUpDuplicate) {
-          const getName = async (name) => {
-            return await prisma.folders.findFirst({
-              where: {
-                name: name,
-                authorId: req.user.id,
-                parentFolderId: folderObj.destinationFolderId
-              }
-            });
-          };
-          let n = 1;
-          let newName = `${folderObj.name} (${n})`;
-          while (await getName(newName)) {
-            n++;
-            newName = `${folderObj.name} (${n})`;
-          }
-          generatedName = newName;
-        }
-
-        console.log(folderObj.destinationFolderId);
-        const newFolder = await prisma.folders.create({
-          data: {
-            name: (() => {
-              if (lookUpDuplicate) {
-                return generatedName;
-              } else {
-                return folderObj.name;
-              }
-            })(),
-            authorId: req.user.id,
-            parentFolderId: folderObj.destinationFolderId
-          }
-        });
-        processedIds.push(newFolder.id);
-        if (folder.childFolder.length > 0) {
-          const cfl = folder.childFolder.length;
-          for (const f of folder.childFolder) {
-            await recursiveFunc({ ...f, destinationFolderId: newFolder.id });
-          }
-        }
-        if (folder.storedFiles.length > 0) {
-          for (const f of folder.storedFiles) {
-            const fileData = {
-              path: f.path,
-              name: f.name,
-              fileSize: f.fileSize,
-              authorId: req.user.id,
-              foldersId: newFolder.id
-            };
-            const file = await prisma.files.create({ data: { ...fileData } });
-          }
-        }
-      };
-      await recursiveFunc(copyFolder);
-      // THE DELETE THE ORIGINAL FOLDER FUNCTION == REFINE THIS TO A BETTER RECURSIVE ASYNC
-      // INCLUDE FILES ON THE DELETE SEQUENCE
-      // PROBABLY JUST COPY THE ABOVE CODE
-      const deleteFolder = async (folderId) => {
-        const folderData = await prisma.folders.findUnique({
-          where: { id: folderId },
-          include: {
-            childFolder: true,
-            allowedUsers: true,
-            storedFiles: true
-          }
-        });
-        if (folderData.storedFiles.length > 0) {
-          for (const f of folderData.storedFiles) {
-            const file = await prisma.files.delete({ where: { id: f.id } });
-          }
-        }
-        if (folderData.childFolder.length == 0) {
-          const folder = await prisma.folders.delete({
-            where: { id: folderId }
-          });
-          return;
-        }
-        for (const f of folderData.childFolder) {
-          await deleteFolder(f.id);
-        }
-        const folder = await prisma.folders.delete({
-          where: { id: folderId }
-        });
-      };
-      await deleteFolder(copyFolder.id);
-      const result = { isSuccess: true, msg: "Folder copy successful" };
-      res.status(200).json(result);
-    } catch (error) {
-      const result = { isSuccess: false, msg: "Folder copy unccessful" };
-      res.status(200).json(result);
-    }
-  } else {
-    const { id, inTrash } = req.body;
-    console.log("NO DUPLICATE KIND OF RESTORE", id, inTrash);
-    let parentDestinationExists = destinationFolderId;
-    if (destinationFolderId != null) {
-      parentDestinationExists = await prisma.folders.findUnique({
-        where: { id: destinationFolderId, inTrash: false }
-      });
-    }
-
-    const folder = await prisma.folders.update({
-      where: { id: id },
-      data: {
-        inTrash: false,
+    const lookUpDuplicate = await prisma.folders.findFirst({
+      where: {
+        name: name,
+        authorId: req.user.id,
         parentFolderId: parentDestinationExists ? destinationFolderId : null
       }
     });
-    const result = { isSuccess: true, msg: "Folder restore successful" };
-    res.status(200).json(result);
+    let generatedName = "";
+    if (lookUpDuplicate) {
+      const getName = async (name) => {
+        return await prisma.folders.findFirst({
+          where: {
+            name: name,
+            authorId: req.user.id,
+            parentFolderId: parentDestinationExists ? destinationFolderId : null
+          }
+        });
+      };
+      let n = 1;
+      let newName = `${name} (${n})`;
+      while (await getName(newName)) {
+        n++;
+        newName = `${name} (${n})`;
+      }
+      generatedName = newName;
+    }
+    await prisma.folders.update({
+      where: { id: id },
+      data: {
+        isDeleted: false,
+        parentFolderId: parentDestinationExists ? destinationFolderId : null,
+        name: generatedName
+      }
+    });
+    console.log("****THIS PART RUNS****");
+  } else {
+    const { id } = req.body;
+    console.log("NO DUPLICATE KIND OF RESTORE");
+
+    await prisma.folders.update({
+      where: { id: id },
+      data: {
+        isDeleted: false,
+        parentFolderId: parentDestinationExists ? destinationFolderId : null
+      }
+    });
   }
+  const updateToTrash = async (paramId) => {
+    const folder = await prisma.folders.findFirst({
+      where: { id: paramId },
+      include: {
+        childFolder: true,
+        storedFiles: true
+      }
+    });
+    await prisma.folders.update({
+      where: { id: folder.id },
+      data: { inTrash: false }
+    });
+    if (folder.childFolder.length > 0) {
+      for (const f of folder.childFolder) {
+        await updateToTrash(f.id);
+      }
+    }
+    if (folder.storedFiles.length > 0) {
+      for (const f of folder.storedFiles) {
+        await prisma.files.update({
+          where: { id: f.id },
+          data: { inTrash: false }
+        });
+      }
+    }
+  };
+  await updateToTrash(id);
+  const result = { isSuccess: true, msg: "Folder restore successful" };
+  res.status(200).json(result);
 });
 
 router.post("/copy", protect, async (req, res, next) => {
@@ -465,15 +404,39 @@ router.put("/move", protect, async (req, res, next) => {
 });
 
 // to update folder inTrash = true/false
-router.put("/to-trash/:id/:inTrash", protect, async (req, res, next) => {
-  const { id, inTrash } = req.params;
-  const folder = await prisma.folders.update({
-    where: { id: id },
-    data: {
-      inTrash: inTrash == "true"
+router.put("/to-trash/:id", protect, async (req, res, next) => {
+  const { id } = req.params;
+  await prisma.folders.update({ where: { id: id }, data: { isDeleted: true } });
+  const updateToTrash = async (paramId) => {
+    // find the folderId
+    const folder = await prisma.folders.findFirst({
+      where: { id: paramId },
+      include: {
+        childFolder: true,
+        storedFiles: true
+      }
+    });
+    await prisma.folders.update({
+      where: { id: folder.id },
+      data: { inTrash: true }
+    });
+    if (folder.childFolder.length > 0) {
+      for (const f of folder.childFolder) {
+        await updateToTrash(f.id);
+      }
     }
-  });
-  res.status(200).json(folder);
+    if (folder.storedFiles.length > 0) {
+      for (const f of folder.storedFiles) {
+        await prisma.files.update({
+          where: { id: f.id },
+          data: { inTrash: true }
+        });
+      }
+    }
+  };
+  await updateToTrash(id);
+  const result = { isSuccess: true, msg: "Folders move to trash successful" };
+  res.status(200).json(result);
 });
 // to update folder isDeleted = true/false
 router.put("/to-deleted/:id/:isDeleted", protect, async (req, res, next) => {

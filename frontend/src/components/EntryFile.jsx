@@ -3,11 +3,25 @@ import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "./SmallIconButton";
 import Icon from "@mdi/react";
+import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
+import MenuFileToTrash from "./menu-items/MenuFileToTrash";
 const EntryFile = ({ file }) => {
+  const [modalHeader, setModalHeader] = useState(() => {
+    return "Empty Header";
+  });
+  const [modalBody, setModalBody] = useState(() => {
+    return <></>;
+  });
+  const context = useOutletContext();
+  // for fixing navbar z-index issues
+  const { setNav } = context;
+  // FOLDER TEMPLATE MODAL
   const {
-    isOpen: isOpenMenu,
-    onOpen: onOpenMenu,
-    onClose: onCloseMenu
+    isOpen: isOpenModal,
+    onOpen: onOpenModal,
+    onClose: onCloseModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -63,8 +77,23 @@ const EntryFile = ({ file }) => {
             <MenuItem>
               <span className="w-5">o</span> Delete
             </MenuItem>
+            <MenuFileToTrash
+              file={file}
+              setModalHeader={setModalHeader}
+              setModalBody={setModalBody}
+              setNav={setNav}
+              onOpenModal={onOpenModal}
+              onCloseModal={onCloseModal}
+            />
           </MenuList>
         </Menu>
+        <ModalDisplayTemplate
+          isOpen={isOpenModal}
+          onClose={onCloseModal}
+          setNav={setNav}
+          modalHeader={modalHeader}
+          modalBody={modalBody}
+        />
       </div>
     </div>
   );

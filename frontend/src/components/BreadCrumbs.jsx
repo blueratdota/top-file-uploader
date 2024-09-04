@@ -109,7 +109,7 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
       <BreadcrumbItem>
         <BreadcrumbLink
           as={Link}
-          to={currentMainPage.link}
+          to={`${currentMainPage.link}?sortAsc=true&sortType=name`}
           className="underline"
         >
           {currentMainPage.name}
@@ -123,7 +123,7 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
             <BreadcrumbItem key={path.id}>
               <BreadcrumbLink
                 as={Link}
-                to={`/home/${currentMainPage.origin}/folder/${path.id}`}
+                to={`/home/${currentMainPage.origin}/folder/${path.id}?sortAsc=true&sortType=name`}
                 className="underline"
               >
                 {path.name}

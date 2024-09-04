@@ -1,13 +1,8 @@
 import {
   mdiFolderOutline,
   mdiDotsVertical,
-  mdiDeleteOutline,
-  mdiRestore,
-  mdiCardTextOutline,
-  mdiRenameOutline,
   mdiContentCopy,
   mdiFolderMoveOutline,
-  mdiDownloadOutline,
   mdiLink,
   mdiShareOutline,
   mdiShareOffOutline
@@ -17,17 +12,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Modal,
-  useDisclosure,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  InputGroup,
-  Input,
-  Spinner
+  useDisclosure
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -56,7 +41,7 @@ const EntryFolder = ({ folder }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // FOLDER DETAILS MODAL
+  // FOLDER TEMPLATE MODAL
   const {
     isOpen: isOpenModal,
     onOpen: onOpenModal,

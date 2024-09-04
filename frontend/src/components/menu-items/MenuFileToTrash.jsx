@@ -3,8 +3,8 @@ import Icon from "@mdi/react";
 import { mdiDeleteOutline } from "@mdi/js";
 import { useOutletContext } from "react-router-dom";
 
-const MenuFolderDelete = ({
-  folder,
+const MenuFileToTrash = ({
+  file,
   setModalHeader,
   setModalBody,
   setNav,
@@ -14,15 +14,16 @@ const MenuFolderDelete = ({
   const context = useOutletContext();
   const toTrash = async (inTrash) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/folders/to-trash/${folder.id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" }
-          // body: JSON.stringify(body)
-        }
-      );
+      const body = {
+        id: file.id,
+        inTrash: inTrash
+      };
+      const response = await fetch(`http://localhost:3000/api/files/to-trash`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
       await context.mutateFiles();
       await context.mutateFolders();
       onCloseModal();
@@ -33,13 +34,13 @@ const MenuFolderDelete = ({
   return (
     <MenuItem
       onClick={() => {
-        console.log(folder);
+        console.log(file);
         setNav(true);
         setModalHeader("Move To Trash");
         setModalBody(
           <>
             <p className="text-base text-justify">
-              {`Are you sure you want to move this folder into the Trash? Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
+              {`Are you sure you want to move this file into the Trash? Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
             </p>
             <div className="mt-8 w-full flex gap-5 justify-center">
               <Button
@@ -75,4 +76,4 @@ const MenuFolderDelete = ({
     </MenuItem>
   );
 };
-export default MenuFolderDelete;
+export default MenuFileToTrash;

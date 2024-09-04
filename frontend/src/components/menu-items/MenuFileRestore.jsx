@@ -3,17 +3,16 @@ import Icon from "@mdi/react";
 import { mdiRestore } from "@mdi/js";
 import { useOutletContext } from "react-router-dom";
 
-const MenuFolderRestore = ({ folder }) => {
+const MenuFileRestore = ({ file }) => {
   const context = useOutletContext();
   const { mutateFiles, mutateFolders } = context;
   const toTrash = async (inTrash) => {
     try {
       const body = {
-        id: folder.id,
-        name: folder.name,
-        destinationFolderId: folder.parentFolderId,
-        parentFolderId: folder.parentFolderId,
-        inTrash: folder.inTrash
+        id: file.id,
+        name: file.name,
+        foldersId: file.foldersId,
+        inTrash: file.inTrash
       };
       const response = await fetch(
         "http://localhost:3000/api/folders/restore",
@@ -28,6 +27,7 @@ const MenuFolderRestore = ({ folder }) => {
       if (result.isSuccess) {
         await mutateFiles();
         await mutateFolders();
+        onClose();
       } else {
       }
     } catch (error) {
@@ -48,4 +48,4 @@ const MenuFolderRestore = ({ folder }) => {
     </MenuItem>
   );
 };
-export default MenuFolderRestore;
+export default MenuFileRestore;
