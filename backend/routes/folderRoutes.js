@@ -34,6 +34,7 @@ router.post("/create", protect, async (req, res, next) => {
 
 router.post("/restore", protect, async (req, res, next) => {
   const { id, name, destinationFolderId, parentFolderId } = req.body;
+
   const destinationDupe = await prisma.folders.findFirst({
     where: {
       name: name,
@@ -43,11 +44,24 @@ router.post("/restore", protect, async (req, res, next) => {
   });
   if (destinationDupe) {
     try {
+      // check if parent folder exists
+      // if doesnt exist, set to null
+      let parentDestinationExists = destinationFolderId;
+      if (destinationFolderId != null) {
+        parentDestinationExists = await prisma.folders.findUnique({
+          where: { id: destinationFolderId }
+        });
+      }
+
+      console.log("parentdestination", parentDestinationExists);
       const copyFolder = {
         id: req.body.id,
-        destinationFolderId: req.body.parentFolderId,
+        destinationFolderId: parentDestinationExists
+          ? parentDestinationExists.id
+          : null,
         name: req.body.name
       };
+      console.log(copyFolder);
       let processedIds = [];
       const recursiveFunc = async (folderObj) => {
         if (processedIds.includes(folderObj.id)) return;
@@ -129,17 +143,20 @@ router.post("/restore", protect, async (req, res, next) => {
             storedFiles: true
           }
         });
+        if (folderData.storedFiles.length > 0) {
+          for (const f of folderData.storedFiles) {
+            const file = await prisma.files.delete({ where: { id: f.id } });
+          }
+        }
         if (folderData.childFolder.length == 0) {
-          console.log(`deleted ${folderData.name}`);
           const folder = await prisma.folders.delete({
             where: { id: folderId }
           });
           return;
         }
-        folderData.childFolder.forEach(async (folder) => {
-          await deleteFolder(folder.id);
-        });
-        console.log(`deleted ${folderData.name}`);
+        for (const f of folderData.childFolder) {
+          await deleteFolder(f.id);
+        }
         const folder = await prisma.folders.delete({
           where: { id: folderId }
         });
@@ -154,15 +171,22 @@ router.post("/restore", protect, async (req, res, next) => {
   } else {
     const { id, inTrash } = req.body;
     console.log("NO DUPLICATE KIND OF RESTORE", id, inTrash);
+    let parentDestinationExists = destinationFolderId;
+    if (destinationFolderId != null) {
+      parentDestinationExists = await prisma.folders.findUnique({
+        where: { id: destinationFolderId, inTrash: false }
+      });
+    }
+
     const folder = await prisma.folders.update({
       where: { id: id },
       data: {
-        inTrash: false
+        inTrash: false,
+        parentFolderId: parentDestinationExists ? destinationFolderId : null
       }
     });
-    console.log(folder);
-
-    res.status(200).json(folder);
+    const result = { isSuccess: true, msg: "Folder restore successful" };
+    res.status(200).json(result);
   }
 });
 
@@ -466,11 +490,9 @@ router.put("/to-deleted/:id/:isDeleted", protect, async (req, res, next) => {
 
 // delete folder
 // needs folderId as url parameter
-router.delete("/delete", protect, async (req, res, next) => {
-  const { id } = req.body;
-  let foldersDeleted = [];
+router.delete("/delete/:id", protect, async (req, res, next) => {
+  const id = req.params.id;
   const deleteFolder = async (folderId) => {
-    foldersDeleted.push(folderId);
     const folderData = await prisma.folders.findUnique({
       where: { id: folderId },
       include: {
@@ -479,17 +501,20 @@ router.delete("/delete", protect, async (req, res, next) => {
         storedFiles: true
       }
     });
+    if (folderData.storedFiles.length > 0) {
+      for (const f of folderData.storedFiles) {
+        const file = await prisma.files.delete({ where: { id: f.id } });
+      }
+    }
     if (folderData.childFolder.length == 0) {
-      console.log(`deleted ${folderData.name}`);
       const folder = await prisma.folders.delete({
         where: { id: folderId }
       });
       return;
     }
-    folderData.childFolder.forEach(async (folder) => {
-      await deleteFolder(folder.id);
-    });
-    console.log(`deleted ${folderData.name}`);
+    for (const f of folderData.childFolder) {
+      await deleteFolder(f.id);
+    }
     const folder = await prisma.folders.delete({
       where: { id: folderId }
     });

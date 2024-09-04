@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 
 const MenuFolderRestore = ({ folder }) => {
   const context = useOutletContext();
-  const { mutateFiles, mutateFolders, folders } = context;
+  const { mutateFiles, mutateFolders } = context;
   const toTrash = async (inTrash) => {
     try {
       const body = {

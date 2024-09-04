@@ -12,12 +12,13 @@ const MenuFolderToTrash = ({
   onCloseModal
 }) => {
   const context = useOutletContext();
-  const deletePermanently = async (isDeleted) => {
+  const { mutateFiles, mutateFolders, folders } = context;
+  const deletePermanently = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/folders/to-deleted/${folder.id}/${isDeleted}`,
+        `http://localhost:3000/api/folders/delete/${folder.id}`,
         {
-          method: "PUT",
+          method: "DELETE",
           credentials: "include",
           headers: { "Content-Type": "application/json" }
           // body: JSON.stringify(body)
@@ -59,7 +60,7 @@ const MenuFolderToTrash = ({
                 variant="solid"
                 className="bg-red-500 w-[120px] py-1  text-extWhite"
                 onClick={() => {
-                  deletePermanently(true);
+                  deletePermanently();
                 }}
               >
                 Delete
