@@ -26,4 +26,5 @@
 
 # tocontinue
 
-- convert delete,to-trash,restore menu template modals to individual modals for loading
+- move,share,unshare and other menu items for entryFile
+- filtering and search

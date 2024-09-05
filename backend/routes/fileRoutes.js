@@ -7,6 +7,7 @@ import { protect } from "../middleware/authMiddleware.js";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+// FILE UPLOAD #######################################
 router.post(
   "/upload",
   protect,
@@ -57,6 +58,78 @@ router.post(
     }
   }
 );
+// FILE COPY #######################################
+// check if destination folder has a file that contains a file with the same name
+// rename the copied file to fileName (1) >> continue copy
+router.post("/copy", protect, async (req, res, next) => {
+  const fileData = {
+    path: req.body.path,
+    name: req.body.name,
+    fileSize: parseInt(req.body.fileSize),
+    authorId: req.user.id,
+    foldersId: req.body.newFolder,
+    destinationFolderId: req.body.destinationFolderId
+  };
+  try {
+    const lookUpDuplicate = await prisma.files.findFirst({
+      where: {
+        name: fileData.name,
+        authorId: fileData.authorId,
+        foldersId: fileData.destinationFolderId
+          ? fileData.destinationFolderId
+          : null,
+        inTrash: false
+      }
+    });
+    let generatedName = "";
+    if (lookUpDuplicate) {
+      const getName = async (name) => {
+        return await prisma.files.findFirst({
+          where: {
+            path: fileData.path,
+            name: name,
+            authorId: fileData.authorId,
+            foldersId: fileData.destinationFolderId
+              ? fileData.destinationFolderId
+              : null,
+            inTrash: false
+          }
+        });
+      };
+
+      let n = 1;
+      let newName = `Copy(${n}) ${fileData.name}`;
+      while (await getName(newName)) {
+        n++;
+        newName = `Copy(${n}) ${fileData.name}`;
+      }
+      generatedName = newName;
+    }
+    console.log(fileData);
+    const newFile = await prisma.files.create({
+      data: {
+        path: fileData.path,
+        name: (() => {
+          if (lookUpDuplicate) {
+            return generatedName;
+          } else {
+            return fileData.name;
+          }
+        })(),
+        fileSize: fileData.fileSize,
+        authorId: req.user.id,
+        foldersId: fileData.destinationFolderId || null
+      }
+    });
+    console.log(newFile);
+    const result = { isSuccess: true, msg: "File copy successful" };
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    const result = { isSuccess: false, msg: "File copy unccessful" };
+    res.status(200).json(result);
+  }
+});
 router.put("/to-trash", async (req, res, next) => {
   const { id, inTrash } = req.body;
   const file = await prisma.files.update({
@@ -68,11 +141,12 @@ router.put("/to-trash", async (req, res, next) => {
   });
   res.status(200).json(file);
 });
-router.put("/restore", async (req, res, next) => {
-  // if destination has no same file name, simple inTrash=false update ***DONE
-  // if destination doesnt exist, set destination to null, inTrash=false ***DONE
-  // if destination exist, inTrash=false
-  // if destination has same file name, update name to fileName (n)
+// FILE RESTORE #######################################
+// if destination has no same file name, simple inTrash=false update ***DONE
+// if destination doesnt exist, set destination to null, inTrash=false ***DONE
+// if destination exist, inTrash=false
+// if destination has same file name, update name to fileName (n)
+router.put("/restore", protect, async (req, res, next) => {
   const { id, name, foldersId, inTrash } = req.body;
   let destinationExists = foldersId;
   if (destinationExists != null) {
@@ -108,10 +182,10 @@ router.put("/restore", async (req, res, next) => {
         });
       };
       let n = 1;
-      let newName = `${name} (${n})`;
+      let newName = `Copy(${n}) ${name}`;
       while (await getName(newName)) {
         n++;
-        newName = `${name} (${n})`;
+        newName = `Copy(${n}) ${name}`;
       }
       generatedName = newName;
     }
@@ -119,6 +193,7 @@ router.put("/restore", async (req, res, next) => {
       where: { id: id },
       data: {
         isDeleted: false,
+        inTrash: false,
         foldersId: destinationExists ? foldersId : null,
         name: generatedName
       }
@@ -138,6 +213,33 @@ router.put("/restore", async (req, res, next) => {
   const result = { isSuccess: true, msg: "File restore successful" };
   res.status(200).json(result);
 });
+// FILE RENAME #######################################
+// check if file name exists on the folder, proceed rename if false
+// filetype (.exe,.json,.txt) maintain >> to do
+router.put("/rename", protect, async (req, res, next) => {
+  const { id, name, newName, foldersId } = req.body;
+  const checkDuplicate = await prisma.files.findFirst({
+    where: {
+      authorId: req.user.id,
+      foldersId: foldersId,
+      name: newName,
+      inTrash: false
+    }
+  });
+  if (!checkDuplicate) {
+    const folder = await prisma.files.update({
+      where: { id: id },
+      data: {
+        name: newName
+      }
+    });
+    const result = { isSuccess: true, msg: "File rename successful" };
+    res.status(200).json(result);
+  } else {
+    const result = { isSuccess: false, msg: "File rename unsuccessful" };
+    res.status(409).json(result);
+  }
+});
 // get all files owned by logged in user
 router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   const sortOrder = req.params.sortOrder;
@@ -156,6 +258,10 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   // console.log("#####fileroutes", sortSettings);
   const files = await prisma.files.findMany({
     where: { authorId: req.user.id },
+    include: {
+      author: { select: { name: true } },
+      allowedUsers: { select: { name: true } }
+    },
     orderBy: sortSettings
   });
 

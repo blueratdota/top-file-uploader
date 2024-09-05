@@ -492,11 +492,4 @@ router.delete("/delete/:id", protect, async (req, res, next) => {
   res.status(200).json({ msg: `deleted folder ${id}` });
 });
 
-// deletion implementation
-// WHEN DELETING A FOLDER > update to isTrash=true
-// but subfolders will not have isTrash=true > they cant be accessed since their folder will not be displayed if they have isTrash=true
-// @<Trash/> all with isTrash=true will be displayed
-// @<Trash/> change the displayed components to be unable to be clicked and limit menu options
-//
-
 export default router;

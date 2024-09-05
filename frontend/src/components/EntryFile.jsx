@@ -1,4 +1,10 @@
-import { mdiFileOutline, mdiDotsVertical } from "@mdi/js";
+import {
+  mdiFileOutline,
+  mdiDotsVertical,
+  mdiCardTextOutline,
+  mdiRenameOutline,
+  mdiContentCopy
+} from "@mdi/js";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import SmallIconBtn from "./SmallIconButton";
@@ -8,27 +14,36 @@ import { useOutletContext } from "react-router-dom";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import MenuFileToTrash from "./menu-items/MenuFileToTrash";
 import ModalToTrashFile from "./menu-items/ModalToTrashFile";
+import ModalDetailsFile from "./menu-items/ModalDetailsFile";
+import ModalRenameFile from "./menu-items/ModalRenameFile";
+import ModalCopyFile from "./menu-items/ModalCopyFile";
 const EntryFile = ({ file }) => {
-  const [modalHeader, setModalHeader] = useState(() => {
-    return "Empty Header";
-  });
-  const [modalBody, setModalBody] = useState(() => {
-    return <></>;
-  });
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // FILE TEMPLATE MODAL
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal
-  } = useDisclosure();
   // FILE TO-TRASH MODAL
   const {
     isOpen: isOpenTrashModal,
     onOpen: onOpenTrashModal,
     onClose: onCloseTrashModal
+  } = useDisclosure();
+  // FILE DETAILS MODAL
+  const {
+    isOpen: isOpenDetailsModal,
+    onOpen: onOpenDetailsModal,
+    onClose: onCloseDetailsModal
+  } = useDisclosure();
+  // FILE RENAME MODAL
+  const {
+    isOpen: isOpenRenameModal,
+    onOpen: onOpenRenameModal,
+    onClose: onCloseRenameModal
+  } = useDisclosure();
+  // FILE COPY MODAL
+  const {
+    isOpen: isOpenCopyModal,
+    onOpen: onOpenCopyModal,
+    onClose: onCloseCopyModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -47,13 +62,13 @@ const EntryFile = ({ file }) => {
       </div>
       <div className="w-11">
         <Menu>
-          <MenuButton className="scale-[0.5] w-[46px] text-white z-0">
-            <SmallIconBtn
-              icon={mdiDotsVertical}
-              onClick={() => {
-                console.log("open sort");
-              }}
-            ></SmallIconBtn>
+          <MenuButton
+            className="scale-[0.5] w-[46px] text-white z-0"
+            onClick={() => {
+              console.log(file);
+            }}
+          >
+            <SmallIconBtn icon={mdiDotsVertical}></SmallIconBtn>
           </MenuButton>
           <MenuList
             gap={10}
@@ -72,17 +87,38 @@ const EntryFile = ({ file }) => {
             <MenuItem>
               <span className="w-5">o</span> Move to...
             </MenuItem>
-            <MenuItem>
-              <span className="w-5">o</span> Copy to...
+            <MenuItem
+              onClick={() => {
+                onOpenCopyModal();
+                setNav(true);
+              }}
+            >
+              <span className="w-5 mr-2">
+                <Icon path={mdiContentCopy} />
+              </span>{" "}
+              Copy to...
             </MenuItem>
-            <MenuItem>
-              <span className="w-5">o</span> Rename
+            <MenuItem
+              onClick={() => {
+                onOpenRenameModal();
+                setNav(true);
+              }}
+            >
+              <span className="w-5 mr-2">
+                <Icon path={mdiRenameOutline} />
+              </span>{" "}
+              Rename
             </MenuItem>
-            <MenuItem>
-              <span className="w-5">o</span> Details
-            </MenuItem>
-            <MenuItem>
-              <span className="w-5">o</span> Delete
+            <MenuItem
+              onClick={() => {
+                onOpenDetailsModal();
+                setNav(true);
+              }}
+            >
+              <span className="w-5 mr-2">
+                <Icon path={mdiCardTextOutline} />
+              </span>{" "}
+              Details
             </MenuItem>
             <MenuFileToTrash
               file={file}
@@ -91,16 +127,31 @@ const EntryFile = ({ file }) => {
             />
           </MenuList>
         </Menu>
-        <ModalDisplayTemplate
-          isOpen={isOpenModal}
-          onClose={onCloseModal}
-          setNav={setNav}
-          modalHeader={modalHeader}
-          modalBody={modalBody}
-        />
+        {/* FILE TO TRASH */}
         <ModalToTrashFile
           isOpen={isOpenTrashModal}
           onClose={onCloseTrashModal}
+          file={file}
+          setNav={setNav}
+        />
+        {/* FILE DETAILS */}
+        <ModalDetailsFile
+          isOpen={isOpenDetailsModal}
+          onClose={onCloseDetailsModal}
+          file={file}
+          setNav={setNav}
+        />
+        {/* FILE RENAME */}
+        <ModalRenameFile
+          isOpen={isOpenRenameModal}
+          onClose={onCloseRenameModal}
+          file={file}
+          setNav={setNav}
+        />
+        {/* FILE COPY */}
+        <ModalCopyFile
+          isOpen={isOpenCopyModal}
+          onClose={onCloseCopyModal}
           file={file}
           setNav={setNav}
         />

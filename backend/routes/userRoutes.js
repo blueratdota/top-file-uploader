@@ -79,6 +79,7 @@ router.get("/profile", protect, async (req, res, next) => {
       include: {
         ownedFolders: true,
         sharedFolders: true,
+        sharedFiles: true,
         Files: true
       }
     });

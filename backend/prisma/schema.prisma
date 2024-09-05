@@ -26,6 +26,7 @@ model User {
   Files         Files[]
   ownedFolders  Folders[] @relation("folderOwner")
   sharedFolders Folders[] @relation("folderViewers")
+  sharedFiles   Files[]   @relation("fileViewers")
 }
 
 model Folders {
@@ -59,6 +60,5 @@ model Files {
   fileSize      Int
   inTrash       Boolean  @default(false)
   isDeleted     Boolean  @default(false)
-
-  @@unique([name, foldersId])
+  allowedUsers  User[]   @relation("fileViewers")
 }
