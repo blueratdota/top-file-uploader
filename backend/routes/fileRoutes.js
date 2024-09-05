@@ -62,7 +62,8 @@ router.put("/to-trash", async (req, res, next) => {
   const file = await prisma.files.update({
     where: { id: id },
     data: {
-      inTrash: true
+      inTrash: true,
+      isDeleted: true
     }
   });
   res.status(200).json(file);
@@ -88,18 +89,55 @@ router.put("/restore", async (req, res, next) => {
   });
 
   if (destinationDupe) {
-  } else {
+    const lookUpDuplicate = await prisma.files.findFirst({
+      where: {
+        name: name,
+        authorId: req.user.id,
+        foldersId: destinationExists ? foldersId : null
+      }
+    });
+    let generatedName = "";
+    if (lookUpDuplicate) {
+      const getName = async (name) => {
+        return await prisma.files.findFirst({
+          where: {
+            name: name,
+            authorId: req.user.id,
+            foldersId: destinationExists ? foldersId : null
+          }
+        });
+      };
+      let n = 1;
+      let newName = `${name} (${n})`;
+      while (await getName(newName)) {
+        n++;
+        newName = `${name} (${n})`;
+      }
+      generatedName = newName;
+    }
     await prisma.files.update({
       where: { id: id },
       data: {
-        folders: destinationExists ? foldersId : null
+        isDeleted: false,
+        foldersId: destinationExists ? foldersId : null,
+        name: generatedName
+      }
+    });
+    console.log("****THIS PART RUNS****");
+  } else {
+    console.log("NO DUPLICATE KIND OF file RESTORE");
+    await prisma.files.update({
+      where: { id: id },
+      data: {
+        isDeleted: false,
+        inTrash: false,
+        foldersId: destinationExists ? foldersId : null
       }
     });
   }
   const result = { isSuccess: true, msg: "File restore successful" };
   res.status(200).json(result);
 });
-
 // get all files owned by logged in user
 router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   const sortOrder = req.params.sortOrder;
@@ -137,6 +175,16 @@ router.get("/download/:id", async (req, res, next) => {
   res.download(file.path, file.name);
 });
 
-router.post("/move-to-trash", async (req, res, next) => {});
+router.delete("/delete/:id", async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    await prisma.files.delete({ where: { id: id } });
+    const result = { isSuccess: true, msg: "File delete successful" };
+    res.status(200).json(result);
+  } catch (error) {
+    const result = { isSuccess: false, msg: "File delete unsuccessful" };
+    res.status(200).json(result);
+  }
+});
 
 export default router;

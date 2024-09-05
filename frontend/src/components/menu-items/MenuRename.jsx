@@ -4,20 +4,11 @@ import { mdiRenameOutline } from "@mdi/js";
 import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 
-const MenuRename = ({
-  folder,
-  setModalHeader,
-  setModalBody,
-  setNav,
-  onOpenRenameModal,
-  onCloseRenameModal
-}) => {
+const MenuRename = ({ setNav, onOpenRenameModal }) => {
   const context = useOutletContext();
-
   return (
     <MenuItem
       onClick={() => {
-        console.log(folder);
         setNav(true);
         onOpenRenameModal();
       }}

@@ -6,7 +6,7 @@ import { useOutletContext } from "react-router-dom";
 const MenuFileRestore = ({ file }) => {
   const context = useOutletContext();
   const { mutateFiles, mutateFolders } = context;
-  const toTrash = async (inTrash) => {
+  const toTrash = async () => {
     try {
       const body = {
         id: file.id,
@@ -14,20 +14,16 @@ const MenuFileRestore = ({ file }) => {
         foldersId: file.foldersId,
         inTrash: file.inTrash
       };
-      const response = await fetch(
-        "http://localhost:3000/api/folders/restore",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/files/restore", {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
       const result = await response.json();
       if (result.isSuccess) {
         await mutateFiles();
         await mutateFolders();
-        onClose();
       } else {
       }
     } catch (error) {
@@ -37,8 +33,8 @@ const MenuFileRestore = ({ file }) => {
   return (
     <MenuItem
       onClick={() => {
-        console.log(folder);
-        toTrash(false);
+        console.log(file);
+        toTrash();
       }}
     >
       <span className="w-5 mr-2">

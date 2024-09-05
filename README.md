@@ -25,3 +25,5 @@
 - stay logged-in on the website (use local storage)
 
 # tocontinue
+
+- convert delete,to-trash,restore menu template modals to individual modals for loading

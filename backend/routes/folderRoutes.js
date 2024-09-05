@@ -112,7 +112,9 @@ router.post("/restore", protect, async (req, res, next) => {
     });
     if (folder.childFolder.length > 0) {
       for (const f of folder.childFolder) {
-        await updateToTrash(f.id);
+        if (f.isDeleted == false) {
+          await updateToTrash(f.id);
+        }
       }
     }
     if (folder.storedFiles.length > 0) {
@@ -466,7 +468,9 @@ router.delete("/delete/:id", protect, async (req, res, next) => {
     });
     if (folderData.storedFiles.length > 0) {
       for (const f of folderData.storedFiles) {
-        const file = await prisma.files.delete({ where: { id: f.id } });
+        if (f.isDeleted != true) {
+          const file = await prisma.files.delete({ where: { id: f.id } });
+        }
       }
     }
     if (folderData.childFolder.length == 0) {
@@ -476,7 +480,9 @@ router.delete("/delete/:id", protect, async (req, res, next) => {
       return;
     }
     for (const f of folderData.childFolder) {
-      await deleteFolder(f.id);
+      if (f.isDeleted != true) {
+        await deleteFolder(f.id);
+      }
     }
     const folder = await prisma.folders.delete({
       where: { id: folderId }

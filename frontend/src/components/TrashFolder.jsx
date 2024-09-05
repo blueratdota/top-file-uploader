@@ -39,11 +39,7 @@ const TrashFolder = ({ folder }) => {
     return "Empty Header";
   });
   const [modalBody, setModalBody] = useState(() => {
-    return (
-      <>
-        <div>123</div>
-      </>
-    );
+    return <></>;
   });
   const context = useOutletContext();
   const { setNav } = context;
@@ -86,15 +82,7 @@ const TrashFolder = ({ folder }) => {
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuFolderRestore
-            onClick={onOpenModal}
-            folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
-            setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
-          />
+          <MenuFolderRestore folder={folder} />
           <MenuFolderDelete
             onClick={onOpenModal}
             folder={folder}
