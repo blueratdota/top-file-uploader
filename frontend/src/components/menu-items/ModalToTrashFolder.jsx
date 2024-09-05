@@ -12,20 +12,21 @@ import {
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-const ModalDeleteFile = ({ isOpen, onClose, file }) => {
+const ModalToTrashFolder = ({ isOpen, onClose, folder }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [queryMessage, setQueryMessage] = useState("");
   const context = useOutletContext();
   const { mutateFiles, mutateFolders, setNav } = context;
-  const deletePermanently = async () => {
+  const toTrash = async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3000/api/files/delete/${file.id}`,
+        `http://localhost:3000/api/folders/to-trash/${folder.id}`,
         {
-          method: "DELETE",
+          method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" }
+          // body: JSON.stringify(body)
         }
       );
       await mutateFiles();
@@ -42,8 +43,8 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
         <ModalOverlay
           className="bg-gray-400 bg-opacity-40 backdrop-blur"
           onClick={() => {
-            context.setNav(false);
-            onCloseModal();
+            setNav(false);
+            onClose();
           }}
         />
         <ModalContent
@@ -63,12 +64,12 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
             <div>
               <div>
                 <p className="text-base text-justify">
-                  {`Are you sure you want to delete this file permanently? Folders and files deleted permanently cannot be recovered`}{" "}
+                  {`Are you sure you want to move this folder into the Trash? Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
                 </p>
               </div>
               <div className="mt-8 w-full flex gap-5 justify-center">
                 {isLoading ? (
-                  <div>Deleting...</div>
+                  <div>Moving to Trash...</div>
                 ) : (
                   <>
                     <Button
@@ -81,11 +82,11 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={deletePermanently}
+                      onClick={toTrash}
                       variant="solid"
-                      className="bg-red-600 w-[120px] py-1  text-extWhite"
+                      className="bg-red-400  w-[120px] py-1  text-extWhite"
                     >
-                      Delete
+                      Trash
                     </Button>
                   </>
                 )}
@@ -97,4 +98,4 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
     </>
   );
 };
-export default ModalDeleteFile;
+export default ModalToTrashFolder;

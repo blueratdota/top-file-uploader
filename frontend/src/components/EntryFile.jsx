@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import MenuFileToTrash from "./menu-items/MenuFileToTrash";
+import ModalToTrashFile from "./menu-items/ModalToTrashFile";
 const EntryFile = ({ file }) => {
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
@@ -17,11 +18,17 @@ const EntryFile = ({ file }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // FOLDER TEMPLATE MODAL
+  // FILE TEMPLATE MODAL
   const {
     isOpen: isOpenModal,
     onOpen: onOpenModal,
     onClose: onCloseModal
+  } = useDisclosure();
+  // FILE TO-TRASH MODAL
+  const {
+    isOpen: isOpenTrashModal,
+    onOpen: onOpenTrashModal,
+    onClose: onCloseTrashModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -79,11 +86,8 @@ const EntryFile = ({ file }) => {
             </MenuItem>
             <MenuFileToTrash
               file={file}
-              setModalHeader={setModalHeader}
-              setModalBody={setModalBody}
               setNav={setNav}
-              onOpenModal={onOpenModal}
-              onCloseModal={onCloseModal}
+              onOpenTrashModal={onOpenTrashModal}
             />
           </MenuList>
         </Menu>
@@ -93,6 +97,12 @@ const EntryFile = ({ file }) => {
           setNav={setNav}
           modalHeader={modalHeader}
           modalBody={modalBody}
+        />
+        <ModalToTrashFile
+          isOpen={isOpenTrashModal}
+          onClose={onCloseTrashModal}
+          file={file}
+          setNav={setNav}
         />
       </div>
     </div>

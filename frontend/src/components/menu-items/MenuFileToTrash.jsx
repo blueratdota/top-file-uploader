@@ -1,78 +1,18 @@
 import { MenuItem, Button } from "@chakra-ui/react";
 import Icon from "@mdi/react";
 import { mdiDeleteOutline } from "@mdi/js";
-import { useOutletContext } from "react-router-dom";
-
-const MenuFileToTrash = ({
-  file,
-  setModalHeader,
-  setModalBody,
-  setNav,
-  onOpenModal,
-  onCloseModal
-}) => {
-  const context = useOutletContext();
-  const toTrash = async (inTrash) => {
-    try {
-      const body = {
-        id: file.id,
-        inTrash: inTrash
-      };
-      const response = await fetch(`http://localhost:3000/api/files/to-trash`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      await context.mutateFiles();
-      await context.mutateFolders();
-      onCloseModal();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const MenuFileToTrash = ({ setNav, onOpenTrashModal }) => {
   return (
     <MenuItem
       onClick={() => {
-        console.log(file);
         setNav(true);
-        setModalHeader("Move To Trash");
-        setModalBody(
-          <>
-            <p className="text-base text-justify">
-              {`Are you sure you want to move this file into the Trash? Folders and files stored at the trash will be automatically deleted permanently after 30 days`}{" "}
-            </p>
-            <div className="mt-8 w-full flex gap-5 justify-center">
-              <Button
-                variant="solid"
-                className="bg-slate-300 w-[120px] py-1  text-extWhite"
-                onClick={() => {
-                  onCloseModal();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="solid"
-                className="bg-red-500 w-[120px] py-1  text-extWhite"
-                onClick={() => {
-                  toTrash(true);
-                }}
-              >
-                To Trash
-              </Button>
-            </div>
-          </>
-        );
-        onOpenModal();
-        // toTrash(true);
+        onOpenTrashModal();
       }}
     >
       <span className="w-5 mr-2">
-        <Icon path={mdiDeleteOutline} />
+        <Icon className="text-red-400" path={mdiDeleteOutline} />
       </span>{" "}
-      Move to Trash
+      <p className="text-red-400">Move to Trash</p>
     </MenuItem>
   );
 };

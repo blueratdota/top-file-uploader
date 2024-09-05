@@ -32,6 +32,8 @@ import { Link, useOutletContext } from "react-router-dom";
 import Icon from "@mdi/react";
 import MenuFolderDelete from "./menu-items/MenuFolderDelete";
 import MenuFolderRestore from "./menu-items/MenuFolderRestore";
+import ModalDeleteFolder from "./menu-items/ModalDeleteFolder";
+import ModalRestoreFolder from "./menu-items/ModalRestoreFolder";
 
 const TrashFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,13 +45,18 @@ const TrashFolder = ({ folder }) => {
   });
   const context = useOutletContext();
   const { setNav } = context;
-  // for file/folder details modal
+  // for delete modal
   const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal
+    isOpen: isOpenDeleteModal,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal
   } = useDisclosure();
-
+  // for restore modal
+  const {
+    isOpen: isOpenRestoreModal,
+    onOpen: onOpenRestoreModal,
+    onClose: onCloseRestoreModal
+  } = useDisclosure();
   return (
     <div className="flex items-center justify-between h-11 w-full py-8 border-b">
       <div className="w-14 px-2">
@@ -82,42 +89,28 @@ const TrashFolder = ({ folder }) => {
           zIndex={1}
           className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
         >
-          <MenuFolderRestore folder={folder} />
-          <MenuFolderDelete
-            onClick={onOpenModal}
-            folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
+          <MenuFolderRestore
             setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
+            onOpenRestoreModal={onOpenRestoreModal}
+          />
+          <MenuFolderDelete
+            setNav={setNav}
+            onOpenDeleteModal={onOpenDeleteModal}
           />
         </MenuList>
       </Menu>
-
-      <Modal isOpen={isOpenModal} onClose={onCloseModal}>
-        <ModalOverlay
-          className="bg-gray-400 bg-opacity-40 backdrop-blur"
-          onClick={() => {
-            context.setNav(false);
-            onCloseModal();
-          }}
-        />
-        <ModalContent
-          maxW={"500px"}
-          className="absolute bg-white top-52 mx-auto"
-        >
-          <ModalHeader className="bg-extGreen text-white uppercase px-2 py-1 flex justify-between items-center text-xl">
-            <p>{modalHeader}</p>
-            <ModalCloseButton
-              onClick={() => {
-                context.setNav(false);
-              }}
-            />
-          </ModalHeader>
-          <ModalBody className="p-4 text-xl">{modalBody}</ModalBody>
-        </ModalContent>
-      </Modal>
+      <ModalDeleteFolder
+        isOpen={isOpenDeleteModal}
+        onClose={onCloseDeleteModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      <ModalRestoreFolder
+        isOpen={isOpenRestoreModal}
+        onClose={onCloseRestoreModal}
+        folder={folder}
+        setNav={setNav}
+      />
     </div>
   );
 };

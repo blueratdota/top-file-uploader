@@ -1,12 +1,7 @@
 import { MenuItem, Button } from "@chakra-ui/react";
 import Icon from "@mdi/react";
 import { mdiDeleteOutline } from "@mdi/js";
-import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
-
 const MenuFileDelete = ({ setNav, onOpenDeleteModal }) => {
-  const context = useOutletContext();
-
   return (
     <MenuItem
       onClick={() => {

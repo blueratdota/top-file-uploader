@@ -29,9 +29,10 @@ import ModalShareFolder from "./menu-items/ModalShareFolder";
 import ModalUnshareFolder from "./menu-items/ModalUnshareFolder";
 import ModalMoveFolder from "./menu-items/ModalMoveFolder";
 import ModalCopyFolder from "./menu-items/ModalCopyFolder";
+import ModalToTrashFolder from "./menu-items/ModalToTrashFolder";
+import ModalDetailsFolder from "./menu-items/ModalDetailsFolder";
 
 const EntryFolder = ({ folder }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
   });
@@ -41,12 +42,6 @@ const EntryFolder = ({ folder }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // FOLDER TEMPLATE MODAL
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal
-  } = useDisclosure();
   // RENAME MODAL
   const {
     isOpen: isOpenRenameModal,
@@ -77,6 +72,18 @@ const EntryFolder = ({ folder }) => {
     onOpen: onOpenCopyModal,
     onClose: onCloseCopyModal
   } = useDisclosure();
+  // TRASH FOLDER MODAL
+  const {
+    isOpen: isOpenTrashModal,
+    onOpen: onOpenTrashModal,
+    onClose: onCloseTrashModal
+  } = useDisclosure();
+  // DETAILS FOLDER MODAL
+  const {
+    isOpen: isOpenDetailsModal,
+    onOpen: onOpenDetailsModal,
+    onClose: onCloseDetailsModal
+  } = useDisclosure();
 
   const existingFolders = (() => {
     let folderCount = 0;
@@ -100,19 +107,14 @@ const EntryFolder = ({ folder }) => {
   })();
 
   return (
-    <div
-      className="flex items-center justify-between h-11 w-full py-8 border-b"
-      // onClick={() => {
-      //   console.log(folder);
-      // }}
-    >
+    <div className="flex items-center justify-between h-11 w-full py-8 border-b">
       <Link
         className="flex items-center w-full"
         onClick={() => {}}
         to={`/home/my-files/folder/${folder.id}?sortAsc=true&sortType=name`}
       >
         <div className="w-14 px-2">
-          <Icon path={mdiFolderOutline} className="w-full"></Icon>
+          <Icon path={mdiFolderOutline} className="w-full" />
         </div>
         <div className="flex-1">
           <div>{folder.name}</div>
@@ -173,16 +175,12 @@ const EntryFolder = ({ folder }) => {
           <MenuRename
             folder={folder}
             onOpenRenameModal={onOpenRenameModal}
-            onCloseRenameModal={onCloseRenameModal}
             setNav={setNav}
           />
           <MenuDetails
             folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
             setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
+            onOpenDetailsModal={onOpenDetailsModal}
           />
           <MenuItem
             onClick={() => {
@@ -191,28 +189,17 @@ const EntryFolder = ({ folder }) => {
             }}
           >
             <span className="w-5 mr-2">
-              <Icon path={mdiShareOffOutline} className="text-red-600" />
+              <Icon path={mdiShareOffOutline} />
             </span>{" "}
             Unshare
           </MenuItem>
           <MenuFolderToTrash
             folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
             setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
+            onOpenTrashModal={onOpenTrashModal}
           />
         </MenuList>
       </Menu>
-      {/* STATE BASED MODAL */}
-      <ModalDisplayTemplate
-        isOpen={isOpenModal}
-        onClose={onCloseModal}
-        setNav={context.setNav}
-        modalHeader={modalHeader}
-        modalBody={modalBody}
-      />
       {/* RENAME MODAL */}
       <ModalRenameFolder
         isOpen={isOpenRenameModal}
@@ -244,6 +231,20 @@ const EntryFolder = ({ folder }) => {
       <ModalCopyFolder
         isOpen={isOpenCopyModal}
         onClose={onCloseCopyModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* TRASH FOLDER MODAL */}
+      <ModalToTrashFolder
+        isOpen={isOpenTrashModal}
+        onClose={onCloseTrashModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* DETAILS FOLDER MODAL */}
+      <ModalDetailsFolder
+        isOpen={isOpenDetailsModal}
+        onClose={onCloseDetailsModal}
         folder={folder}
         setNav={setNav}
       />

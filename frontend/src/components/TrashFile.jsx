@@ -9,9 +9,9 @@ import MenuFileRestore from "./menu-items/MenuFileRestore";
 import MenuFileDelete from "./menu-items/MenuFileDelete";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalDeleteFile from "./menu-items/ModalDeleteFile";
+import ModalRestoreFile from "./menu-items/ModalRestoreFile";
 
 const TrashFile = ({ file }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
   });
@@ -25,6 +25,12 @@ const TrashFile = ({ file }) => {
     isOpen: isOpenDeleteModal,
     onOpen: onOpenDeleteModal,
     onClose: onCloseDeleteModal
+  } = useDisclosure();
+  // for file restore modal
+  const {
+    isOpen: isOpenRestoreModal,
+    onOpen: onOpenRestoreModal,
+    onClose: onCloseRestoreModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -56,6 +62,11 @@ const TrashFile = ({ file }) => {
             zIndex={9999}
             className="bg-extGray text-extWhite p-2 pr-7 border border-gray-200 border-opacity-20 [&>button]:py-0.5"
           >
+            <MenuFileRestore
+              file={file}
+              setNav={setNav}
+              onOpenRestoreModal={onOpenRestoreModal}
+            />
             <MenuFileDelete
               file={file}
               setNav={setNav}
@@ -63,6 +74,12 @@ const TrashFile = ({ file }) => {
             />
           </MenuList>
         </Menu>
+        <ModalRestoreFile
+          isOpen={isOpenRestoreModal}
+          onClose={onCloseRestoreModal}
+          file={file}
+          setNav={setNav}
+        />
         <ModalDeleteFile
           isOpen={isOpenDeleteModal}
           onClose={onCloseDeleteModal}

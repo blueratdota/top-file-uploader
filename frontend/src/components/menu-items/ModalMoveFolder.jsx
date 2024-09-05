@@ -47,7 +47,7 @@ const ModalMoveFolder = ({ isOpen, onClose, folder }) => {
   };
   genPath(currFolder);
   const displayArr = folders.map((f) => {
-    if (f.parentFolderId == currFolder) {
+    if (f.parentFolderId == currFolder && f.inTrash == false) {
       if (f.id == folder.id) {
         displayableFolders++;
         return (

@@ -12,26 +12,33 @@ import {
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-const ModalDeleteFile = ({ isOpen, onClose, file }) => {
+const ModalRestoreFile = ({ isOpen, onClose, file }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [queryMessage, setQueryMessage] = useState("");
   const context = useOutletContext();
-  const { mutateFiles, mutateFolders, setNav } = context;
-  const deletePermanently = async () => {
+  const { mutateFiles, mutateFolders } = context;
+  const restoreFile = async () => {
     try {
+      const body = {
+        id: file.id,
+        name: file.name,
+        foldersId: file.foldersId,
+        inTrash: file.inTrash
+      };
       setIsLoading(true);
-      const response = await fetch(
-        `http://localhost:3000/api/files/delete/${file.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" }
-        }
-      );
-      await mutateFiles();
-      await mutateFolders();
-      setIsLoading(false);
-      onClose();
+      const response = await fetch("http://localhost:3000/api/files/restore", {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const result = await response.json();
+      if (result.isSuccess) {
+        await mutateFiles();
+        await mutateFolders();
+        setIsLoading(false);
+        onClose();
+      } else {
+      }
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +61,7 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
             <p>{"Rename Folder"}</p>
             <ModalCloseButton
               onClick={() => {
-                setNav(false);
+                context.setNav(false);
               }}
             />
           </ModalHeader>
@@ -63,12 +70,12 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
             <div>
               <div>
                 <p className="text-base text-justify">
-                  {`Are you sure you want to delete this file permanently? Folders and files deleted permanently cannot be recovered`}{" "}
+                  {`If this file's original folder doesn't exists, it will be restored on the root folder.`}{" "}
                 </p>
               </div>
               <div className="mt-8 w-full flex gap-5 justify-center">
                 {isLoading ? (
-                  <div>Deleting...</div>
+                  <div>Restoring...</div>
                 ) : (
                   <>
                     <Button
@@ -81,11 +88,11 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
                       Cancel
                     </Button>
                     <Button
-                      onClick={deletePermanently}
+                      onClick={restoreFile}
                       variant="solid"
-                      className="bg-red-600 w-[120px] py-1  text-extWhite"
+                      className="bg-green-600 w-[120px] py-1  text-extWhite"
                     >
-                      Delete
+                      Restore
                     </Button>
                   </>
                 )}
@@ -97,4 +104,4 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
     </>
   );
 };
-export default ModalDeleteFile;
+export default ModalRestoreFile;
