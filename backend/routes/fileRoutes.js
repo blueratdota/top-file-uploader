@@ -240,6 +240,53 @@ router.put("/rename", protect, async (req, res, next) => {
     res.status(409).json(result);
   }
 });
+
+// FILE MOVE #######################################
+// check if destination has a file with the same name
+// simply throw error message if contains duplicate file name
+router.put("/move", protect, async (req, res, next) => {
+  const fileData = {
+    id: req.body.id,
+    path: req.body.path,
+    name: req.body.name,
+    fileSize: parseInt(req.body.fileSize),
+    authorId: req.user.id,
+    foldersId: req.body.newFolder,
+    destinationFolderId: req.body.destinationFolderId
+  };
+  try {
+    const lookUpDuplicate = await prisma.files.findFirst({
+      where: {
+        name: fileData.name,
+        authorId: fileData.authorId,
+        foldersId: fileData.destinationFolderId
+          ? fileData.destinationFolderId
+          : null,
+        inTrash: false
+      }
+    });
+    if (!lookUpDuplicate) {
+      await prisma.files.update({
+        where: { id: fileData.id },
+        data: { foldersId: fileData.destinationFolderId }
+      });
+      const result = { isSuccess: true, msg: "File move successful" };
+      return res.status(200).json(result);
+    } else {
+      const result = { isSuccess: false, msg: "File move unccessful" };
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    console.log(error);
+    const result = {
+      isSuccess: false,
+      msg: "File move unccessful",
+      err: error
+    };
+    res.status(200).json(result);
+  }
+});
+
 // get all files owned by logged in user
 router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
   const sortOrder = req.params.sortOrder;

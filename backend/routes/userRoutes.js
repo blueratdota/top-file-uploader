@@ -112,7 +112,7 @@ router.get("/check/:name", async (req, res, next) => {
 // update user list of shared folders
 router.put("/share-to-user", async (req, res, next) => {
   // verify if the req.user.id == author of the folder being shared
-  const { name, folderIdToShare } = req.body;
+  const { name, folderIdToShare, fileIdToShare } = req.body;
   console.log(`shared folder to ${name}`);
   try {
     const user = await prisma.user.findUnique({
@@ -120,23 +120,41 @@ router.put("/share-to-user", async (req, res, next) => {
       include: {
         ownedFolders: true,
         sharedFolders: true,
+        sharedFiles: true,
         Files: true
       }
     });
-    const folder = await prisma.folders.findFirst({
-      where: { id: folderIdToShare }
-    });
+    if (folderIdToShare) {
+      const folder = await prisma.folders.findFirst({
+        where: { id: folderIdToShare }
+      });
 
-    const updateSharedFolders = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        sharedFolders: {
-          connect: folder
+      const updateSharedFolders = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          sharedFolders: {
+            connect: folder
+          }
         }
-      }
-    });
+      });
+    }
+    if (fileIdToShare) {
+      const file = await prisma.files.findFirst({
+        where: { id: folderIdToShare }
+      });
 
-    res.status(200).json(folder);
+      const updateSharedFiles = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          sharedFiles: {
+            connect: file
+          }
+        }
+      });
+    }
+
+    const result = { isSuccess: true, msg: "Folder/File share successful" };
+    res.status(200).json(result);
   } catch (error) {
     console.log(error);
   }
@@ -145,7 +163,7 @@ router.put("/share-to-user", async (req, res, next) => {
 // update user list of shared folders
 router.put("/unshare-to-user", async (req, res, next) => {
   // verify if the req.user.id == author of the folder being shared
-  const { name, folderIdToShare } = req.body;
+  const { name, folderIdToShare, fileIdToShare } = req.body;
   console.log(`unshared folder to ${name}`);
   try {
     const user = await prisma.user.findUnique({
@@ -153,23 +171,41 @@ router.put("/unshare-to-user", async (req, res, next) => {
       include: {
         ownedFolders: true,
         sharedFolders: true,
+        sharedFiles: true,
         Files: true
       }
     });
-    const folder = await prisma.folders.findFirst({
-      where: { id: folderIdToShare }
-    });
+    if (folderIdToShare) {
+      const folder = await prisma.folders.findFirst({
+        where: { id: folderIdToShare }
+      });
 
-    const updateSharedFolders = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        sharedFolders: {
-          disconnect: folder
+      const updateSharedFolders = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          sharedFolders: {
+            disconnect: folder
+          }
         }
-      }
-    });
+      });
+    }
+    if (fileIdToShare) {
+      const file = await prisma.files.findFirst({
+        where: { id: folderIdToShare }
+      });
 
-    res.status(200).json(folder);
+      const updateSharedFiles = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          sharedFiles: {
+            connect: file
+          }
+        }
+      });
+    }
+
+    const result = { isSuccess: true, msg: "Folder/File unshare successful" };
+    res.status(200).json(result);
   } catch (error) {
     console.log(error);
   }

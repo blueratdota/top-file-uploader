@@ -10,19 +10,25 @@ const SharedWithUser = () => {
   profile.sharedFolders.forEach((folder) => {
     viewableFolders.push(folder.id);
   });
-  // console.log(sharedFolders);
+  console.log(sharedFolders);
   return (
     <>
       {isLoadingSharedFolders ? (
         <LoadingPage>Loading Shared Folders</LoadingPage>
       ) : (
-        <div className="w-full h-full">
-          {sharedFolders.map((folder) => {
-            if (viewableFolders.includes(folder.id)) {
-              return <SharedFolder key={folder.id} folder={folder} />;
-            }
-          })}
-        </div>
+        <>
+          {sharedFolders != undefined && !sharedFolders.isError ? (
+            <div className="w-full h-full">
+              {sharedFolders.map((folder) => {
+                if (viewableFolders.includes(folder.id)) {
+                  return <SharedFolder key={folder.id} folder={folder} />;
+                }
+              })}
+            </div>
+          ) : (
+            <div>Loading...</div>
+          )}
+        </>
       )}
     </>
   );

@@ -3,7 +3,8 @@ import {
   mdiDotsVertical,
   mdiCardTextOutline,
   mdiRenameOutline,
-  mdiContentCopy
+  mdiContentCopy,
+  mdiFolderMoveOutline
 } from "@mdi/js";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
@@ -17,6 +18,7 @@ import ModalToTrashFile from "./menu-items/ModalToTrashFile";
 import ModalDetailsFile from "./menu-items/ModalDetailsFile";
 import ModalRenameFile from "./menu-items/ModalRenameFile";
 import ModalCopyFile from "./menu-items/ModalCopyFile";
+import ModalMoveFile from "./menu-items/ModalMoveFile";
 const EntryFile = ({ file }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
@@ -44,6 +46,12 @@ const EntryFile = ({ file }) => {
     isOpen: isOpenCopyModal,
     onOpen: onOpenCopyModal,
     onClose: onCloseCopyModal
+  } = useDisclosure();
+  // FILE MOVE MODAL
+  const {
+    isOpen: isOpenMoveModal,
+    onOpen: onOpenMoveModal,
+    onClose: onCloseMoveModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -84,8 +92,16 @@ const EntryFile = ({ file }) => {
             <MenuItem>
               <span className="w-5">o</span> Download
             </MenuItem>
-            <MenuItem>
-              <span className="w-5">o</span> Move to...
+            <MenuItem
+              onClick={() => {
+                onOpenMoveModal();
+                setNav(true);
+              }}
+            >
+              <span className="w-5 mr-2">
+                <Icon path={mdiFolderMoveOutline} />
+              </span>{" "}
+              Move to...
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -152,6 +168,13 @@ const EntryFile = ({ file }) => {
         <ModalCopyFile
           isOpen={isOpenCopyModal}
           onClose={onCloseCopyModal}
+          file={file}
+          setNav={setNav}
+        />
+        {/* FILE MOVE */}
+        <ModalMoveFile
+          isOpen={isOpenMoveModal}
+          onClose={onCloseMoveModal}
           file={file}
           setNav={setNav}
         />

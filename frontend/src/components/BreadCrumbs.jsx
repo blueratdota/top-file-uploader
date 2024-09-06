@@ -65,7 +65,10 @@ const BreadCrumbs = ({ folders, sharedFolders }) => {
     }
   } else {
     let viewableFolders = [];
-    if (sharedFolders) {
+    // console.log(`########`, sharedFolders, viewableFolders);
+    // console.log(sharedFolders != undefined && !sharedFolders.isError);
+
+    if (sharedFolders != undefined && !sharedFolders.isError) {
       sharedFolders.forEach((folder) => {
         viewableFolders.push(folder.id);
       });

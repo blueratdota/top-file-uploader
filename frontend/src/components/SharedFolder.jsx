@@ -40,6 +40,7 @@ import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalShareFolder from "./menu-items/ModalShareFolder";
+import ModalCopyFolder from "./menu-items/ModalCopyFolder";
 
 const SharedFolder = ({ folder }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +64,12 @@ const SharedFolder = ({ folder }) => {
     isOpen: isOpenShareModal,
     onOpen: onOpenShareModal,
     onClose: onCloseShareModal
+  } = useDisclosure();
+  // FOLDER COPY MODAL
+  const {
+    isOpen: isOpenCopyModal,
+    onOpen: onOpenCopyModal,
+    onClose: onCloseCopyModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -138,7 +145,12 @@ const SharedFolder = ({ folder }) => {
             Copy Link
           </MenuItem>
 
-          <MenuItem>
+          <MenuItem
+            onClick={() => {
+              onOpenCopyModal();
+              setNav(true);
+            }}
+          >
             <span className="w-5 mr-2">
               <Icon path={mdiContentCopy} />
             </span>{" "}
@@ -167,6 +179,13 @@ const SharedFolder = ({ folder }) => {
       <ModalShareFolder
         isOpen={isOpenShareModal}
         onClose={onCloseShareModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* COPY MODAL */}
+      <ModalCopyFolder
+        isOpen={isOpenCopyModal}
+        onClose={onCloseCopyModal}
         folder={folder}
         setNav={setNav}
       />
