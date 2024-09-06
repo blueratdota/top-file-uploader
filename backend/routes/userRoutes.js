@@ -62,8 +62,7 @@ router.post("/login", async (req, res, next) => {
 // api/users/logout @POST
 router.post("/logout", async (req, res) => {
   res.cookie("jwt", "", {
-    httpOnly: true,
-    sameSite: "strict",
+    httpOnly: false,
     expires: new Date(0)
   });
   res.json({ message: `User: logged-out` });
