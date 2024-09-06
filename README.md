@@ -13,11 +13,12 @@
 - renaming folder fails if name already exists in the same directory
 - deleting a directory permanently including all files inside (recursive)
 - copy a shared folder to your own drive >> todo copy file alone
+- share/unshare file
 
 # todo
 
-- shared files/folder menuItems (details is broken)
 - download file (must have a separate page,accessible by anyone with the link, only for download)
+- filtering and search
 - recent uploads
 - account settings
 - FINALLY DEPLOY
@@ -28,5 +29,4 @@
 
 # tocontinue
 
-- share/unshare file
-- filtering and search
+# i am tired and will move on to the next project

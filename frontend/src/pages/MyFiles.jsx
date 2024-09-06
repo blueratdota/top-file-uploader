@@ -7,12 +7,13 @@ import { useEffect } from "react";
 
 const MyFiles = () => {
   const context = useOutletContext();
+  const { isLoadingFolders, isLoadingFiles, folders, files } = context;
   const navigate = useNavigate();
   // console.log(context.folders);
   try {
     return (
       <>
-        {context.isLoadingFolders || context.isLoadingFiles ? (
+        {isLoadingFolders || isLoadingFiles ? (
           <div className="w-full h-full">
             <LoadingPage>
               <p>Loading Folders and Files</p>
@@ -20,12 +21,12 @@ const MyFiles = () => {
           </div>
         ) : (
           <div className="w-full">
-            {context.folders.map((folder) => {
+            {folders.map((folder) => {
               if (folder.parentFolderId == null && !folder.inTrash) {
                 return <EntryFolder key={folder.id} folder={folder} />;
               }
             })}
-            {context.files.map((file) => {
+            {files.map((file) => {
               if (!file.foldersId && !file.inTrash) {
                 return <EntryFile key={file.id} file={file} />;
               }

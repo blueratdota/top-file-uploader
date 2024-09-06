@@ -51,7 +51,7 @@ const ModalDetailsFolder = ({ isOpen, onClose, folder }) => {
             <div className="">
               <h2>Accessible by</h2>
               <div className="flex text-sm gap-1 truncate">
-                {folder.allowedUsers.length > 1
+                {folder.allowedUsers.length > 0
                   ? null
                   : "No user is authorized to acces this folder"}
 

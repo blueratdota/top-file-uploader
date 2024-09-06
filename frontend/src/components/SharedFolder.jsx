@@ -1,32 +1,18 @@
 import {
   mdiFolderOutline,
   mdiDotsVertical,
-  mdiDeleteOutline,
-  mdiRestore,
-  mdiCardTextOutline,
-  mdiRenameOutline,
   mdiContentCopy,
   mdiFolderMoveOutline,
-  mdiDownloadOutline,
   mdiLink,
-  mdiShareOutline
+  mdiShareOutline,
+  mdiShareOffOutline
 } from "@mdi/js";
 import {
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  Modal,
-  useDisclosure,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  InputGroup,
-  Input,
-  Spinner
+  useDisclosure
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -40,10 +26,13 @@ import MenuRename from "./menu-items/MenuRename";
 import ModalRenameFolder from "./menu-items/ModalRenameFolder";
 import ModalDisplayTemplate from "./menu-items/ModalDisplayTemplate";
 import ModalShareFolder from "./menu-items/ModalShareFolder";
+import ModalUnshareFolder from "./menu-items/ModalUnshareFolder";
+import ModalMoveFolder from "./menu-items/ModalMoveFolder";
 import ModalCopyFolder from "./menu-items/ModalCopyFolder";
+import ModalToTrashFolder from "./menu-items/ModalToTrashFolder";
+import ModalDetailsFolder from "./menu-items/ModalDetailsFolder";
 
 const SharedFolder = ({ folder }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [modalHeader, setModalHeader] = useState(() => {
     return "Empty Header";
   });
@@ -53,23 +42,23 @@ const SharedFolder = ({ folder }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
-  // FOLDER DETAILS MODAL
-  const {
-    isOpen: isOpenModal,
-    onOpen: onOpenModal,
-    onClose: onCloseModal
-  } = useDisclosure();
   // FOLDER SHARE MODAL
   const {
     isOpen: isOpenShareModal,
     onOpen: onOpenShareModal,
     onClose: onCloseShareModal
   } = useDisclosure();
-  // FOLDER COPY MODAL
+  // COPY FOLDER MODAL
   const {
     isOpen: isOpenCopyModal,
     onOpen: onOpenCopyModal,
     onClose: onCloseCopyModal
+  } = useDisclosure();
+  // DETAILS FOLDER MODAL
+  const {
+    isOpen: isOpenDetailsModal,
+    onOpen: onOpenDetailsModal,
+    onClose: onCloseDetailsModal
   } = useDisclosure();
 
   const existingFolders = (() => {
@@ -97,13 +86,11 @@ const SharedFolder = ({ folder }) => {
     <div className="flex items-center justify-between h-11 w-full py-8 border-b">
       <Link
         className="flex items-center w-full"
-        onClick={() => {
-          // console.log(folder);
-        }}
-        to={`/home/shared/folder/${folder.id}`}
+        onClick={() => {}}
+        to={`/home/shared/folder/${folder.id}?sortAsc=true&sortType=name`}
       >
         <div className="w-14 px-2">
-          <Icon path={mdiFolderOutline} className="w-full"></Icon>
+          <Icon path={mdiFolderOutline} className="w-full" />
         </div>
         <div className="flex-1">
           <div>{folder.name}</div>
@@ -115,12 +102,7 @@ const SharedFolder = ({ folder }) => {
       </Link>
 
       <Menu zIndex={"dropdown"}>
-        <MenuButton
-          className="scale-[0.5] w-[46px] text-white"
-          onClick={() => {
-            console.log(folder);
-          }}
-        >
+        <MenuButton className="scale-[0.5] w-[46px] text-white">
           <SmallIconBtn icon={mdiDotsVertical}></SmallIconBtn>
         </MenuButton>
         <MenuList
@@ -144,7 +126,6 @@ const SharedFolder = ({ folder }) => {
             </span>{" "}
             Copy Link
           </MenuItem>
-
           <MenuItem
             onClick={() => {
               onOpenCopyModal();
@@ -159,22 +140,11 @@ const SharedFolder = ({ folder }) => {
 
           <MenuDetails
             folder={folder}
-            setModalHeader={setModalHeader}
-            setModalBody={setModalBody}
             setNav={setNav}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
+            onOpenDetailsModal={onOpenDetailsModal}
           />
         </MenuList>
       </Menu>
-      {/* STATE BASED MODAL */}
-      <ModalDisplayTemplate
-        isOpen={isOpenModal}
-        onClose={onCloseModal}
-        setNav={context.setNav}
-        modalHeader={modalHeader}
-        modalBody={modalBody}
-      />
       {/* SHARE MODAL */}
       <ModalShareFolder
         isOpen={isOpenShareModal}
@@ -182,10 +152,17 @@ const SharedFolder = ({ folder }) => {
         folder={folder}
         setNav={setNav}
       />
-      {/* COPY MODAL */}
+      {/* COPY FOLDER MODAL */}
       <ModalCopyFolder
         isOpen={isOpenCopyModal}
         onClose={onCloseCopyModal}
+        folder={folder}
+        setNav={setNav}
+      />
+      {/* DETAILS FOLDER MODAL */}
+      <ModalDetailsFolder
+        isOpen={isOpenDetailsModal}
+        onClose={onCloseDetailsModal}
         folder={folder}
         setNav={setNav}
       />

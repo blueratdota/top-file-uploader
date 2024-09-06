@@ -51,7 +51,7 @@ const ModalDetailsFile = ({ isOpen, onClose, file }) => {
             <div className="">
               <h2>Accessible by</h2>
               <div className="flex text-sm gap-1 truncate">
-                {file.allowedUsers.length > 1
+                {file.allowedUsers.length > 0
                   ? null
                   : "This file is not shared to anyone"}
 

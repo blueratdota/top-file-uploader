@@ -33,12 +33,6 @@ import ModalToTrashFolder from "./menu-items/ModalToTrashFolder";
 import ModalDetailsFolder from "./menu-items/ModalDetailsFolder";
 
 const EntryFolder = ({ folder }) => {
-  const [modalHeader, setModalHeader] = useState(() => {
-    return "Empty Header";
-  });
-  const [modalBody, setModalBody] = useState(() => {
-    return <></>;
-  });
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;

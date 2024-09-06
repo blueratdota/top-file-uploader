@@ -314,6 +314,53 @@ router.get("/get-all/:sortType/:sortOrder", protect, async (req, res, next) => {
 
   res.status(200).json(files);
 });
+// get all shared files to user
+router.get(
+  "/get-all-shared/:sortType/:sortOrder",
+  protect,
+  async (req, res, next) => {
+    const sortOrder = (() => {
+      if (
+        req.params.sortType == "downloadCount" ||
+        req.params.sortType == "fileSize"
+      ) {
+        return "asc";
+      } else return req.params.sortOrder;
+    })();
+    const sortType = (() => {
+      if (
+        req.params.sortType == null ||
+        req.params.sortType == "downloadCount" ||
+        req.params.sortType == "fileSize"
+      ) {
+        return "name";
+      } else return req.params.sortType;
+    })();
+
+    let sortSettings = {};
+    if (!sortType || sortType == "null") {
+      sortSettings["name"] = sortOrder;
+    } else {
+      sortSettings[sortType] = sortOrder;
+    }
+
+    const sharedToUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        sharedFiles: {
+          include: {
+            author: { select: { name: true } },
+            allowedUsers: { select: { name: true } }
+          },
+          orderBy: sortSettings
+        }
+      }
+    });
+
+    res.status(200).json(sharedToUser.sharedFiles);
+  }
+);
+
 // download file
 router.get("/download/:id", async (req, res, next) => {
   const id = req.params.id;

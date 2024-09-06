@@ -16,49 +16,69 @@ import { useOutletContext } from "react-router-dom";
 // import useSWR from "swr";
 import LoadingPage from "../built/LoadingPage.jsx";
 
-const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
+const ModalShareFile = ({ isOpen, onClose, file, setNav }) => {
   const [userName, setUsername] = useState("");
   const [queryMessage, setQueryMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isUnshared, setIsUnshared] = useState(false);
+  const [isShared, setIsShared] = useState(false);
   const context = useOutletContext();
   const { mutateFiles, mutateFolders, profile } = context;
 
   let allowed = [];
-  if (folder) {
-    folder.allowedUsers.forEach((user) => {
+  if (file) {
+    file.allowedUsers.forEach((user) => {
       allowed.push(user.name);
     });
   }
 
-  const onShareFolder = async (e) => {
+  const onShareFile = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (allowed.includes(userName)) {
-        setQueryMessage(`Removing access from ${userName}`);
-        const body = {
-          name: userName,
-          folderIdToShare: folder.id
-        };
-        const response = await fetch(
-          "http://localhost:3000/api/users/unshare-to-user",
-          {
-            method: "PUT",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-          }
-        );
-        await mutateFolders;
-        setIsUnshared(true);
+      const userExists = await fetch(
+        `http://localhost:3000/api/users/check/${userName}`,
+        {
+          credentials: "include"
+        }
+      );
+      const query = await userExists.json();
+      if (!query.data) {
+        setQueryMessage("User does not exist");
       } else {
-        setQueryMessage("User does not exist on allowed users list");
+        if (
+          context.profile.name == query.data.name ||
+          file.author.name == query.data.name ||
+          allowed.includes(query.data.name)
+        ) {
+          setQueryMessage("You cannot share file to this user");
+        } else {
+          try {
+            const body = {
+              name: userName,
+              fileIdToShare: file.id
+            };
+            const response = await fetch(
+              "http://localhost:3000/api/users/share-to-user",
+              {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+              }
+            );
+            await mutateFiles;
+            await mutateFolders;
+            setQueryMessage(query.status);
+            setIsShared(true);
+          } catch (error) {
+            console.log(error);
+          }
+        }
       }
     } catch (error) {}
     setIsLoading(false);
     modalClose();
-    setIsUnshared(false);
+    setIsShared(false);
   };
 
   const modalClose = () => {
@@ -89,7 +109,7 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
           className="absolute bg-white top-52 mx-auto"
         >
           <ModalHeader className="bg-extGreen text-white uppercase px-2 py-1 flex justify-between items-center text-xl">
-            <p>{"Unshare Folder"}</p>
+            <p>{"Share File"}</p>
             <ModalCloseButton
               onClick={() => {
                 modalClose();
@@ -99,11 +119,11 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
           <ModalBody className="p-4 text-xl">
             {" "}
             <div>
-              <form method="post" onSubmit={onShareFolder}>
+              <form method="post" onSubmit={onShareFile}>
                 <div className="mb-3">
                   <InputGroup className="flex flex-col">
                     <label htmlFor="receiver-name" className="mb-2">
-                      Remove user access of this folder
+                      Add users to access this file
                     </label>
                     <Input
                       name="receiver-name"
@@ -119,10 +139,9 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
                   </InputGroup>
                   <div
                     className={`pl-3 pt-2 text-sm ${
-                      queryMessage ==
-                      "User does not exist on allowed users list"
-                        ? "text-red-500"
-                        : "text-green-500"
+                      queryMessage == "User exists"
+                        ? "text-green-500"
+                        : "text-red-500"
                     }`}
                   >
                     {queryMessage}
@@ -131,17 +150,15 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
                 <div className="flex items-center gap-4">
                   <Icon path={mdiFolderOutline} className="h-8" />
                   <p>
-                    You are about to unshare{" "}
-                    <span className="underline font-semibold">
-                      {folder.name}
-                    </span>
+                    You are about to share{" "}
+                    <span className="underline font-semibold">{file.name}</span>
                   </p>
                 </div>
 
                 <div className="mt-8 w-full flex gap-5 justify-center">
-                  {isUnshared ? (
+                  {isShared ? (
                     <>
-                      <div>{`Folder access removed from ${userName}`}</div>
+                      <div>{`File shared to ${userName}`}</div>
                     </>
                   ) : (
                     <>
@@ -161,9 +178,9 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
                           <Button
                             type="submit"
                             variant="solid"
-                            className="bg-red-500 w-[120px] py-1  text-extWhite"
+                            className="bg-extGreen w-[120px] py-1  text-extWhite"
                           >
-                            Unshare
+                            Share
                           </Button>
                         </>
                       )}
@@ -178,4 +195,4 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
     </>
   );
 };
-export default ModalUnshareFolder;
+export default ModalShareFile;

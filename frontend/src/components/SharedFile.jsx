@@ -21,8 +21,7 @@ import ModalRenameFile from "./menu-items/ModalRenameFile";
 import ModalCopyFile from "./menu-items/ModalCopyFile";
 import ModalMoveFile from "./menu-items/ModalMoveFile";
 import ModalShareFile from "./menu-items/ModalShareFile";
-import ModalUnshareFile from "./menu-items/ModalUnshareFile";
-const EntryFile = ({ file }) => {
+const SharedFile = ({ file }) => {
   const context = useOutletContext();
   // for fixing navbar z-index issues
   const { setNav } = context;
@@ -61,12 +60,6 @@ const EntryFile = ({ file }) => {
     isOpen: isOpenShareModal,
     onOpen: onOpenShareModal,
     onClose: onCloseShareModal
-  } = useDisclosure();
-  // FOLDER UNSHARE MODAL
-  const {
-    isOpen: isOpenUnshareModal,
-    onOpen: onOpenUnshareModal,
-    onClose: onCloseUnshareModal
   } = useDisclosure();
   return (
     <div className="flex items-center h-11 w-full py-8 border-b">
@@ -117,17 +110,6 @@ const EntryFile = ({ file }) => {
             </MenuItem>
             <MenuItem
               onClick={() => {
-                onOpenMoveModal();
-                setNav(true);
-              }}
-            >
-              <span className="w-5 mr-2">
-                <Icon path={mdiFolderMoveOutline} />
-              </span>{" "}
-              Move to...
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
                 onOpenCopyModal();
                 setNav(true);
               }}
@@ -137,17 +119,7 @@ const EntryFile = ({ file }) => {
               </span>{" "}
               Copy to...
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                onOpenRenameModal();
-                setNav(true);
-              }}
-            >
-              <span className="w-5 mr-2">
-                <Icon path={mdiRenameOutline} />
-              </span>{" "}
-              Rename
-            </MenuItem>
+
             <MenuItem
               onClick={() => {
                 onOpenDetailsModal();
@@ -159,31 +131,13 @@ const EntryFile = ({ file }) => {
               </span>{" "}
               Details
             </MenuItem>
-            <MenuFileToTrash
-              file={file}
-              setNav={setNav}
-              onOpenTrashModal={onOpenTrashModal}
-            />
           </MenuList>
         </Menu>
-        {/* FILE TO TRASH */}
-        <ModalToTrashFile
-          isOpen={isOpenTrashModal}
-          onClose={onCloseTrashModal}
-          file={file}
-          setNav={setNav}
-        />
+
         {/* FILE DETAILS */}
         <ModalDetailsFile
           isOpen={isOpenDetailsModal}
           onClose={onCloseDetailsModal}
-          file={file}
-          setNav={setNav}
-        />
-        {/* FILE RENAME */}
-        <ModalRenameFile
-          isOpen={isOpenRenameModal}
-          onClose={onCloseRenameModal}
           file={file}
           setNav={setNav}
         />
@@ -194,22 +148,10 @@ const EntryFile = ({ file }) => {
           file={file}
           setNav={setNav}
         />
-        {/* FILE MOVE */}
-        <ModalMoveFile
-          isOpen={isOpenMoveModal}
-          onClose={onCloseMoveModal}
-          file={file}
-          setNav={setNav}
-        />
+        {/* FILE SHARE */}
         <ModalShareFile
           isOpen={isOpenShareModal}
           onClose={onCloseShareModal}
-          file={file}
-          setNav={setNav}
-        />
-        <ModalUnshareFile
-          isOpen={isOpenUnshareModal}
-          onClose={onCloseUnshareModal}
           file={file}
           setNav={setNav}
         />
@@ -218,4 +160,4 @@ const EntryFile = ({ file }) => {
   );
 };
 
-export default EntryFile;
+export default SharedFile;

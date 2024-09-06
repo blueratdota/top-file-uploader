@@ -66,7 +66,7 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
                 body: JSON.stringify(body)
               }
             );
-            console.log(body);
+            await mutateFolders;
             setQueryMessage(query.status);
             setIsShared(true);
           } catch (error) {
@@ -76,6 +76,8 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
       }
     } catch (error) {}
     setIsLoading(false);
+    modalClose();
+    setIsShared(false);
   };
 
   const modalClose = () => {

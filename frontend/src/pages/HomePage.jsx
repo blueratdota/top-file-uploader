@@ -87,6 +87,18 @@ const HomePage = () => {
       revalidateOnFocus: false
     }
   );
+  const {
+    data: sharedFiles,
+    error: errorSharedFiles,
+    isLoading: isLoadingSharedFiles,
+    mutate: mutateSharedFiles
+  } = useSWR(
+    `http://localhost:3000/api/files/get-all-shared/${sortType}/${isAsc}`,
+    fetcher,
+    {
+      revalidateOnFocus: false
+    }
+  );
 
   const navigate = useNavigate();
   const context = useOutletContext();
@@ -155,10 +167,12 @@ const HomePage = () => {
                   folders: folders,
                   files: files,
                   sharedFolders: sharedFolders,
+                  sharedFiles: sharedFiles,
                   // LOADING VARIABLES FROM SWR GET REQUESTS
                   isLoadingFiles: isLoadingFiles,
                   isLoadingFolders: isLoadingFolders,
                   isLoadingSharedFolders: isLoadingSharedFolders,
+                  isLoadingSharedFiles: isLoadingSharedFiles,
                   // FOR UPDATING FILES & FOLDERS EVERY ACTION
                   mutateFiles: mutateFiles,
                   mutateFolders: mutateFolders,
