@@ -39,7 +39,7 @@ const ModalFolderCreation = ({
           })()
         };
         const response = await fetch(
-          "http://localhost:3000/api/folders/create",
+          `${import.meta.env.VITE_SERVER}/api/folders/create`,
           {
             method: "POST",
             credentials: "include",

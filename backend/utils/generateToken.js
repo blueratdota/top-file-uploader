@@ -9,7 +9,7 @@ const genToken = (res, userId) => {
   res.cookie("jwt", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
+    sameSite: "strict",
     maxAge: 1000 * 60 * 60 * 24 * 30
   });
 

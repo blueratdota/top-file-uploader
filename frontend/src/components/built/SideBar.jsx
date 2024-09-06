@@ -16,12 +16,16 @@ const SideBar = ({}) => {
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async () => {
+    console.log("logout clicked");
     try {
-      const response = await fetch("http://localhost:3000/api/users/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" }
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/api/users/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" }
+        }
+      );
       navigate("/");
     } catch (error) {
       console.log(error);

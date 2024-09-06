@@ -31,12 +31,15 @@ const ModalFileUpload = ({ isOpen, onClose, mutateFiles, mutateFolders }) => {
       formData.append("foldersId", id);
     }
     try {
-      const response = await fetch("http://localhost:3000/api/files/upload", {
-        credentials: "include",
-        mode: "cors",
-        method: "POST",
-        body: formData
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/api/files/upload`,
+        {
+          credentials: "include",
+          mode: "cors",
+          method: "POST",
+          body: formData
+        }
+      );
       console.log("response", response);
       console.log(...formData);
       await mutateFiles();
