@@ -57,7 +57,7 @@ const HomePage = () => {
     isLoading: isLoadingFolders,
     mutate: mutateFolders
   } = useSWR(
-    `http://localhost:3000/api/folders/get-all/${sortType}/${isAsc}`,
+    `${import.meta.env.VITE_SERVER}/api/folders/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
       revalidateOnFocus: false
@@ -69,7 +69,7 @@ const HomePage = () => {
     isLoading: isLoadingFiles,
     mutate: mutateFiles
   } = useSWR(
-    `http://localhost:3000/api/files/get-all/${sortType}/${isAsc}`,
+    `${import.meta.env.VITE_SERVER}/api/files/get-all/${sortType}/${isAsc}`,
     fetcher,
     {
       revalidateOnFocus: false
@@ -81,7 +81,9 @@ const HomePage = () => {
     isLoading: isLoadingSharedFolders,
     mutate: mutateSharedFolders
   } = useSWR(
-    `http://localhost:3000/api/folders/get-all-shared/${sortType}/${isAsc}`,
+    `${
+      import.meta.env.VITE_SERVER
+    }/api/folders/get-all-shared/${sortType}/${isAsc}`,
     fetcher,
     {
       revalidateOnFocus: false
@@ -93,7 +95,9 @@ const HomePage = () => {
     isLoading: isLoadingSharedFiles,
     mutate: mutateSharedFiles
   } = useSWR(
-    `http://localhost:3000/api/files/get-all-shared/${sortType}/${isAsc}`,
+    `${
+      import.meta.env.VITE_SERVER
+    }/api/files/get-all-shared/${sortType}/${isAsc}`,
     fetcher,
     {
       revalidateOnFocus: false

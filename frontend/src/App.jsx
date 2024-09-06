@@ -8,7 +8,7 @@ import LoadingPage from "./components/built/LoadingPage";
 
 function App() {
   // SWR FETCH STUFF
-
+  // console.log(import.meta.env.VITE_SERVER);
   const navigate = useNavigate();
   const fetcher = (url) =>
     fetch(url, { credentials: "include" }).then((res) => res.json());
@@ -16,7 +16,7 @@ function App() {
     data: profile,
     error: errorProfile,
     isLoading: isLoadingProfile
-  } = useSWR("http://localhost:3000/api/users/profile", fetcher, {
+  } = useSWR(`${import.meta.env.VITE_SERVER}/api/users/profile`, fetcher, {
     revalidateOnFocus: false
   });
   // console.log("PL", isLoadingProfile, "PE", errorProfile);

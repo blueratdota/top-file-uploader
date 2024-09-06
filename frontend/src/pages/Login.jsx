@@ -33,14 +33,20 @@ const LoginPage = () => {
     if (username && password) {
       try {
         const body = { name: username, password: password };
-        const response = await fetch("http://localhost:3000/api/users/login", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER}/api/users/login`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "http://localhost:5173"
+            },
+            body: JSON.stringify(body)
+          }
+        );
 
-        await mutate("http://localhost:3000/api/users/profile");
+        await mutate(`${import.meta.env.VITE_SERVER}/api/users/profile`);
         setIsLoading(false);
         navigate("/");
       } catch (error) {
