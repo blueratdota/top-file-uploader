@@ -4,7 +4,6 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { genToken } from "../utils/generateToken.js";
 import { PrismaClientValidationError } from "@prisma/client/runtime/react-native.js";
 import { protect } from "../middleware/authMiddleware.js";
-import jwt from "jsonwebtoken";
 const router = express.Router();
 const prisma = new PrismaClient();
 
@@ -52,11 +51,8 @@ router.post("/login", async (req, res, next) => {
       return next(error);
     }
     genToken(res, user.name);
-    let token = jwt.sign({ userId: user.name }, process.env.JWT_SECRET, {
-      expiresIn: "30d"
-    });
     console.log(`#####login posted by username: ${user.id}`);
-    res.json({ userData: user, token: token });
+    res.json(user);
   } catch (error) {
     return next(error);
   }
@@ -64,10 +60,11 @@ router.post("/login", async (req, res, next) => {
 
 // login account
 // api/users/logout @POST
-router.get("/logout", async (req, res) => {
+router.post("/logout", async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: false,
-    expires: new Date(0)
+    expires: new Date(0),
+    sameSite: "none"
   });
   res.json({ message: `User: logged-out` });
 });

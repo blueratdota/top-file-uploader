@@ -17,7 +17,7 @@ const SideBar = ({}) => {
   const [cookie, setCookie, removeCookie] = useCookies();
   const context = useOutletContext();
   const navigate = useNavigate();
-  const logoutUser = async () => {
+  const logoutUser = async (e) => {
     console.log("logout clicked");
 
     try {
@@ -88,7 +88,7 @@ const SideBar = ({}) => {
         <Link
           onClick={async () => {
             await logoutUser();
-            window.location.reload();
+            // window.location.reload();
           }}
         >
           <div className="aside-links">

@@ -11,7 +11,8 @@ import siteLogo from "../images/site-logo-white.png";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useSWRConfig } from "swr";
 import LoadingPage from "../components/built/LoadingPage";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
+// import { jwtDecode } from "jwt-decode";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,12 +43,14 @@ const LoginPage = () => {
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http://localhost:5173"
+              "Access-Control-Allow-Origin":
+                "top-file-uploader-production.up.railway.app"
             },
             body: JSON.stringify(body)
           }
         );
-        console.log(await response.json());
+        // const data = await response.json();
+        // console.log(jwtDecode(data.token));
 
         await mutate(`${import.meta.env.VITE_SERVER}/api/users/profile`);
         setIsLoading(false);
