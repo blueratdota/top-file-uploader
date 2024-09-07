@@ -1,5 +1,6 @@
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import Icon from "@mdi/react";
+import { useCookies } from "react-cookie";
 import {
   mdiFolderOutline,
   mdiClockOutline,
@@ -13,20 +14,27 @@ import {
 import SmallIconBtn from "../SmallIconButton";
 
 const SideBar = ({}) => {
+  const [cookie, setCookie, removeCookie] = useCookies();
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async () => {
+    document.cookie =
+      "jwt2=aaa; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     console.log("logout clicked");
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER}/api/users/logout`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" }
-        }
-      );
-      navigate("/");
+      // const response = await fetch(
+      //   `${import.meta.env.VITE_SERVER}/api/users/logout`,
+      //   {
+      //     method: "POST",
+      //     credentials: "include",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       "Access-Control-Allow-Origin": "http://localhost:5173"
+      //     }
+      //   }
+      // );
+      // navigate("/");
     } catch (error) {
       console.log(error);
     }

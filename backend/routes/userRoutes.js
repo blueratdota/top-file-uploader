@@ -60,7 +60,7 @@ router.post("/login", async (req, res, next) => {
 
 // login account
 // api/users/logout @POST
-router.post("/logout", async (req, res) => {
+router.get("/logout", async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: false,
     expires: new Date(0)
