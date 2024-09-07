@@ -18,23 +18,21 @@ const SideBar = ({}) => {
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async () => {
-    document.cookie =
-      "jwt2=aaa; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     console.log("logout clicked");
 
     try {
-      // const response = await fetch(
-      //   `${import.meta.env.VITE_SERVER}/api/users/logout`,
-      //   {
-      //     method: "POST",
-      //     credentials: "include",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       "Access-Control-Allow-Origin": "http://localhost:5173"
-      //     }
-      //   }
-      // );
-      // navigate("/");
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/api/users/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://localhost:5173"
+          }
+        }
+      );
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

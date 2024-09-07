@@ -51,8 +51,11 @@ router.post("/login", async (req, res, next) => {
       return next(error);
     }
     genToken(res, user.name);
+    let token = jwt.sign({ userId: user.name }, process.env.JWT_SECRET, {
+      expiresIn: "30d"
+    });
     console.log(`#####login posted by username: ${user.id}`);
-    res.json(user);
+    res.json({ userData: user, token: token });
   } catch (error) {
     return next(error);
   }

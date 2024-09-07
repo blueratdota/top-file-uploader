@@ -11,10 +11,12 @@ import siteLogo from "../images/site-logo-white.png";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useSWRConfig } from "swr";
 import LoadingPage from "../components/built/LoadingPage";
+import { useCookies } from "react-cookie";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [cookie, setCookie, removeCookie] = useCookies();
   const context = useOutletContext();
   const { mutate } = useSWRConfig();
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ const LoginPage = () => {
             body: JSON.stringify(body)
           }
         );
+        console.log(await response.json());
 
         await mutate(`${import.meta.env.VITE_SERVER}/api/users/profile`);
         setIsLoading(false);
