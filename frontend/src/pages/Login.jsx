@@ -17,7 +17,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [cookie, setCookie, removeCookie] = useCookies();
   const context = useOutletContext();
   const { mutate } = useSWRConfig();
   const navigate = useNavigate();

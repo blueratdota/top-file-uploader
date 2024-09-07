@@ -24,7 +24,7 @@ const SideBar = ({}) => {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER}/api/users/logout`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
