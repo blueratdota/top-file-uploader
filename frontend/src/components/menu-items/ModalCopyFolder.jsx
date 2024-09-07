@@ -74,12 +74,15 @@ const ModalCopyFolder = ({ isOpen, onClose, folder }) => {
         destinationFolderId: currFolder,
         parentFolderId: folder.parentFolderId
       };
-      const response = await fetch("http://localhost:3000/api/folders/copy", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/api/folders/copy`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }
+      );
       const result = await response.json();
       if (result.isSuccess) {
         setQueryMessage(result.msg);

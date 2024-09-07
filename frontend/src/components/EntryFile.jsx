@@ -112,7 +112,24 @@ const EntryFile = ({ file }) => {
             <MenuItem>
               <span className="w-5">o</span> Copy Link
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              onClick={async () => {
+                console.log(`download file ${file.id}`);
+                // const response = await fetch(
+                //   `${import.meta.env.VITE_SERVER}/api/files/download/${
+                //     file.id
+                //   }`,
+                //   {
+                //     method: "GET",
+                //     credentials: "include",
+                //     headers: { "Content-Type": "application/json" }
+                //   }
+                // );
+                window.open(
+                  `${import.meta.env.VITE_SERVER}/api/files/download/${file.id}`
+                );
+              }}
+            >
               <span className="w-5">o</span> Download
             </MenuItem>
             <MenuItem

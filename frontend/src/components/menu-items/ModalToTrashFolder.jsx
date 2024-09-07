@@ -21,7 +21,7 @@ const ModalToTrashFolder = ({ isOpen, onClose, folder }) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3000/api/folders/to-trash/${folder.id}`,
+        `${import.meta.env.VITE_SERVER}/api/folders/to-trash/${folder.id}`,
         {
           method: "PUT",
           credentials: "include",

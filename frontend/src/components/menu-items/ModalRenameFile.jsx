@@ -30,12 +30,15 @@ const ModalRenameFile = ({ isOpen, onClose, file }) => {
           newName: fileName,
           foldersId: file.foldersId
         };
-        const response = await fetch("http://localhost:3000/api/files/rename", {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER}/api/files/rename`,
+          {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          }
+        );
         const result = await response.json();
         if (result.isSuccess) {
           setQueryMessage("File rename successful");

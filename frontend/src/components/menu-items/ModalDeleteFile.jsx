@@ -21,7 +21,7 @@ const ModalDeleteFile = ({ isOpen, onClose, file }) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3000/api/files/delete/${file.id}`,
+        `${import.meta.env.VITE_SERVER}/api/files/delete/${file.id}`,
         {
           method: "DELETE",
           credentials: "include",

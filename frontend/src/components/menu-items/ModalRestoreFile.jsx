@@ -25,12 +25,15 @@ const ModalRestoreFile = ({ isOpen, onClose, file }) => {
         inTrash: file.inTrash
       };
       setIsLoading(true);
-      const response = await fetch("http://localhost:3000/api/files/restore", {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/api/files/restore`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }
+      );
       const result = await response.json();
       if (result.isSuccess) {
         await mutateFiles();

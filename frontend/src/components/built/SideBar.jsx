@@ -1,6 +1,5 @@
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import Icon from "@mdi/react";
-import { useCookies } from "react-cookie";
 import {
   mdiFolderOutline,
   mdiClockOutline,
@@ -12,9 +11,7 @@ import {
   mdiHelpCircleOutline
 } from "@mdi/js";
 import SmallIconBtn from "../SmallIconButton";
-
 const SideBar = ({}) => {
-  const [cookie, setCookie, removeCookie] = useCookies();
   const context = useOutletContext();
   const navigate = useNavigate();
   const logoutUser = async (e) => {
@@ -88,7 +85,7 @@ const SideBar = ({}) => {
         <Link
           onClick={async () => {
             await logoutUser();
-            // window.location.reload();
+            window.location.reload();
           }}
         >
           <div className="aside-links">

@@ -19,7 +19,7 @@ const ModalDeleteFolder = ({ isOpen, onClose, folder }) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3000/api/folders/delete/${folder.id}`,
+        `${import.meta.env.VITE_SERVER}/api/folders/delete/${folder.id}`,
         {
           method: "DELETE",
           credentials: "include",

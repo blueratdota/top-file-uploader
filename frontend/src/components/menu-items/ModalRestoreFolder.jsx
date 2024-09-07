@@ -27,7 +27,7 @@ const ModalRestoreFolder = ({ isOpen, onClose, folder }) => {
       };
       setIsLoading(true);
       const response = await fetch(
-        "http://localhost:3000/api/folders/restore",
+        `${import.meta.env.VITE_SERVER}/api/folders/restore`,
         {
           method: "POST",
           credentials: "include",

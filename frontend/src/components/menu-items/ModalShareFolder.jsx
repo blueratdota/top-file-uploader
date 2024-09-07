@@ -36,7 +36,7 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
     setIsLoading(true);
     try {
       const userExists = await fetch(
-        `http://localhost:3000/api/users/check/${userName}`,
+        `${import.meta.env.VITE_SERVER}/api/users/check/${userName}`,
         {
           credentials: "include"
         }
@@ -58,7 +58,7 @@ const ModalUnshareFolder = ({ isOpen, onClose, folder, setNav }) => {
               folderIdToShare: folder.id
             };
             const response = await fetch(
-              "http://localhost:3000/api/users/share-to-user",
+              `${import.meta.env.VITE_SERVER}/api/users/share-to-user`,
               {
                 method: "PUT",
                 credentials: "include",

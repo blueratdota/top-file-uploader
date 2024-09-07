@@ -36,11 +36,12 @@ const ModalShareFile = ({ isOpen, onClose, file, setNav }) => {
     setIsLoading(true);
     try {
       const userExists = await fetch(
-        `http://localhost:3000/api/users/check/${userName}`,
+        `${import.meta.env.VITE_SERVER}/api/users/check/${userName}`,
         {
           credentials: "include"
         }
       );
+      console.log(userExists);
       const query = await userExists.json();
       if (!query.data) {
         setQueryMessage("User does not exist");
@@ -57,8 +58,9 @@ const ModalShareFile = ({ isOpen, onClose, file, setNav }) => {
               name: userName,
               fileIdToShare: file.id
             };
+            console.log(body);
             const response = await fetch(
-              "http://localhost:3000/api/users/share-to-user",
+              `${import.meta.env.VITE_SERVER}/api/users/share-to-user`,
               {
                 method: "PUT",
                 credentials: "include",
@@ -66,6 +68,7 @@ const ModalShareFile = ({ isOpen, onClose, file, setNav }) => {
                 body: JSON.stringify(body)
               }
             );
+            console.log(await response);
             await mutateFiles;
             await mutateFolders;
             setQueryMessage(query.status);
@@ -75,7 +78,9 @@ const ModalShareFile = ({ isOpen, onClose, file, setNav }) => {
           }
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
     setIsLoading(false);
     modalClose();
     setIsShared(false);

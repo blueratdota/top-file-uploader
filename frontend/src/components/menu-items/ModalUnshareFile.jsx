@@ -42,7 +42,7 @@ const ModalUnshareFile = ({ isOpen, onClose, file, setNav }) => {
           fileIdToShare: file.id
         };
         const response = await fetch(
-          "http://localhost:3000/api/users/unshare-to-user",
+          `${import.meta.env.VITE_SERVER}/api/users/unshare-to-user`,
           {
             method: "PUT",
             credentials: "include",
