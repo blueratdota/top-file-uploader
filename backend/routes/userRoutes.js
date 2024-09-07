@@ -4,6 +4,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { genToken } from "../utils/generateToken.js";
 import { PrismaClientValidationError } from "@prisma/client/runtime/react-native.js";
 import { protect } from "../middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 const prisma = new PrismaClient();
 
