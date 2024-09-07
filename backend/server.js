@@ -11,7 +11,7 @@ import fileRoutes from "./routes/fileRoutes.js";
 
 const app = express();
 const corsOptions = {
-  origin: "top-file-uploader-production.up.railway.app", // Change to your frontend's URL
+  origin: process.env.FRONTEND_URL, // Change to your frontend's URL
   credentials: true // Allow credentials (cookies, authorization headers, etc.)
 };
 const port = process.env.PORT || 3001;
