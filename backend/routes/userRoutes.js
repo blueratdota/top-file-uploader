@@ -61,11 +61,13 @@ router.post("/login", async (req, res, next) => {
 // login account
 // api/users/logout @POST
 router.post("/logout", async (req, res) => {
-  res.cookie("jwt", "", {
-    httpOnly: false,
-    expires: new Date(0)
-  });
-  res.json({ message: `User: logged-out` });
+  // res.cookie("jwt", "", {
+  //   httpOnly: false,
+  //   expires: new Date(0)
+  // });
+  // res.json({ message: `User: logged-out` });
+  res.clearCookie("jwt");
+  res.end();
 });
 
 // get account details
